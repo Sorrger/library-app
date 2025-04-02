@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List
-from author import Author
-from genre import Genre
+from .author import Author
+from .genre import Genre
 
 class BookBase(BaseModel):
     title: str
@@ -15,4 +15,4 @@ class Book(BookBase):
     genres: List[Genre] = []  
 
     class Config:
-        orm_mode = True
+        from_attributes = True

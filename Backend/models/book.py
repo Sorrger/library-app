@@ -27,7 +27,7 @@ class BookAuthor(Base):
     book_id = Column(Integer, ForeignKey("books.book_id"), primary_key=True)
     author_id = Column(Integer, ForeignKey("authors.author_id"), primary_key=True)
 
-    book = relationship("Book", back_populates="books")
-    author = relationship("Author", back_populates="authors")
+    book = relationship("Book", back_populates="authors")
+    author = relationship("Author", back_populates="books")
 
     
