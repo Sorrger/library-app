@@ -1,5 +1,4 @@
-from models import Base
-from .database import engine
+from .database import engine, Base, session_local 
 
 import models 
 

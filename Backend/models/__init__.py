@@ -1,4 +1,3 @@
-from .author import *
-from .genre import *
-from .book import *
-
+from .author import Author
+from .book import Book
+from .genre import Genre
