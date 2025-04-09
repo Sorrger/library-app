@@ -26,3 +26,4 @@ def get_db():
         print(f"Problem with database {e}")
     finally:
         db.close()
+
