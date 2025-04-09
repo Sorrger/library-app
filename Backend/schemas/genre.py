@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+
 class GenreBase(BaseModel):
     name: str
 
@@ -12,4 +12,4 @@ class Genre(GenreBase):
     genre_id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True

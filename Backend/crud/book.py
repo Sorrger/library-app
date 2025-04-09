@@ -4,7 +4,7 @@ from schemas.book import BookCreate
 
 # == Create ==
 def create_book(db: Session, book: BookCreate):
-    db_book = Book(**book)
+    db_book = Book(**book.dict())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)

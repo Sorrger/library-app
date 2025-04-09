@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class AuthorBase(BaseModel):
     name: str    
-    surrname: str
+    surname: str
 
 class AuthorCreate(AuthorBase):
     pass
@@ -11,4 +11,4 @@ class Author(AuthorBase):
     author_id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True

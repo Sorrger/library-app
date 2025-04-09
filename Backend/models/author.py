@@ -5,8 +5,8 @@ from database.database import Base
 class Author(Base):
     __tablename__ = "authors"
 
-    author_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable = False)
-    surname = Column(String(255), nullable = False)
+    author_id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), nullable=False)
+    surname = Column(String(255), nullable=False)
 
-    books = relationship("BookAuthor", back_populates = "author")
+    books = relationship("BookAuthor", back_populates="author")
