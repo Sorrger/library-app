@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends
-from schemas.genre import GenreCreate, Genre
+from schemas.publishingh_house import PublishingHouse, PublishingHouseBaseCreate
 from database.database import get_db
-from crud.genre import get_all_publishing_houses, create_publishing_house
+from crud.publishingh_house import get_all_publishing_houses, create_publishing_house
 
-router = APIRouter(tags=['genres'])
+router = APIRouter(tags=['publishinghouse'])
 
-@router.get("/genres", response_model=list[Genre])
+@router.get("/publishinghouse", response_model=list[PublishingHouse])
 def get_all_publishing_houses_endpoint(db = Depends(get_db)):
     return get_all_publishing_houses(db)
     
 
-@router.post("/genres", response_model=Genre)
-def create_genre_endpoint(genre: GenreCreate, db = Depends(get_db)):
+@router.post("/publishinghouse", response_model=PublishingHouse)
+def create_publishing_house_endpoint(genre: PublishingHouseBaseCreate, db = Depends(get_db)):
     return create_publishing_house(db, genre)
