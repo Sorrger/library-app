@@ -5,6 +5,7 @@ from .genre import Genre
 
 class BookBase(BaseModel):
     title: str
+    
 
 class BookCreate(BookBase):
     pass
