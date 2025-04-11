@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from models.publishingh_house import PublishingHouse
-from schemas.publishingh_house import PublishingHouseBaseCreate
+from schemas.publishingh_house import PublishingHouseCreate
 
 
 # == Create ==
-def create_publishing_house(db: Session, Publishing_House: PublishingHouseBaseCreate):
+def create_publishing_house(db: Session, Publishing_House: PublishingHouseCreate):
     db_publishing_house = PublishingHouse(**Publishing_House.dict())
     db.add(db_publishing_house)
     db.commit()

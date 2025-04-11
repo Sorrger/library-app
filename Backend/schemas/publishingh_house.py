@@ -4,7 +4,7 @@ class PublishingHouseBase(BaseModel):
     name: str
     headquarters: str
 
-class PublishingHouseBaseCreate(PublishingHouseBase):
+class PublishingHouseCreate(PublishingHouseBase):
     pass 
 
 class PublishingHouse(PublishingHouseBase):
