@@ -17,6 +17,5 @@ if __name__ == "__main__":
     #create_tables()
     uvicorn.run(app, host ="127.0.0.1", port = 8000)
 
-#1. relacja egezmplarz ksiazka
 #2. Enum do wyboru statusu egzemplarza
 #3. zaisntalowanie reacta i axios
