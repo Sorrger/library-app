@@ -4,12 +4,12 @@ from schemas.publishingh_house import PublishingHouseBaseCreate
 
 
 # == Create ==
-def create_publishing_house(db: Session, genre: PublishingHouseBaseCreate):
-    db_genre = PublishingHouse(**genre.dict())
-    db.add(db_genre)
+def create_publishing_house(db: Session, Publishing_House: PublishingHouseBaseCreate):
+    db_publishing_house = PublishingHouse(**Publishing_House.dict())
+    db.add(db_publishing_house)
     db.commit()
-    db.refresh(db_genre)
-    return db_genre
+    db.refresh(db_publishing_house)
+    return db_publishing_house
 
 # == Read ==
 

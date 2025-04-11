@@ -3,12 +3,12 @@ from models.edition import Edition
 from schemas.edition import EditionCreate
 
 # == Create ==
-def create_edition(db: Session, genre: EditionCreate):
-    db_genre = Edition(**genre.dict())
-    db.add(db_genre)
+def create_edition(db: Session, edition: EditionCreate):
+    db_edition = Edition(**edition.dict())
+    db.add(db_edition)
     db.commit()
-    db.refresh(db_genre)
-    return db_genre
+    db.refresh(db_edition)
+    return db_edition
 
 # == Read ==
 
