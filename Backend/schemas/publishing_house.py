@@ -1,14 +1,15 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class PublishingHouseBase(BaseModel):
     name: str
-    headquarters: str
+    headquarters: Optional[str]
 
 class PublishingHouseCreate(PublishingHouseBase):
     pass 
 
 class PublishingHouse(PublishingHouseBase):
-    Publishing_House_id: int
+    publishing_house_id: int
     
     class Config:
         orm_mode = True

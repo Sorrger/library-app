@@ -10,6 +10,7 @@ class Book(Base):
 
     authors = relationship("BookAuthor", back_populates="book")
     genres = relationship("BookGenre", back_populates="book")
+    editions = relationship("Edition", back_populates="book")
 
 
 class BookGenre(Base):

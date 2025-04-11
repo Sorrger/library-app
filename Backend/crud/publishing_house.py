@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models.publishingh_house import PublishingHouse
-from schemas.publishingh_house import PublishingHouseCreate
+from models.publishing_house import PublishingHouse
+from schemas.publishing_house import PublishingHouseCreate
 
 
 # == Create ==
