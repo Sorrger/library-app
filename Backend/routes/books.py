@@ -12,8 +12,3 @@ def get_all_books_endpoint(db = Depends(get_db)):
 @router.post("/books", response_model=Book)
 def create_book_endpoint(book: BookCreate, db = Depends(get_db)):
     return create_book(db, book)
-
-#1. egzemplarz
-#2. wydawnictwo
-#3. relacja
-#4. react, axios instalacja wyswietlenei czego prostego

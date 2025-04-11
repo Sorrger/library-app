@@ -16,4 +16,5 @@ if __name__ == "__main__":
 
 #1. relacja egezmplarz ksiazka
 #2. Enum do wyboru statusu egzemplarza
+#2.5 Routes
 #3. zaisntalowanie reacta i axios
