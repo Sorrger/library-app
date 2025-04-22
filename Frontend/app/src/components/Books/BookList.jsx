@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BookList = ({ books }) => {
   if (books.length === 0) return <p>0 Books in the list.</p>;
@@ -7,6 +8,7 @@ const BookList = ({ books }) => {
     <ul className="mt-4 space-y-2">
       {books.map((book, index) => (
         <li key={index} className="p-2 border rounded shadow-sm">
+          <Link to={`/books/${book.book_id}`} className="block">
           <strong>{book.title}</strong><br />
           <span className="text-sm text-gray-600">
             Autorzy: {book.authors.map((author) => author.name).join(", ")}
@@ -17,6 +19,7 @@ const BookList = ({ books }) => {
           <span className="text-sm text-gray-500">
             Data wydania: {new Date(book.release_date).toLocaleDateString()}
           </span>
+          </Link>
         </li>
       ))}
     </ul>
