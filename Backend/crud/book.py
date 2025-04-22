@@ -12,6 +12,9 @@ def create_book(db: Session, book: BookCreate):
 # == Read ==
 def get_all_books(db: Session):
     return db.query(Book).all()
+
+def get_book_by_id(db: Session, book_id: int):
+    return db.query(Book).filter(Book.book_id == book_id).first()
 # == Update ==
 # == Delete ==
 
