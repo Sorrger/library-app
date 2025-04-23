@@ -1,0 +1,13 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from database.database import Base
+
+class Student(Base):
+    __tablename__ = "students"
+
+    student_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    surname = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
+
+    account = relationship("Account", back_populates="student", uselist=False) 

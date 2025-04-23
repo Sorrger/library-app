@@ -1,0 +1,22 @@
+from sqlalchemy.orm import Session
+from models import Student
+from schemas.student import StudentCreate
+
+# == Create ==
+def create_student(db: Session, student_data: StudentCreate):
+    db_student = Student(
+        name=student_data.name,
+        surrname=student_data.surname,
+        phone_number=student_data.phone_number
+    )
+    db.add(db_student)
+    db.commit()
+    db.refresh(db_student)
+    return db_student
+
+# == Read ==
+def get_student_by_id(db: Session, student_id: int):
+    return db.query(Student).filter(Student.student_id == student_id).first()
+
+# == Update ==
+# == Delete ==
