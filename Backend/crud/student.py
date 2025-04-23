@@ -6,7 +6,7 @@ from schemas.student import StudentCreate
 def create_student(db: Session, student_data: StudentCreate):
     db_student = Student(
         name=student_data.name,
-        surrname=student_data.surname,
+        surname=student_data.surname,
         phone_number=student_data.phone_number
     )
     db.add(db_student)
@@ -15,6 +15,9 @@ def create_student(db: Session, student_data: StudentCreate):
     return db_student
 
 # == Read ==
+def get_all_students(db: Session):
+    return db.query(Student).all()
+
 def get_student_by_id(db: Session, student_id: int):
     return db.query(Student).filter(Student.student_id == student_id).first()
 

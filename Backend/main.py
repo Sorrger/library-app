@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from routes import books, authors, genres, publishing_houses, editions, auth
+from routes import books, authors, genres, publishing_houses, editions, student, auth
 from database import create_tables
 
 app = FastAPI()
@@ -10,6 +10,7 @@ app.include_router(authors.router)
 app.include_router(genres.router)
 app.include_router(editions.router)
 app.include_router(publishing_houses.router)
+app.include_router(student.router)
 app.include_router(auth.router)
 
 

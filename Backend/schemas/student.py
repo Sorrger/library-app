@@ -9,7 +9,7 @@ class StudentBase(BaseModel):
 class StudentCreate(StudentBase):
     pass
 
-class StudentResponse(StudentBase):
+class Student(StudentBase):
     student_id: int
 
     class Config:
