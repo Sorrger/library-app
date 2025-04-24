@@ -15,5 +15,6 @@ def create_publishing_house(db: Session, Publishing_House: PublishingHouseCreate
 
 def get_all_publishing_houses(db: Session):
     return db.query(PublishingHouse).all()
+
 # == Update ==
 # == Delete ==
