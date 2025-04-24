@@ -10,15 +10,6 @@ const BookList = ({ books }) => {
         <li key={index} className="p-2 border rounded shadow-sm">
           <Link to={`/books/${book.book_id}`} className="block">
           <strong>{book.title}</strong><br />
-          <span className="text-sm text-gray-600">
-            Autorzy: {book.authors.map((author) => author.name).join(", ")}
-          </span><br />
-          <span className="text-sm text-gray-600">
-            Gatunki: {book.genres.map((genre) => genre.name).join(", ")}
-          </span><br />
-          <span className="text-sm text-gray-500">
-            Data wydania: {new Date(book.release_date).toLocaleDateString()}
-          </span>
           </Link>
         </li>
       ))}

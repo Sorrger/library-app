@@ -18,3 +18,11 @@ def get_book_by_id(db: Session, book_id: int):
 # == Update ==
 # == Delete ==
 
+def delete_book(db: Session, book_id: int):
+    book = db.query(Book).filter(Book.book_id == book_id).first()
+    if book is None:
+        return None  # or raise an exception
+    db.delete(book)
+    db.commit()
+    return book
+

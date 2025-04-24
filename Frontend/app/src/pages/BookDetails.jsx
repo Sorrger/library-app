@@ -47,13 +47,18 @@ const BookDetails = () => {
       {editions.length === 0 ? (
         <p className="text-gray-600 italic">Brak dostępnych edycji dla tej książki.</p>
       ) : (
-        <ul className="list-disc pl-5 space-y-1">
-          {editions.map((edition) => (
-            <li key={edition.edition_id}>
-              <strong>Format:</strong> {edition.book_format} <strong>Status:</strong> {edition.status}
-            </li>
-          ))}
-        </ul>
+      <ul className="list-disc pl-5 space-y-1">
+        {editions.map((edition) => (
+          <li key={edition.edition_id}>
+            <strong>Format:</strong> {edition.book_format},{" "}
+            <strong>Status:</strong> {edition.status},{" "}
+            <strong>Wydawnictwo:</strong>{" "}
+            {edition.publishing_house
+              ? edition.publishing_house.name
+              : "Brak informacji"}
+          </li>
+        ))}
+      </ul>
       )}
     </div>
 

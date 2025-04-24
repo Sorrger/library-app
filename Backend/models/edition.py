@@ -9,7 +9,7 @@ class Edition(Base):
     status = Column(String(255), nullable=False)
     book_format = Column(String(255), nullable=False)
 
-    book_id = Column(Integer, ForeignKey("books.book_id"), nullable=False)
+    book_id = Column(Integer, ForeignKey("books.book_id", ondelete="CASCADE"), nullable=False)
     publishing_house_id = Column(Integer, ForeignKey("publishing_houses.publishing_house_id"))
 
     publishing_house = relationship("PublishingHouse", back_populates="editions")

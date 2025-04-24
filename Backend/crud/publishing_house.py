@@ -18,3 +18,10 @@ def get_all_publishing_houses(db: Session):
 
 # == Update ==
 # == Delete ==
+def delete_publishing_house_by_id(db: Session, publishing_house_id: int):
+    publishing_house = db.query(PublishingHouse).filter(PublishingHouse.publishing_house_id == publishing_house_id).first()
+    if publishing_house is None:
+        return None
+    db.delete(publishing_house)
+    db.commit()
+    return publishing_house

@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+from .publishing_house import PublishingHouse
 
 class EditionBase(BaseModel):
     status: str
@@ -10,6 +12,7 @@ class EditionCreate(EditionBase):
 
 class Edition(EditionBase):
     edition_id:  int
+    publishing_house: Optional[PublishingHouse] = None 
 
     class Config:
         orm_mode = True
