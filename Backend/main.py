@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from routes import books, authors, genres, publishing_houses, editions, student, auth
 from database import create_tables
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 app.include_router(books.router)
