@@ -12,18 +12,19 @@ function App() {
   return (
     <Router>
       <Routes>
-      { /* tak wygląda route do strony na która chce się przejśc tylko gdy jest sie zalogoweanym   -> na konto uzytkownika sie doda potem
-      <Route
-          path="/"
-          element={
-            isLoggedIn() ? <Home /> : <Navigate to="/login" />           
-          }
-        /> */}
+
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/register" 
+          element={isLoggedIn() ? <Navigate to="/" /> : <Register />} 
+        />
+        <Route 
+          path="/login" 
+          element={isLoggedIn() ? <Navigate to="/" /> : <Login />} 
+        />
+
       </Routes>
     </Router>
   );
