@@ -12,6 +12,11 @@ class AccountCreateRequest(AccountBase):
     password: str
     student: StudentBase
 
+class AccountLoginRequest(BaseModel):
+    login: str
+    password: str
+
+
 class Account(AccountBase):
     account_id: int
     student_id: int

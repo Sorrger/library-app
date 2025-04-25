@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database.database import get_db
 from crud.account import create_account, get_account_by_login, get_student_by_data
-from schemas.account import AccountCreate, Account, AccountCreateRequest
+from schemas.account import AccountCreate, Account, AccountCreateRequest, AccountLoginRequest
 from utils.security import verify_password
 from utils.jwt import create_access_token, verify_token
 
@@ -33,7 +33,7 @@ def register(account_data: AccountCreateRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(account_data: AccountCreate, db: Session = Depends(get_db)):
+def login(account_data: AccountLoginRequest, db: Session = Depends(get_db)):
     account = get_account_by_login(db, account_data.login)
     if not account or not verify_password(account_data.password, account.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
