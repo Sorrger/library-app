@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,9 @@ export default function Register() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [studentId, setStudentId] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -15,7 +16,6 @@ export default function Register() {
     e.preventDefault();
     setError("");
 
-    // walidacja: czy hasła są takie same?
     if (password !== confirmPassword) {
       setError("Hasła nie są identyczne");
       return;
@@ -25,8 +25,12 @@ export default function Register() {
       const payload = {
         login,
         password,
-        student_id: Number(studentId),
-      };
+        student: {
+          name,
+          surname,
+          phone_number: phoneNumber || null,
+        },
+      };      
       const resp = await axios.post(
         "http://localhost:8000/register",
         payload
@@ -78,12 +82,31 @@ export default function Register() {
           />
         </div>
         <div>
-          <label>ID Studenta</label>
+        <label>Imię</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="w-full border p-2 rounded"
+        />
+        </div>
+        <div>
+          <label>Nazwisko</label>
           <input
-            type="number"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
+            type="text"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
             required
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label>Numer telefonu (opcjonalnie)</label>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className="w-full border p-2 rounded"
           />
         </div>
