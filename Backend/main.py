@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from routes import books, authors, genres, publishing_houses, editions, student, auth
+from routes import books, authors, genres, publishing_houses, editions, student, loan, auth
 from database import create_tables
 
 
@@ -12,6 +12,7 @@ app.include_router(genres.router)
 app.include_router(editions.router)
 app.include_router(publishing_houses.router)
 app.include_router(student.router)
+app.include_router(loan.router)
 app.include_router(auth.router)
 
 
@@ -27,3 +28,7 @@ create_tables()
 
 if __name__ == "__main__":
     uvicorn.run(app, host ="127.0.0.1", port = 8000)
+
+#TO DO :
+# -> pagination 
+# -> book need author to create

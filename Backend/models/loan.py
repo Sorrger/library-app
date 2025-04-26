@@ -7,7 +7,7 @@ class Loan(Base):
 
     loan_id = Column(Integer, primary_key=True, index=True)
     loan_date = Column(DateTime, nullable=False)
-    return_date = Column(DateTime, nullable=False)
+    return_date = Column(DateTime, nullable=True)
 
     student_id = Column(Integer, ForeignKey("students.student_id"), nullable=False)
     edition_id = Column(Integer, ForeignKey("editions.edition_id"), nullable=False)

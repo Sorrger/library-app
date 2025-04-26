@@ -4,11 +4,7 @@ import { isLoggedIn } from "../utils/auth";
 export default function Home() {
 
     const handleClick = () => {
-        if (!isLoggedIn()) {
-            alert("Zaloguj się, aby wykonać tę akcję");
-            return;
-        }
-        console.log("Akcja wykonana!");
+      localStorage.clear();
     };
 
   return (
