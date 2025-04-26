@@ -1,9 +1,10 @@
 from pydantic import BaseModel
 from typing import Optional
 from .publishing_house import PublishingHouse
+from models.edition import EditionStatus
 
 class EditionBase(BaseModel):
-    status: str
+    status: EditionStatus
     book_format: str
 
 class EditionCreate(EditionBase):
