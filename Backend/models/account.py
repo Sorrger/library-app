@@ -9,6 +9,6 @@ class Account(Base):
     login = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
 
-    student_id = Column(Integer, ForeignKey("students.student_id"))
+    student_id = Column(Integer, ForeignKey("students.student_id", ondelete="CASCADE"))
 
     student = relationship("Student", back_populates="account")
