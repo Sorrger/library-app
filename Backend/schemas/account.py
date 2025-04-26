@@ -17,7 +17,7 @@ class AccountLoginRequest(BaseModel):
     password: str
 
 
-class Account(AccountBase):
+class AccountResponse(AccountBase):
     account_id: int
     student_id: int
 
