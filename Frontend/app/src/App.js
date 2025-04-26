@@ -5,10 +5,12 @@ import Books from './pages/Books';
 import BookDetails from './pages/BookDetails';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import About from './pages/About';
+import Profile from './pages/Profile';
 import NavBar from './components/NavBar/NavBar';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
-import About from './pages/About';
+
 
 function AppWrapper() {
   const location = useLocation();
@@ -30,6 +32,10 @@ function AppWrapper() {
         <Route 
           path="/login" 
           element={isLoggedIn() ? <Navigate to="/" /> : <Login />} 
+        />
+        <Route 
+          path="/profile" 
+          element={!isLoggedIn() ? <Navigate to="/" /> : <Profile />} 
         />
       </Routes>
     </Fragment>

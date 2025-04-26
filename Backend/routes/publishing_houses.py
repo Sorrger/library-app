@@ -15,7 +15,7 @@ def create_publishing_house_endpoint(publishingHouse: PublishingHouseCreate, db 
     return create_publishing_house(db, publishingHouse)
 
 @router.delete("/publishingHouses/{publishing_house_id}", response_model=PublishingHouse)
-def delete_book_endpoint(publishing_house_id: int, db = Depends(get_db)):
+def delete_publishing_house_endpoint(publishing_house_id: int, db = Depends(get_db)):
     publishing_house = delete_publishing_house_by_id(db, publishing_house_id)
     if publishing_house is None:
         raise HTTPException(status_code=404, detail="Book not found")
