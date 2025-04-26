@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import NavBar from './components/NavBar/NavBar';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
+import About from './pages/About';
 
 function AppWrapper() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function AppWrapper() {
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
+        <Route path="/about" element={<About />} />
         <Route 
           path="/register" 
           element={isLoggedIn() ? <Navigate to="/" /> : <Register />} 
