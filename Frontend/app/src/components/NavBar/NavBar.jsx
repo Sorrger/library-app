@@ -7,10 +7,12 @@ const NavBar = () => {
   const navigate = useNavigate();
   const loggedIn = isLoggedIn();
 
+
   const handleLogout = () => {
     removeToken();
-    navigate('/login');
+    navigate('/');
   };
+
 
   return (
     <nav className="navbar">
@@ -22,7 +24,10 @@ const NavBar = () => {
         <li><Link to="/books">Books</Link></li>
         <li><Link to="/about">About</Link></li>
         {loggedIn ? (
-          <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
+          <>
+            <li><button>Profile</button></li>
+            <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
+          </>
         ) : (
           <>
             <li><Link to="/login">Login</Link></li>

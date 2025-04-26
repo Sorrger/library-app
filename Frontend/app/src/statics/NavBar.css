@@ -12,6 +12,14 @@
     font-weight: bold;
     text-decoration: none;
   }
+
+  .navbar-logo:focus,
+  .navbar-logo:active,
+  .navbar-logo:hover {
+  color: white;
+  text-decoration: none;
+  outline: none;
+}
   
   .navbar-links {
     list-style: none;
