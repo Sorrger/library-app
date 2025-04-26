@@ -14,5 +14,6 @@ class Edition(Base):
 
     publishing_house = relationship("PublishingHouse", back_populates="editions")
     book = relationship("Book", back_populates="editions")
+    loans = relationship("Loan", back_populates="edition",) 
 
     

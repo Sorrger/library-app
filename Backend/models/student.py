@@ -11,3 +11,4 @@ class Student(Base):
     phone_number = Column(String, nullable=True)
 
     account = relationship("Account", back_populates="student", uselist=False) 
+    loans = relationship("Loan", back_populates="student") 
