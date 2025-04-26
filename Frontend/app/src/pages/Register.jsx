@@ -116,6 +116,9 @@ export default function Register() {
         >
           Zarejestruj
         </button>
+        <p className="text-sm text-gray-600">
+              Masz konto? <a href="/login" className="text-blue-600">Zaloguj się</a>
+            </p>
       </form>
     </div>
   );
