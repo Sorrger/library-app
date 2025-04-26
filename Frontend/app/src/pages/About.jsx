@@ -1,5 +1,5 @@
 import React from "react";
-import "../statics/About.css";
+import "../statics/about/page.css";
 export default function About(){
     return (
         <div className="min-h-screen bg-gray-100">

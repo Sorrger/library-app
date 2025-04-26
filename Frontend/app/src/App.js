@@ -7,7 +7,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import About from './pages/About';
 import Profile from './pages/Profile';
-import NavBar from './components/NavBar/NavBar';
+import NavBar from './components/Template/NavBar';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
 

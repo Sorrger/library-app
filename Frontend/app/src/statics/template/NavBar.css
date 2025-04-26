@@ -28,9 +28,18 @@
     margin: 0;
     padding: 0;
   }
+  .active {
+    color: white;
+    font-weight: bolder;
+  }
+
+  .navbar-links li a.active {
+    color: white;
+    font-weight: bolder;
+  }
   
   .navbar-links li a {
-    color: white;
+    color: rgb(215, 205, 205);
     text-decoration: none;
     font-size: 1rem;
   }
@@ -39,3 +48,4 @@
     text-decoration: underline;
   }
   
+
