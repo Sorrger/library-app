@@ -18,7 +18,7 @@ export default function RegisterForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Hasła nie są identyczne");
+      setError("The passwords are not identical.");
       return;
     }
 
@@ -33,13 +33,13 @@ export default function RegisterForm() {
         },
       };
       const resp = await axios.post("http://localhost:8000/register", payload);
-      console.log("Zarejestrowano:", resp.data);
+      console.log("Registered:", resp.data);
       navigate("/login");
     } catch (err) {
       if (err.response) {
         setError(err.response.data.detail);
       } else {
-        setError("Błąd sieci");
+        setError("Network error. Please try again later.");
       }
     }
   };
@@ -60,7 +60,7 @@ export default function RegisterForm() {
           />
         </div>
         <div>
-          <label>Hasło</label>
+          <label>Password</label>
           <input
             type="password"
             value={password}
@@ -70,7 +70,7 @@ export default function RegisterForm() {
           />
         </div>
         <div>
-          <label>Potwierdź hasło</label>
+          <label>Confirm password</label>
           <input
             type="password"
             value={confirmPassword}
@@ -80,7 +80,7 @@ export default function RegisterForm() {
           />
         </div>
         <div>
-          <label>Imię</label>
+          <label>Name</label>
           <input
             type="text"
             value={name}
@@ -90,7 +90,7 @@ export default function RegisterForm() {
           />
         </div>
         <div>
-          <label>Nazwisko</label>
+          <label>Surrname</label>
           <input
             type="text"
             value={surname}
@@ -100,7 +100,7 @@ export default function RegisterForm() {
           />
         </div>
         <div>
-          <label>Numer telefonu (opcjonalnie)</label>
+          <label>Phone Number (optional)</label>
           <input
             type="tel"
             value={phoneNumber}
@@ -109,10 +109,10 @@ export default function RegisterForm() {
           />
         </div>
         <button type="submit" className="submit-button">
-          Zarejestruj
+          Register
         </button>
         <p className="redirect-text">
-          Masz konto? <a href="/login" className="redirect-link">Zaloguj się</a>
+        Don't have an account? <a href="/login" className="redirect-link">Log in</a>
         </p>
       </form>
     </div>

@@ -5,7 +5,7 @@ const SearchBar = ({ query, onChange }) => {
   return (
     <input
       type="text"
-      placeholder="Wyszukaj książkę..."
+      placeholder="Search for a book..."
       value={query}
       onChange={(e) => onChange(e.target.value)}
       className="search-bar"

@@ -4,16 +4,16 @@ import "../../statics/bookDetails/editionList.css"
 const EditionsList = ({ editions }) => {
   return (
     <div className="editions-list">
-      <h2 className="editions-title">Edycje</h2>
+      <h2 className="editions-title">Editions</h2>
       {editions.length === 0 ? (
-        <p className="no-editions">Brak dostępnych edycji dla tej książki.</p>
+        <p className="no-editions">No editions available for this book.</p>
       ) : (
         <ul className="editions-items">
           {editions.map((edition) => (
             <li key={edition.edition_id} className="edition-item">
               <strong>Format:</strong> {edition.book_format},{" "}
               <strong>Status:</strong> {edition.status},{" "}
-              <strong>Wydawnictwo:</strong> {edition.publishing_house ? edition.publishing_house.name : "Brak informacji"}
+              <strong>Publishing house:</strong> {edition.publishing_house ? edition.publishing_house.name : "No information"}
             </li>
           ))}
         </ul>

@@ -16,7 +16,7 @@ const Books = () => {
         const response = await api.get("/books");
         setBooks(response.data);
       } catch (err) {
-        setError("Błąd podczas ładowania książek.");
+        setError("Error while loading books.");
       } finally {
         setLoading(false);
       }
@@ -31,9 +31,9 @@ const Books = () => {
 
   return (
     <div className="books-page">
-      <h1 className="page-title">Wyszukiwarka książek</h1>
+      <h1 className="page-title">Book search</h1>
       <SearchBar query={query} onChange={setQuery} />
-      {loading && <p className="loading-text">Ładowanie...</p>}
+      {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
       {!loading && !error && <BookList books={filteredBooks} />}
     </div>

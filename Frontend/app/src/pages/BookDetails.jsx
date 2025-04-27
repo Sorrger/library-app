@@ -22,7 +22,7 @@ const BookDetails = () => {
         setBook(bookResponse.data);
         setEditions(editionsResponse.data);
       } catch (err) {
-        setError("Błąd podczas ładowania szczegółów książki.");
+        setError("Error loading book details.");
       } finally {
         setLoading(false);
       }
@@ -31,7 +31,7 @@ const BookDetails = () => {
     fetchBookDetails();
   }, [id]);
 
-  if (loading) return <p className="loading">Ładowanie...</p>;
+  if (loading) return <p className="loading">Loading...</p>;
   if (error) return <p className="error">{error}</p>;
 
   return (
