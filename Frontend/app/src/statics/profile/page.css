@@ -1,0 +1,42 @@
+
+.profile-container {
+    min-height: 100vh;
+    background-color: #f4f7fc;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-header {
+    background-color: #3498db;
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .profile-loading,
+  .profile-error {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .profile-error {
+    color: #e74c3c;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-title {
+      font-size: 2rem;
+    }
+  }
+  
