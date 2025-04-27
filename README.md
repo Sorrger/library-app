@@ -11,8 +11,8 @@ Features:
   <li>Admin panel for librarians – manage resources and borrowing history.</li>
   
   <li>Security and performance – fast and secure application powered by FastAPI.</li>
-
 </ul>
+
 Our platform is the perfect place for book lovers, offering a convenient and modern tool for library management!
 
 
