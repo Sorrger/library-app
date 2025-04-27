@@ -1,5 +1,5 @@
 import React from "react";
-import "../../statics/profile/StudentData.css"
+import "../../statics/profile/studentData.css"
 const StudentData = ({ student }) => {
     return (
         <div className="profile-section">

@@ -1,17 +1,35 @@
 .profile-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
   }
   
   .section-title {
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-size: 1.3rem;
     color: #333;
-    margin-bottom: 15px;
+    font-weight: bold;
+    margin-bottom: 12px;
   }
   
-  .profile-section p {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: #555;
+  p {
+    font-size: 1rem;
+    color: #666;
+    margin: 6px 0;
+  }
+  
+  strong {
+    color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-section {
+      padding: 15px;
+    }
+  
+    .section-title {
+      font-size: 1.1rem;
+    }
   }
   
