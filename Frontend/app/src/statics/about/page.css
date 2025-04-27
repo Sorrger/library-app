@@ -1,65 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.about-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f4f8;
+}
+
+.about-header {
+  background: linear-gradient(to right, #519a9c, #2e7096);
+  color: white;
+  text-align: center;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.about-title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.about-main {
+  padding: 20px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-section {
+  background-color: white;
+  padding: 30px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-heading {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.section-paragraph {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+.about-footer {
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-text {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .about-title {
+    font-size: 2.5rem;
   }
-  
-  .min-h-screen {
-    min-height: 100vh;
+
+  .about-main {
+    padding: 20px;
   }
-  
-  .bg-gray-100 {
-    background-color: #f7fafc;
+
+  .section-heading {
+    font-size: 1.75rem;
   }
-  
-  .bg-blue-600 {
-    background-color: #2563eb;
+
+  .section-paragraph {
+    font-size: 1rem;
   }
-  
-  .text-white {
-    color: #ffffff;
-  }
-  
-  .text-2xl {
-    font-size: 1.5rem;
-  }
-  
-  .text-xl {
-    font-size: 1.25rem;
-  }
-  
-  .font-bold {
-    font-weight: bold;
-  }
-  
-  .font-semibold {
-    font-weight: 600;
-  }
-  
-  .px-6 {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-  
-  .py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-  
-  .p-6 {
-    padding: 1.5rem;
-  }
-  
-  .mb-4 {
-    margin-bottom: 1rem;
-  }
-  
-  .shadow {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #e2e8f0;
-    font-size: 0.9rem;
-    color: #4a5568;
-  }
+}

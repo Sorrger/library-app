@@ -1,4 +1,5 @@
 import React from "react";
+import "../../statics/books/searchBar.css";
 
 const SearchBar = ({ query, onChange }) => {
   return (
@@ -7,7 +8,7 @@ const SearchBar = ({ query, onChange }) => {
       placeholder="Wyszukaj książkę..."
       value={query}
       onChange={(e) => onChange(e.target.value)}
-      className="border p-2 rounded w-full"
+      className="search-bar"
     />
   );
 };

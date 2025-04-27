@@ -1,0 +1,24 @@
+.editions-list {
+    margin-top: 2rem;
+  }
+  
+  .editions-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .no-editions {
+    color: gray;
+    font-style: italic;
+  }
+  
+  .editions-items {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  
+  .edition-item {
+    margin-bottom: 0.5rem;
+  }
+  

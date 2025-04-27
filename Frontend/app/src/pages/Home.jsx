@@ -1,11 +1,12 @@
 import React from 'react';
+import '../statics/home/page.css';
 
 export default function Home() {
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-blue-600 text-white px-6 py-4 shadow">
-        <h1 className="text-2xl font-bold">Strona Główna</h1>
+    <div className="home-container">
+      <header className="home-header">
+        <h1 className="home-title">Witaj na MyWebsite!</h1>
+        <p className="home-subtitle">Znajdź najlepsze treści, które cię zainspirują.</p>
       </header>
 
     </div>

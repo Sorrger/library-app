@@ -1,18 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import bookIcon from '../../assets/images/book.png';
+import "../../statics/books/bookList.css";
 
 const BookList = ({ books }) => {
-  if (books.length === 0) return <p>0 Books in the list.</p>;
+  if (books.length === 0) return <p className="no-books">Brak książek do wyświetlenia.</p>;
 
   return (
-    <ul className="mt-4 space-y-2">
+    <ul className="book-list">
       {books.map((book, index) => (
-        <li key={index} className="p-2 border rounded shadow-sm flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
-            <img src={bookIcon} alt="Book" className="w-6 h-6 object-contain" />
+        <li key={index} className="book-item">
+          <div className="book-icon">
+            <img src={bookIcon} alt="Book" className="icon-image" />
           </div>
-          <Link to={`/books/${book.book_id}`} className="text-blue-600 hover:underline">
+          <Link to={`/books/${book.book_id}`} className="book-link">
             <strong>{book.title}</strong>
           </Link>
         </li>
