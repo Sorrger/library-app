@@ -2,7 +2,7 @@ import React from 'react';
 import '../../statics/template/NavBar.css';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { isLoggedIn, removeToken } from '../../utils/auth';
-import accountIcon from '../../assets/icons/account.png';
+import accountIcon from '../../assets/icons/account.svg';
 
 
 
