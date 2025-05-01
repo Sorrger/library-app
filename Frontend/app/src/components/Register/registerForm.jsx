@@ -10,6 +10,7 @@ export default function RegisterForm() {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("student");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -26,11 +27,13 @@ export default function RegisterForm() {
       const payload = {
         login,
         password,
-        student: {
-          name,
-          surname,
-          phone_number: phoneNumber || null,
-        },
+        ...(role === "student" && {
+          student: {
+            name,
+            surname,
+            phone_number: phoneNumber || null,
+          },
+        }) 
       };
       const resp = await axios.post("http://localhost:8000/register", payload);
       console.log("Zarejestrowano:", resp.data);
@@ -79,34 +82,50 @@ export default function RegisterForm() {
             className="input-field"
           />
         </div>
+        {role === "student" && (
+          <>
+            <div>
+              <label>Imię</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="input-field"
+              />
+            </div>
+            <div>
+              <label>Nazwisko</label>
+              <input
+                type="text"
+                value={surname}
+                onChange={(e) => setSurname(e.target.value)}
+                required
+                className="input-field"
+              />
+            </div>
+            <div>
+              <label>Numer telefonu (opcjonalnie)</label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="input-field"
+              />
+            </div>
+          </>
+        )}
         <div>
-          <label>Imię</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+          <label>Rola</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
             className="input-field"
-          />
-        </div>
-        <div>
-          <label>Nazwisko</label>
-          <input
-            type="text"
-            value={surname}
-            onChange={(e) => setSurname(e.target.value)}
-            required
-            className="input-field"
-          />
-        </div>
-        <div>
-          <label>Numer telefonu (opcjonalnie)</label>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className="input-field"
-          />
+          >
+            <option value="student">Student</option>
+            <option value="librarian">Bibliotekarz</option>
+            <option value="admin">Administrator</option>
+          </select>
         </div>
         <button type="submit" className="submit-button">
           Zarejestruj

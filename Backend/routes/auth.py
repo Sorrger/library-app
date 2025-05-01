@@ -15,21 +15,31 @@ def register(account_data: AccountCreateRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Login already exists")
 
-    student = get_student_by_data(
-        db,
-        account_data.student.name,
-        account_data.student.surname,
-        account_data.student.phone_number
-    )
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found")
+    student_id = None
+
+    if account_data.role == "student":
+        if not account_data.student:
+            raise HTTPException(status_code=400, detail="Student data required for student role")
+
+        student = get_student_by_data(
+            db,
+            account_data.student.name,
+            account_data.student.surname,
+            account_data.student.phone_number
+        )
+        if not student:
+            raise HTTPException(status_code=404, detail="Student not found")
+
+        student_id = student.student_id
 
     account = AccountCreate(
         login=account_data.login,
         password=account_data.password,
-        student_id=student.student_id
+        student_id=student_id,
+        role=account_data.role
     )
     return create_account(db, account)
+
 
 
 @router.post("/login")
