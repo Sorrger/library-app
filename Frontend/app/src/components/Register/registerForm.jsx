@@ -10,7 +10,7 @@ export default function RegisterForm() {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("student");
+  const [role] = useState("student");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -82,50 +82,34 @@ export default function RegisterForm() {
             className="input-field"
           />
         </div>
-        {role === "student" && (
-          <>
-            <div>
-              <label>Imię</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="input-field"
-              />
-            </div>
-            <div>
-              <label>Nazwisko</label>
-              <input
-                type="text"
-                value={surname}
-                onChange={(e) => setSurname(e.target.value)}
-                required
-                className="input-field"
-              />
-            </div>
-            <div>
-              <label>Numer telefonu (opcjonalnie)</label>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="input-field"
-              />
-            </div>
-          </>
-        )}
         <div>
-          <label>Rola</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+          <label>Imię</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
             className="input-field"
-          >
-            <option value="student">Student</option>
-            <option value="librarian">Bibliotekarz</option>
-            <option value="admin">Administrator</option>
-          </select>
+          />
+        </div>
+        <div>
+          <label>Nazwisko</label>
+          <input
+            type="text"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            required
+            className="input-field"
+          />
+        </div>
+        <div>
+          <label>Numer telefonu (opcjonalnie)</label>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="input-field"
+          />
         </div>
         <button type="submit" className="submit-button">
           Register
