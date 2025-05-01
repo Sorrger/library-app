@@ -15,7 +15,6 @@ class Account(Base):
     login = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.student)
-
     student_id = Column(Integer, ForeignKey("students.student_id", ondelete="CASCADE"), nullable=True)
 
     student = relationship("Student", back_populates="account")
