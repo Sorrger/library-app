@@ -33,7 +33,7 @@ export default function LoginForm() {
   
     return (
       <div className="login-container">
-        <h2 className="login-title">Zaloguj się</h2>
+        <h2 className="login-title">Log in</h2>
         {error && <p className="login-error">{error}</p>}
         <form onSubmit={handleLogin} className="login-form">
           <input
@@ -46,17 +46,17 @@ export default function LoginForm() {
           />
           <input
             type="password"
-            placeholder="Hasło"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             className="login-input"
           />
           <button type="submit" className="login-button">
-            Zaloguj
+            Log in
           </button>
           <p className="login-register">
-            Nie masz konta? <a href="/register">Zarejestruj się</a>
+          Don't have an account?? <a href="/register">Register</a>
           </p>
         </form>
       </div>

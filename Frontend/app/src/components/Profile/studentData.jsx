@@ -3,10 +3,10 @@ import "../../statics/profile/studentData.css"
 const StudentData = ({ student }) => {
     return (
         <div className="profile-section">
-            <h2 className="section-title">Dane Studenta</h2>
-            <p><strong>Imię:</strong> {student.name}</p>
-            <p><strong>Nazwisko:</strong> {student.surname}</p>
-            <p><strong>Telefon:</strong> {student.phone_number ?? "Brak numeru"}</p>
+            <h2 className="section-title">Student Data</h2>
+            <p><strong>Name:</strong> {student.name}</p>
+            <p><strong>Surname:</strong> {student.surname}</p>
+            <p><strong>Phone number:</strong> {student.phone_number ?? "Brak numeru"}</p>
         </div>
     );
 };

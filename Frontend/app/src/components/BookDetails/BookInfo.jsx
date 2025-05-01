@@ -6,10 +6,10 @@ const BookInfo = ({ book }) => {
   return (
     <div className="book-info">
       <h1 className="book-title">{book.title}</h1>
-      <p><strong>Autorzy:</strong> {book.authors.map((author) => author.name).join(", ")}</p>
-      <p><strong>Gatunki:</strong> {book.genres.map((genre) => genre.name).join(", ")}</p>
-      <p><strong>Data wydania:</strong> {new Date(book.release_date).toLocaleDateString()}</p>
-      <p><strong>Opis:</strong> {book.description || "Brak opisu."}</p>
+      <p><strong>Authors:</strong> {book.authors.map((author) => author.name).join(", ")}</p>
+      <p><strong>Species:</strong> {book.genres.map((genre) => genre.name).join(", ")}</p>
+      <p><strong>Release date:</strong> {new Date(book.release_date).toLocaleDateString()}</p>
+      <p><strong>Description:</strong> {book.description || "No description."}</p>
     </div>
   );
 };

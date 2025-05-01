@@ -19,7 +19,7 @@ export default function Profile() {
             const studentResponse = await api.get(`/students/${accountResponse.data.student_id}`);
             setStudent(studentResponse.data);
         } catch (err) {
-            setError("Błąd podczas ładowania profilu.");
+            setError("Error loading profile.");
         } finally {
             setLoading(false);
         }
@@ -29,7 +29,7 @@ export default function Profile() {
     }, []);
     
     if (loading) {
-        return <div className="profile-loading">Ładowanie...</div>;
+        return <div className="profile-loading">Loading...</div>;
     }
     
     if (error) {
@@ -39,7 +39,7 @@ export default function Profile() {
     return (
         <div className="profile-container">
             <header className="profile-header">
-                <h1 className="profile-title">Twój Profil</h1>
+                <h1 className="profile-title">Your Profile</h1>
             </header>
     
             <main className="profile-main">

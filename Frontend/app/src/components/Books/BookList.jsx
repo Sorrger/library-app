@@ -4,7 +4,7 @@ import bookIcon from '../../assets/images/book.png';
 import "../../statics/books/bookList.css";
 
 const BookList = ({ books }) => {
-  if (books.length === 0) return <p className="no-books">Brak książek do wyświetlenia.</p>;
+  if (books.length === 0) return <p className="no-books">No books to display.</p>;
 
   return (
     <ul className="book-list">

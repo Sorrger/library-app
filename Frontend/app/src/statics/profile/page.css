@@ -1,11 +1,9 @@
 .profile-container {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     padding: 20px;
     border-radius: 8px;
     max-width: 900px;
     margin: 30px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .profile-header {
