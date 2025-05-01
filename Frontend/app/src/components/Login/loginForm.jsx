@@ -56,7 +56,7 @@ export default function LoginForm() {
             Log in
           </button>
           <p className="login-register">
-          Don't have an account?? <a href="/register">Register</a>
+          Don't have an account? <a href="/register">Register</a>
           </p>
         </form>
       </div>

@@ -4,7 +4,6 @@ from models.student import Student
 from crud.student import create_student
 from schemas.student import StudentCreate 
 from models.account import Account, UserRole
-from crud.account import create_account  
 from database.database import get_db
 from utils.security import hash_password, generate_random_password, validate_password_strength
 
