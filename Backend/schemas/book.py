@@ -2,11 +2,11 @@ from pydantic import BaseModel
 from .author import Author
 from .genre import Genre
 from typing import List
-from datetime import datetime
+from datetime import date
 
 class BookBase(BaseModel):
     title: str
-    release_date: datetime
+    release_date: date
     
 
 class BookCreate(BookBase):

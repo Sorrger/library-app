@@ -2,8 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from routes import books, authors, genres, publishing_houses, editions, student, loan, auth, admin
+import models
 from database import create_tables
 from fastadmin import fastapi_app as admin_app
+
 
 app = FastAPI()
 app.include_router(books.router)
@@ -28,9 +30,9 @@ app.mount("/admin", admin_app)
 
 create_tables()
 
-
 if __name__ == "__main__":
     uvicorn.run(app, host ="127.0.0.1", port = 8000)
+
 
 #TO DO :
 # -> pagination 

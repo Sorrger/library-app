@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import api from "../../api/apiClient"
+import "../../statics/books/addBook.css";
 
 export default function AddBook() {
     const [title, setTitle] = useState("");
@@ -10,15 +11,16 @@ export default function AddBook() {
         e.preventDefault();
         setError("");
         try {
-        await api.post("/books", {
+            await api.post("/books", {
             title: title,
             release_date: releaseDate,
-        });
+            });
+            setTitle("");
+            setReleaseDate("");
+        } catch (err) {
+            console.error(err);
+            setError("Błąd podczas dodawania książki.");
         }
-        catch (err) {
-        console.error(err);
-        setError("Błąd podczas dodawania książki.");
-    }
 }
 
 return (

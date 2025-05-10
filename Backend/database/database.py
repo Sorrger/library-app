@@ -14,16 +14,14 @@ DB_NAME = os.getenv("DB_NAME")
 DataBaseUrl = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 engine = create_engine(DataBaseUrl, echo=True)
-session_local =sessionmaker(autocommit=False,autoflush=False,bind=engine)
-
-Base = declarative_base() 
+session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
 def get_db():
-    try: 
+    try:
         db = session_local()
         yield db
     except Exception as e:
-        print(f"Problem with database {e}")
+        print(f"Problem with database: {e}")
     finally:
         db.close()
-
