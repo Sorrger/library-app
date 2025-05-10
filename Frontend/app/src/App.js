@@ -8,7 +8,8 @@ import Login from './pages/Login';
 import About from './pages/About';
 import Profile from './pages/Profile';
 import NavBar from './components/Template/NavBar';
-import LibraryDashboard from './pages/LibraryDashboard';
+import LibraryDashboard from './pages/LibrarianDashboard';
+import AddBook from './components/Books/AddBook';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -39,7 +40,8 @@ function AppWrapper() {
           element={!isLoggedIn() ? <Navigate to="/" /> : <Profile />} 
         />
         <Route 
-          path="/library-dashboard" element={<LibraryDashboard />} />
+          path="/librarian-dashboard" element={<LibraryDashboard />} />
+        <Route path="/librarian-dashboard/books/add" element={<AddBook />} />
       </Routes>
     </Fragment>
   );
