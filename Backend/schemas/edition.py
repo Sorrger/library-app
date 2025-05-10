@@ -11,6 +11,10 @@ class EditionCreate(EditionBase):
     book_id: int
     publishing_house_id: int
 
+    
+class EditionStatusUpdate(BaseModel):
+    status: EditionStatus
+
 class Edition(EditionBase):
     edition_id:  int
     publishing_house: Optional[PublishingHouse] = None 
