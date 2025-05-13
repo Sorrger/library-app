@@ -7,6 +7,7 @@ export default function AddEdition() {
     const [bookId, setBookId] = React.useState("");
     const [publishingHouse, setPublishingHouse] = React.useState("");
     const [books, setBooks] = React.useState([]);
+    const [publicHouses, setPublicHouses] = React.useState([]);
     // const handleSubit = async(e) => {
     //     continue;
     // }
@@ -15,9 +16,13 @@ export default function AddEdition() {
         const fetchBooks = async()=>{
             const response = await api.get("/books");
             setBooks(response.data);
-        }
+        };
+            const fetchPublishingHouses = async()=>{
+                const response = await api.get("/publishingHouses");
+                setPublicHouses(response.data);
+        };
         fetchBooks();
-
+        fetchPublishingHouses();
     },[]);
 
     return(
@@ -28,6 +33,12 @@ export default function AddEdition() {
                 <select name='books' onChange={(e)=> setBookId(e.target.value)}>
                     {books.map((book) => (
                         <option key={book.id} value={book.id}>{book.title}</option>
+                    ))}
+                    </select>
+                <label>Wydawnictwo:</label>
+                <select name='publishingHouse' onChange={(e)=> setBookId(e.target.value)}>
+                    {publicHouses.map((publicHouse) => (
+                        <option key={publicHouse.id} value={publicHouse.id}>{publicHouse.name}</option>
                     ))}
                     </select>
                </form>
