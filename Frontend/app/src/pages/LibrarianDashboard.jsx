@@ -13,7 +13,7 @@
         <section className="profile-section">
             <h2 className="section-title">Szybkie akcje</h2>
             <button className="action-button" onClick={()=>navigate("books/add")}>➕ Dodaj książkę</button>
-            <button className="action-button">➕ Dodaj edycję</button>
+            <button className="action-button" onClick={()=>navigate("editions/add")}>➕ Dodaj edycję</button>
             <button className="action-button">📄 Lista wypożyczeń</button>
         </section>
 

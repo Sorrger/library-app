@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import NavBar from './components/Template/NavBar';
 import LibraryDashboard from './pages/LibrarianDashboard';
 import AddBook from './components/Books/AddBook';
+import AddEdition from './components/Books/AddEdition';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -42,6 +43,7 @@ function AppWrapper() {
         <Route 
           path="/librarian-dashboard" element={<LibraryDashboard />} />
         <Route path="/librarian-dashboard/books/add" element={<AddBook />} />
+        <Route path="/librarian-dashboard/editions/add" element={<AddEdition />} />
       </Routes>
     </Fragment>
   );
