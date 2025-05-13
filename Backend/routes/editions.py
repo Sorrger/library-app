@@ -22,10 +22,6 @@ def get_editions_for_book_endpoint(book_id: int, db = Depends(get_db)):
 def get_all_avaialble_editions_endpoint(db = Depends(get_db)):
     return get_all_editions(db)
 
-@router.get("/editions/available", response_model=list[Edition])
-def get_available_editions_endpoint(db = Depends(get_db)):
-    return get_all_available_editions(db)
-
 @router.patch("/editions/{edition_id}/status", response_model=Edition)
 def update_edition_status_endpoint(edition_id: int,
     status_update: EditionStatusUpdate,
