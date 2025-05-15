@@ -1,5 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from models.book import Book
+from models.author import Author
+from models.genre import Genre
 from schemas.book import BookCreate
 
 # == Create ==
@@ -15,6 +17,20 @@ def get_all_books(db: Session):
 
 def get_book_by_id(db: Session, book_id: int):
     return db.query(Book).filter(Book.book_id == book_id).first()
+
+def get_books_filtered(db: Session, title: str = "", author: str = "", genre: str = ""):
+    query = db.query(Book).options(joinedload(Book.authors), joinedload(Book.genres))
+
+    if title:
+        query = query.filter(Book.title.ilike(f"%{title}%"))
+    if author:
+        query = query.join(Book.authors).filter(
+            (Author.name + " " + Author.surname).ilike(f"%{author}%")
+        )
+    if genre:
+        query = query.join(Book.genres).filter(Genre.name.ilike(f"%{genre}%"))
+
+    return query.all()
 # == Update ==
 # == Delete ==
 

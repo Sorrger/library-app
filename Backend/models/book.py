@@ -8,8 +8,16 @@ class Book(Base):
     title = Column(String(255), nullable=False)
     release_date = Column(Date, nullable=False)
 
-    authors = relationship("BookAuthor", back_populates="book")
-    genres = relationship("BookGenre", back_populates="book")
+    authors = relationship(
+        "Author",
+        secondary="book_author",
+        back_populates="books"
+    )
+    genres = relationship(
+        "Genre",
+        secondary="book_genre",
+        back_populates="books"
+    )
     editions = relationship("Edition", back_populates="book")
 
 

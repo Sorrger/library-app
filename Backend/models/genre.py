@@ -8,4 +8,8 @@ class Genre(Base):
     genre_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
 
-    books = relationship("BookGenre", back_populates="genre")
+    books = relationship(
+        "Book",
+        secondary="book_genre",
+        back_populates="genres"
+    )

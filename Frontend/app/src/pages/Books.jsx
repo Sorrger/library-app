@@ -1,41 +1,48 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/Books/SearchBar";
+import FilterBar from "../components/Books/FilterBar";
 import BookList from "../components/Books/BookList";
 import api from "../api/apiClient";
 import "../statics/books/page.css";
 
 const Books = () => {
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({ author: "", genre: "" });
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const params = {};
+    if (query.trim()) params.title = query.trim();
+    if (filters.author.trim()) params.author = filters.author.trim();
+    if (filters.genre.trim()) params.genre = filters.genre.trim();
+  
     const fetchBooks = async () => {
+      setLoading(true);
       try {
-        const response = await api.get("/books");
+        const response = await api.get("/books/filter", { params });
         setBooks(response.data);
+        setError(null);
       } catch (err) {
         setError("Error while loading books.");
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchBooks();
-  }, []);
-
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(query.toLowerCase())
-  );
+  }, [query, filters]);
+  
 
   return (
     <div className="books-page">
-      <h1 className="page-title">Book search</h1>
+      <h1 className="page-title">Book Search</h1>
       <SearchBar query={query} onChange={setQuery} />
+      <FilterBar filters={filters} onChange={setFilters} />
       {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
-      {!loading && !error && <BookList books={filteredBooks} />}
+      {!loading && !error && <BookList books={books} />}
     </div>
   );
 };
