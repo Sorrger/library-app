@@ -11,6 +11,7 @@ import NavBar from './components/Template/NavBar';
 import LibraryDashboard from './pages/LibrarianDashboard';
 import AddBook from './components/Books/AddBook';
 import AddEdition from './components/Books/AddEdition';
+import RentedBooks from './components/Books/RentedBooks';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -44,6 +45,7 @@ function AppWrapper() {
           path="/librarian-dashboard" element={<LibraryDashboard />} />
         <Route path="/librarian-dashboard/books/add" element={<AddBook />} />
         <Route path="/librarian-dashboard/editions/add" element={<AddEdition />} />
+        <Route path="/librarian-dashboard/rented-editions" element={<RentedBooks />} />
       </Routes>
     </Fragment>
   );
