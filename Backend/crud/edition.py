@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models.edition import Edition
-from schemas.edition import EditionCreate, EditionStatus
+from models.enums import EditionStatus
+from schemas.edition import EditionCreate
 
 # == Create ==
 def create_edition(db: Session, edition: EditionCreate):
@@ -19,6 +20,9 @@ def get_editions_by_book_id(db: Session, book_id: int):
 
 def get_all_available_editions(db: Session):
     return db.query(Edition).filter(Edition.status == "available").all()
+
+def get_rented_editions(db:Session):
+    return db.query(Edition).filter(Edition.status == "borrowed").all()
 
 # == Update ==
 def update_edition_status(db: Session, edition_id: int, new_status: EditionStatus):

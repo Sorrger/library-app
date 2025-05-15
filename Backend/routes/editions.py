@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.edition import Edition, EditionCreate, EditionStatusUpdate
 from database.database import get_db
-from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status
+from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_rented_editions
 
 router = APIRouter(tags=['editions'])
 
@@ -20,7 +20,7 @@ def get_editions_for_book_endpoint(book_id: int, db = Depends(get_db)):
 
 @router.get("/editions/available", response_model=list[Edition])
 def get_all_avaialble_editions_endpoint(db = Depends(get_db)):
-    return get_all_editions(db)
+    return get_all_available_editions(db)
 
 @router.patch("/editions/{edition_id}/status", response_model=Edition)
 def update_edition_status_endpoint(edition_id: int,
@@ -31,3 +31,7 @@ def update_edition_status_endpoint(edition_id: int,
     if updated_edition is None:
         raise HTTPException(status_code=404, detail="Edition not found")
     return updated_edition  
+
+@router.get("/rented-editions", response_model=list[Edition])
+def get_rented_editions_endpoint(db = Depends(get_db)):
+    return db.query(Edition).filter(Edition.status == "borrowed").all()

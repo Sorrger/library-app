@@ -1,13 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from database.database import Base
-import enum
-
-
-class EditionStatus(enum.Enum):
-    AVAILABLE = "available"
-    BORROWED = "borrowed"
-    LOST = "lost"
+from models.enums import EditionStatus
 
 class Edition(Base):
     __tablename__ = "editions"
@@ -22,5 +16,7 @@ class Edition(Base):
     publishing_house = relationship("PublishingHouse", back_populates="editions")
     book = relationship("Book", back_populates="editions")
     loans = relationship("Loan", back_populates="edition",) 
+
+    
 
     
