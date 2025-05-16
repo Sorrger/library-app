@@ -36,7 +36,7 @@ def register(account_data: AccountCreateRequest, db: Session = Depends(get_db)):
         login=account_data.login,
         password=account_data.password,
         student_id=student_id,
-        role=account_data.role
+        role=account_data.role.value
     )
     return create_account(db, account)
 
@@ -48,7 +48,12 @@ def login(account_data: AccountLoginRequest, db: Session = Depends(get_db)):
     if not account or not verify_password(account_data.password, account.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    token = create_access_token({"sub": account.login, "account_id": account.account_id})
+    token = create_access_token({
+        "sub": account.login,
+        "account_id": account.account_id,
+        "role": account.role
+    })
+
     return {"access_token": token, "token_type": "bearer"}
 
 
