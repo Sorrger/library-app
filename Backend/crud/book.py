@@ -37,7 +37,7 @@ def get_books_filtered(db: Session, title: str = "", author: str = "", genre: st
 def delete_book(db: Session, book_id: int):
     book = db.query(Book).filter(Book.book_id == book_id).first()
     if book is None:
-        return None  # or raise an exception
+        return None
     db.delete(book)
     db.commit()
     return book

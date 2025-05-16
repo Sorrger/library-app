@@ -10,12 +10,6 @@ router = APIRouter(tags=['books'])
 def get_all_books_endpoint(db = Depends(get_db)):
     return get_all_books(db)
 
-@router.get("/books/{book_id}", response_model=Book)
-def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
-    db_book = get_book_by_id(db=db, book_id=book_id)
-    if db_book is None:
-        raise HTTPException(status_code=404, detail="Book not found")
-    return db_book
 
 @router.get("/books/filter", response_model=list[Book])
 def filter_books_endpoint(
@@ -32,6 +26,13 @@ def filter_books_endpoint(
     books = get_books_filtered(db, title=title, author=author, genre=genre)
     print("Fetched books:", books)
     return books
+
+@router.get("/books/{book_id}", response_model=Book)
+def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
+    db_book = get_book_by_id(db=db, book_id=book_id)
+    if db_book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return db_book
 
 
 @router.post("/books", response_model=Book)

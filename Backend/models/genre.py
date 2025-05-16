@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from database.database import Base
+from .association_tables import book_genre
 
 class Genre(Base):
     __tablename__ = "genres"
@@ -10,6 +11,6 @@ class Genre(Base):
 
     books = relationship(
         "Book",
-        secondary="book_genre",
+        secondary=book_genre,
         back_populates="genres"
     )
