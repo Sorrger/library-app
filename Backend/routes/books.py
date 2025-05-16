@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from schemas.book import BookCreate, Book
+from schemas.book import BookCreate, Book, BookResponse
 from database.database import get_db
 from typing import Optional
 from crud.book import get_all_books, create_book, get_book_by_id, get_books_filtered, delete_book
@@ -35,7 +35,7 @@ def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
     return db_book
 
 
-@router.post("/books", response_model=Book)
+@router.post("/books", response_model=BookResponse)
 def create_book_endpoint(book: BookCreate, db = Depends(get_db)):
     return create_book(db, book)
 

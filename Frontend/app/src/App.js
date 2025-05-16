@@ -8,10 +8,10 @@ import Login from './pages/Login';
 import About from './pages/About';
 import Profile from './pages/Profile';
 import NavBar from './components/Template/NavBar';
-import LibraryDashboard from './pages/LibrarianDashboard';
-import AddBook from './components/Books/AddBook';
-import AddEdition from './components/Books/AddEdition';
-import RentedBooks from './components/Books/RentedBooks';
+import LibrarianDashboard from './pages/LibrarianDashboard';
+import AddBook from './pages/AddBook';
+import AddEdition from './pages/AddEdition';
+import RentedBooks from './pages/RentedBooks';
 import { isLoggedIn } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -42,7 +42,7 @@ function AppWrapper() {
           element={!isLoggedIn() ? <Navigate to="/" /> : <Profile />} 
         />
         <Route 
-          path="/librarian-dashboard" element={<LibraryDashboard />} />
+          path="/librarian-dashboard" element={<LibrarianDashboard />} />
         <Route path="/librarian-dashboard/books/add" element={<AddBook />} />
         <Route path="/librarian-dashboard/editions/add" element={<AddEdition />} />
         <Route path="/librarian-dashboard/rented-editions" element={<RentedBooks />} />

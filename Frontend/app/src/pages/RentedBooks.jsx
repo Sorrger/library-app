@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import api from '../../api/apiClient';
+import api from '../api/apiClient';
 
 
 export default function RentedBooks() {

@@ -10,7 +10,15 @@ class BookBase(BaseModel):
     
 
 class BookCreate(BookBase):
-    pass
+    author_ids: List[int] = []
+    genre_ids: List[int] = []
+
+class BookResponse(BaseModel):
+    book_id: int
+    title: str
+    release_date: date
+    authors: List[Author] = []
+    genres: List[Genre] = []
 
 class Book(BookBase):
     book_id: int

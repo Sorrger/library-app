@@ -1,4 +1,4 @@
-    import "../statics/librarianDashboard/LibrarianDashboard.css";
+    import "../statics/librarianDashboard/page.css";
     import { useNavigate } from "react-router-dom";
     const LibrarianDashboard = () => {
         const navigate = useNavigate();
