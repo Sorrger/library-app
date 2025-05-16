@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import api from "../../api/apiClient";
-import "../../statics/addBook/addBookForm.css"
+import "../../statics/addBook/addBookForm.css";
 
 export default function AddBookForm({ authors, genres, setAuthors, setGenres }) {
   const [title, setTitle] = useState("");
@@ -55,6 +55,17 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (selectedAuthors.length === 0) {
+      setError("Proszę wybrać co najmniej jednego autora.");
+      return;
+    }
+
+    if (selectedGenres.length === 0) {
+      setError("Proszę wybrać co najmniej jeden gatunek.");
+      return;
+    }
+
     try {
       await api.post("/books", {
         title,
@@ -90,7 +101,14 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       />
 
       <label>Autorzy:</label>
-      <div className="checkbox-list">
+      <div
+        className={`checkbox-list ${
+          selectedAuthors.length === 0 && error.includes("autora")
+            ? "error-border"
+            : ""
+        }`}
+        aria-invalid={selectedAuthors.length === 0 && error.includes("autora")}
+      >
         {authors.map((a) => (
           <label key={a.author_id}>
             <input
@@ -102,6 +120,9 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
           </label>
         ))}
       </div>
+      {selectedAuthors.length === 0 && error.includes("autora") && (
+        <p className="error">{error}</p>
+      )}
 
       <div className="inline-inputs">
         <input
@@ -120,7 +141,14 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       </div>
 
       <label>Gatunki:</label>
-      <div className="checkbox-list">
+      <div
+        className={`checkbox-list ${
+          selectedGenres.length === 0 && error.includes("gatunek")
+            ? "error-border"
+            : ""
+        }`}
+        aria-invalid={selectedGenres.length === 0 && error.includes("gatunek")}
+      >
         {genres.map((g) => (
           <label key={g.genre_id}>
             <input
@@ -132,6 +160,9 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
           </label>
         ))}
       </div>
+      {selectedGenres.length === 0 && error.includes("gatunek") && (
+        <p className="error">{error}</p>
+      )}
 
       <div className="inline-inputs">
         <input
@@ -145,7 +176,10 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       </div>
 
       <button type="submit">Dodaj książkę</button>
-      {error && <p className="error">{error}</p>}
+
+      {!error.includes("autora") &&
+        !error.includes("gatunek") &&
+        error && <p className="error">{error}</p>}
     </form>
   );
 }

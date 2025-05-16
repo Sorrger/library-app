@@ -43,7 +43,18 @@ form button {
   margin-bottom: 5px;
 }
 
+.success {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 .error {
   color: red;
   margin-top: 10px;
 }
+
+.error-border {
+  border-color: red;
+}
+
