@@ -39,7 +39,7 @@ const FilterBar = ({ filters, onChange, authors, genres }) => {
                 checked={filters.author.includes(author.name)}
                 onChange={() => handleCheckboxChange("author", author.name)}
               />
-              {author.name}
+              {author.name} {author.surname}
             </label>
           ))}
         </div>

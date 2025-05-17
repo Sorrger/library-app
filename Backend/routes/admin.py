@@ -24,15 +24,18 @@ def add_student(student_data: StudentCreate, db: Session = Depends(get_db)):
 
 @router.post("/add_admin")
 def add_admin(admin_data: AccountCreate, db: Session = Depends(get_db)):
-    existing_account = db.query(Account).filter(Account.login == admin_data["login"].lower()).first()
+    existing_account = db.query(Account).filter(Account.login == admin_data.login.lower()).first()
     if existing_account:
         raise HTTPException(status_code=400, detail="Login already exists.")
 
-    
+    password = admin_data.password
+    hashed_password = hash_password(password)
+
     new_account = Account(
-        login=admin_data.login,
-        password=admin_data.password,
-        role=UserRole.admin
+        login=admin_data.login.lower(),
+        password=hashed_password,
+        role=UserRole.admin,
+        student_id=None,
     )
     db.add(new_account)
     db.commit()
@@ -46,26 +49,13 @@ def add_librarian(librarian_data: AccountCreate, db: Session = Depends(get_db)):
     if existing_account:
         raise HTTPException(status_code=400, detail="Login already exists.")
 
-    
-    try:
-        validate_password_strength(password)
-    except ValueError as e:
-        return {"error": str(e)}
-    
-    hashed_password = hash_password(password)
-    
     new_account = Account(
-        login=librarian_data["login"].lower(),
-        password=hashed_password,
+        login=librarian_data.login(),
+        password=librarian_data.password,
         role=UserRole.librarian,
-        student_id=None
     )
     db.add(new_account)
     db.commit()
     db.refresh(new_account)
     
-    return {
-        "message": "Librarian added successfully", 
-        "librarian": new_account,
-        "generated_password": password if librarian_data.get("password") is None else None
-    }
+    return new_account

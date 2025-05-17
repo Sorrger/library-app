@@ -4,7 +4,6 @@ import uvicorn
 from routes import books, authors, genres, publishing_houses, editions, student, loan, auth, admin
 import models
 from database import create_tables
-from fastadmin import fastapi_app as admin_app
 
 
 app = FastAPI()
@@ -25,8 +24,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.mount("/admin", admin_app)
 
 create_tables()
 
