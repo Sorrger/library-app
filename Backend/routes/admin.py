@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from models.student import Student
 from crud.student import create_student
+from crud.account import get_all_librarians
 from schemas.student import StudentCreate
 from schemas.account import AccountCreate
 from models.account import Account, UserRole
 from database.database import get_db
-from utils.security import hash_password, generate_random_password, validate_password_strength
+from utils.security import hash_password
 
 router = APIRouter(tags=["admin"])
 
@@ -61,3 +62,7 @@ def add_librarian(librarian_data: AccountCreate, db: Session = Depends(get_db)):
     db.refresh(new_account)
     
     return new_account
+
+@router.get("/accounts")
+def get_accounts_by_role(role: UserRole, db: Session = Depends(get_db)):
+    return get_all_librarians(db, role=role)
