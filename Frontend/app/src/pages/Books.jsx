@@ -7,17 +7,19 @@ import "../statics/books/page.css";
 
 const Books = () => {
   const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState({ author: "", genre: "" });
+  const [filters, setFilters] = useState({ author: [], genre: [] });
   const [books, setBooks] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const params = {};
     if (query.trim()) params.title = query.trim();
-    if (filters.author.trim()) params.author = filters.author.trim();
-    if (filters.genre.trim()) params.genre = filters.genre.trim();
-  
+    if (filters.author.length > 0) params.author = filters.author.join(",");
+    if (filters.genre.length > 0) params.genre = filters.genre.join(",");
+
     const fetchBooks = async () => {
       setLoading(true);
       try {
@@ -30,16 +32,37 @@ const Books = () => {
         setLoading(false);
       }
     };
-  
+
     fetchBooks();
   }, [query, filters]);
-  
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const [authorsRes, genresRes] = await Promise.all([
+          api.get("/authors"),
+          api.get("/genres"),
+        ]);
+        setAuthors(authorsRes.data);
+        setGenres(genresRes.data);
+      } catch (err) {
+        console.error("Error loading authors or genres", err);
+      }
+    };
+
+    fetchFilters();
+  }, []);
 
   return (
     <div className="books-page">
       <h1 className="page-title">Book Search</h1>
       <SearchBar query={query} onChange={setQuery} />
-      <FilterBar filters={filters} onChange={setFilters} />
+      <FilterBar
+        filters={filters}
+        onChange={setFilters}
+        authors={authors}
+        genres={genres}
+      />
       {loading && <p className="loading-text">Loading...</p>}
       {error && <p className="error-text">{error}</p>}
       {!loading && !error && <BookList books={books} />}
