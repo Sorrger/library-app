@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from models.student import Student
 from crud.student import create_student
-from schemas.student import StudentCreate 
+from schemas.student import StudentCreate
+from schemas.account import AccountCreate
 from models.account import Account, UserRole
 from database.database import get_db
 from utils.security import hash_password, generate_random_password, validate_password_strength
@@ -22,43 +23,29 @@ def add_student(student_data: StudentCreate, db: Session = Depends(get_db)):
     return new_student
 
 @router.post("/add_admin")
-def add_admin(admin_data: dict, db: Session = Depends(get_db)):
+def add_admin(admin_data: AccountCreate, db: Session = Depends(get_db)):
     existing_account = db.query(Account).filter(Account.login == admin_data["login"].lower()).first()
     if existing_account:
         raise HTTPException(status_code=400, detail="Login already exists.")
-    
-    password = admin_data.get("password", generate_random_password())
-    
-    try:
-        validate_password_strength(password)
-    except ValueError as e:
-        return {"error": str(e)}
-    
-    hashed_password = hash_password(password)
+
     
     new_account = Account(
-        login=admin_data["login"].lower(),
-        password=hashed_password,
-        role=UserRole.admin,
-        student_id=None
+        login=admin_data.login,
+        password=admin_data.password,
+        role=UserRole.admin
     )
     db.add(new_account)
     db.commit()
     db.refresh(new_account)
     
-    return {
-        "message": "Admin added successfully", 
-        "admin": new_account,
-        "generated_password": password if admin_data.get("password") is None else None
-    }
+    return new_account
 
 @router.post("/add_librarian")
-def add_librarian(librarian_data: dict, db: Session = Depends(get_db)):
+def add_librarian(librarian_data: AccountCreate, db: Session = Depends(get_db)):
     existing_account = db.query(Account).filter(Account.login == librarian_data["login"].lower()).first()
     if existing_account:
         raise HTTPException(status_code=400, detail="Login already exists.")
 
-    password = librarian_data.get("password", generate_random_password())
     
     try:
         validate_password_strength(password)
