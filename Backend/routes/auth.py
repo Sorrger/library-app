@@ -51,7 +51,6 @@ def login(account_data: AccountLoginRequest, db: Session = Depends(get_db)):
     token = create_access_token({
         "sub": account.login,
         "account_id": account.account_id,
-        "role": account.role
     })
 
     return {"access_token": token, "token_type": "bearer"}
