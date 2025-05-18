@@ -12,19 +12,21 @@ export default function Profile() {
     
     useEffect(() => {
         const fetchProfile = async () => {
-        try {
-            const accountResponse  = await api.get("/me");
-            setAccount(accountResponse.data);
+            try {
+                const accountResponse = await api.get("/me");
+                setAccount(accountResponse.data);
 
-            const studentResponse = await api.get(`/students/${accountResponse.data.student_id}`);
-            setStudent(studentResponse.data);
-        } catch (err) {
-            setError("Error loading profile.");
-        } finally {
-            setLoading(false);
-        }
+                if (accountResponse.data.student_id) {
+                    const studentResponse = await api.get(`/students/${accountResponse.data.student_id}`);
+                    setStudent(studentResponse.data);
+                }
+            } catch (err) {
+                setError("Error loading profile.");
+            } finally {
+                setLoading(false);
+            }
         };
-    
+
         fetchProfile();
     }, []);
     

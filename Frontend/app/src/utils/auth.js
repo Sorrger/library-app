@@ -17,6 +17,7 @@ export function getUserRoleFromToken(){
   const token = getToken();
   if (!token) return null;
   const payload = JSON.parse(atob(token.split('.')[1]));
+  console.log("ROLE from token:", payload.role); 
   return payload.role;
 }
   
