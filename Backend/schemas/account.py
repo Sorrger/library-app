@@ -10,12 +10,11 @@ class UserRole(str, Enum):
 
 class AccountBase(BaseModel):
     login: str    
-    role: UserRole = UserRole.student 
+    role: UserRole = UserRole.student
 
 class AccountCreate(AccountBase):
     password: str
-    student_id: Optional[int]
-    student: Optional[StudentBase] = None
+    student_id: Optional[int] = None
 
 class AccountCreateRequest(AccountBase):
     password: str

@@ -13,6 +13,7 @@ import LibrarianDashboard from './pages/LibrarianDashboard';
 import AddBook from './pages/AddBook';
 import AddEdition from './pages/AddEdition';
 import RentedBooks from './pages/RentedBooks';
+import AdminDashboard  from './pages/AdminDashboard';
 import { isLoggedIn, getUserRoleFromToken } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -60,6 +61,10 @@ function AppWrapper() {
         <Route 
           path="/librarian-dashboard/rented-editions" 
           element={!isLoggedIn() || userRole !== 'UserRole.librarian' ? <Navigate to="/" /> : <RentedBooks/>}
+        />
+        <Route 
+          path="/admin" 
+          element={!isLoggedIn() || userRole !== 'UserRole.admin' ? <Navigate to="/" /> : <AdminDashboard/>}
         />
       </Routes>
     </Fragment>
