@@ -19,6 +19,23 @@
   }
   
   .edition-item {
-    margin-bottom: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  
+
+  .view-details-button {
+    padding: 0.5rem 1rem;
+    background-color: #2e86de;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .view-details-button:hover {
+    background-color: #1e6bb8;
+  }

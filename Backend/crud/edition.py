@@ -17,6 +17,9 @@ def create_edition(db: Session, edition: EditionCreate):
 def get_all_editions(db: Session):
     return db.query(Edition).all()
 
+def get_edition_by_id(db: Session, edition_id: int):
+    return db.query(Edition).filter(Edition.edition_id == edition_id).first()
+
 def get_editions_by_book_id(db: Session, book_id: int):
     return db.query(Edition).filter(Edition.book_id == book_id).all()
 
