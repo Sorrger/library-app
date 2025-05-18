@@ -3,6 +3,7 @@ import './App.css';
 import Home from './pages/Home';
 import Books from './pages/Books';
 import BookDetails from './pages/BookDetails';
+import EditionDetails from './pages/EditionDetails';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import About from './pages/About';
@@ -28,6 +29,7 @@ function AppWrapper() {
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
+        <Route path="/editions/:id" element={<EditionDetails />} />
         <Route path="/about" element={<About />} />
         <Route 
           path="/register" 

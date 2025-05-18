@@ -1,0 +1,13 @@
+.edition-info {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.edition-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.edition-info p {
+  margin: 0.5rem 0;
+}

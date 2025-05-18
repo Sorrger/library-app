@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.edition import Edition, EditionCreate, EditionStatusUpdate
 from database.database import get_db
-from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_rented_editions
+from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id
 
 router = APIRouter(tags=['editions'])
 
@@ -9,6 +9,12 @@ router = APIRouter(tags=['editions'])
 def get_all_editions_endpoint(db = Depends(get_db)):
     return get_all_editions(db)
     
+@router.get("/editions/{edition_id}", response_model=Edition)
+def get_edition_detail_endpoint(edition_id: int, db = Depends(get_db)):
+    edition = get_edition_by_id(db, edition_id)
+    if edition is None:
+        raise HTTPException(status_code=404, detail="Edition not found")
+    return edition
 
 @router.post("/editions", response_model=Edition)
 def create_editions_endpoint(edition: EditionCreate, db = Depends(get_db)):
