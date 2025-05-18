@@ -29,6 +29,9 @@ def get_all_available_editions(db: Session):
 def get_rented_editions(db:Session):
     return db.query(Edition).filter(Edition.status == "borrowed").all()
 
+def get_edition_count(db: Session):
+    return db.query(Edition).count()
+
 # == Update ==
 def update_edition_status(db: Session, edition_id: int, new_status: EditionStatus):
     edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()

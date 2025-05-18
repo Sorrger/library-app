@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from schemas.edition import Edition, EditionCreate, EditionStatusUpdate
 from database.database import get_db
-from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id
+from crud.edition import get_all_editions, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id, get_edition_count
 
 router = APIRouter(tags=['editions'])
 
@@ -41,3 +42,8 @@ def update_edition_status_endpoint(edition_id: int,
 @router.get("/rented-editions", response_model=list[Edition])
 def get_rented_editions_endpoint(db = Depends(get_db)):
     return db.query(Edition).filter(Edition.status == "borrowed").all()
+
+@router.get("/editions/count")
+def count_editions_endpoint(db = Depends(get_db)):
+    count = get_edition_count(db)
+    return JSONResponse(content={"count": count})
