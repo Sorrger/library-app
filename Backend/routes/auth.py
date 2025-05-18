@@ -62,11 +62,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 @router.get("/me", response_model=Account)
 def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     payload = verify_token(token)
+
     if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    login = payload.get("sub")
+    if not login:
         raise HTTPException(status_code=401, detail="Invalid token")
 
     account = get_account_by_login(db, payload.get("sub"))
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
+    
 
     return account

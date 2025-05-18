@@ -1,13 +1,14 @@
     import "../statics/librarianDashboard/page.css";
     import { useNavigate } from "react-router-dom";
+    import { getUserNameFromToken } from "../utils/auth";
     const LibrarianDashboard = () => {
+        const name = getUserNameFromToken();
         const navigate = useNavigate();
         return (
         <div className="librarian-dashboard">
         <section className="profile-section">
             <h2 className="section-title">Witaj, Bibliotekarzu!</h2>
-            <p><strong>Imię:</strong> Jan</p>
-            <p><strong>Email:</strong> jan.bibliotekarz@biblioteka.pl</p>
+            <p><strong>Imię:</strong> {name}</p>
         </section>
 
         <section className="profile-section">

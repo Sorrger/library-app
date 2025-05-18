@@ -14,7 +14,8 @@ class AccountBase(BaseModel):
 
 class AccountCreate(AccountBase):
     password: str
-    student_id: Optional[int] = None
+    student_id: Optional[int]
+    student: Optional[StudentBase] = None
 
 class AccountCreateRequest(AccountBase):
     password: str
