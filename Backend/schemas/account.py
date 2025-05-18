@@ -24,6 +24,10 @@ class AccountLoginRequest(BaseModel):
     login: str
     password: str
 
+class AccountUpdate(BaseModel):
+    password: Optional[str] = None
+    role: Optional[UserRole] = None
+
 class Account(AccountBase):
     account_id: int
     student_id: Optional[int] = None

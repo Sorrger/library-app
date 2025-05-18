@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from models.account import Account, UserRole
 from models.student import Student
-from schemas.account import AccountCreate
+from schemas.account import AccountCreate, AccountUpdate
 from utils.security import hash_password, validate_password_strength
 
 # == Create ==
@@ -47,6 +47,22 @@ def update_account_password(db: Session, account_id: int, new_password: str):
     if not account:
         return None
     account.password = hashed
+    db.commit()
+    db.refresh(account)
+    return account
+
+def update_account(db: Session, account_id: int, data: AccountUpdate):
+    account = db.query(Account).filter(Account.account_id == account_id).first()
+    if not account:
+        return None
+
+    if data.password:
+        validate_password_strength(data.password)
+        account.password = hash_password(data.password)
+
+    if data.role:
+        account.role = data.role
+
     db.commit()
     db.refresh(account)
     return account
