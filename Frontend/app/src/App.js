@@ -13,14 +13,16 @@ import LibrarianDashboard from './pages/LibrarianDashboard';
 import AddBook from './pages/AddBook';
 import AddEdition from './pages/AddEdition';
 import RentedBooks from './pages/RentedBooks';
-import { isLoggedIn } from "./utils/auth";
+import { isLoggedIn, getUserRoleFromToken } from "./utils/auth";
 import { Fragment } from 'react';
+
 
 
 function AppWrapper() {
   const location = useLocation();
   const hideNavBarPaths = ['/login', '/register'];
   const hideNavBar = hideNavBarPaths.includes(location.pathname);
+  const userRole = getUserRoleFromToken();
 
   return (
     <Fragment>
@@ -44,10 +46,21 @@ function AppWrapper() {
           element={!isLoggedIn() ? <Navigate to="/" /> : <Profile />} 
         />
         <Route 
-          path="/librarian-dashboard" element={<LibrarianDashboard />} />
-        <Route path="/librarian-dashboard/books/add" element={<AddBook />} />
-        <Route path="/librarian-dashboard/editions/add" element={<AddEdition />} />
-        <Route path="/librarian-dashboard/rented-editions" element={<RentedBooks />} />
+          path="/librarian-dashboard"  
+          elemnet={!isLoggedIn() || userRole !== 'librarian'? <Navigate to="/" /> : <LibrarianDashboard/>}
+        />
+        <Route 
+          path="/librarian-dashboard/books/add" 
+          elemnet={!isLoggedIn() || userRole !== 'librarian'? <Navigate to="/" /> : <AddBook/>}
+        />
+        <Route 
+          path="/librarian-dashboard/editions/add" 
+          elemnet={!isLoggedIn() || userRole !== 'librarian' ? <Navigate to="/" /> : <AddEdition/>}
+        />
+        <Route 
+          path="/librarian-dashboard/rented-editions" 
+          elemnet={!isLoggedIn() || userRole !== 'librarian' ? <Navigate to="/" /> : <RentedBooks/>}
+        />
       </Routes>
     </Fragment>
   );

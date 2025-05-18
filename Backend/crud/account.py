@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.account import Account
+from models.account import Account, UserRole
 from models.student import Student
 from schemas.account import AccountCreate
 from utils.security import hash_password, validate_password_strength
@@ -21,8 +21,14 @@ def create_account(db: Session, account_data: AccountCreate):
 
 
 # == Read ==
-def get_account_by_login(db: Session, login: str):
+def get_account_by_login(db: Session, login: UserRole):
     return db.query(Account).filter(Account.login == login).first()
+
+
+#wypisanie wszystkich bibliotekarzy
+def get_all_librarians(db: Session, role: str):
+    return db.query(Account).filter(Account.role == role).all()
+
 
 def get_student_by_data(db: Session, name: str, surname: str, phone_number: str | None):
     query = db.query(Student).filter(
