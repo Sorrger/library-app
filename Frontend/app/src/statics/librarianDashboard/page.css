@@ -46,6 +46,20 @@ strong {
   background-color: #006fa3;
 }
 
+.publishing-house-form {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.section-subtitle {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+
 @media (max-width: 768px) {
   .profile-section {
     padding: 15px;

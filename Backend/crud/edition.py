@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from models.edition import Edition
 from models.enums import EditionStatus
-from models.edition import Edition, EditionStatus
+from models.loan import Loan
 
 from schemas.edition import EditionCreate
 
@@ -25,6 +25,20 @@ def get_editions_by_book_id(db: Session, book_id: int):
 
 def get_all_available_editions(db: Session):
     return db.query(Edition).filter(Edition.status == EditionStatus.AVAILABLE).all()
+
+#TU
+def get_book_by_edition_id(db: Session, edition_id: int):
+    edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()
+    if not edition:
+        return None
+    return edition.book
+
+def get_borrowed_loans_with_students(db: Session):
+    return db.query(Loan) \
+             .join(Loan.edition) \
+             .join(Loan.student) \
+             .filter(Edition.status == EditionStatus.BORROWED) \
+             .all()
 
 def get_rented_editions(db:Session):
     return db.query(Edition).filter(Edition.status == "borrowed").all()

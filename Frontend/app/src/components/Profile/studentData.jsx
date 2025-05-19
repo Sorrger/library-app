@@ -8,6 +8,7 @@ const StudentData = ({ student }) => {
             <p><strong>Surname:</strong> {student.surname ?? "Brak nazwiska"}</p>
             <p><strong>Phone number:</strong> {student.phone_number ?? "Brak numeru"}</p>
             <p><strong>Rented Books:</strong> {student.books_limit ?? "Brak"}/5</p>
+
         </div>
     );
 };

@@ -40,7 +40,7 @@ def count_editions_endpoint(db = Depends(get_db)):
     return JSONResponse(content={"count": count})
 
 
-@router.patch("/edition/{id}/{status}/", response_model=EditionStatusUpdate)
+@router.patch("/editions/{id}/{status}/", response_model=EditionStatusUpdate)
 def edition_status_change_endpoint(id: int, status: str, db = Depends(get_db)):
     try:
         parsed_status = EditionStatus(status.lower())

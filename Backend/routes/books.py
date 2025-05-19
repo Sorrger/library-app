@@ -4,6 +4,7 @@ from schemas.book import BookCreate, Book, BookResponse
 from database.database import get_db
 from typing import Optional
 from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count
+from crud.edition import get_edition_by_id
 
 router = APIRouter(tags=['books'])
 
@@ -52,4 +53,16 @@ def delete_book_endpoint(book_id: int, db = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Book not found")
     return book
 
+
+@router.get("/editions/{edition_id}/book", response_model=Book)
+def get_book_by_edition_id(edition_id: int, db = Depends(get_db)):
+    edition = get_edition_by_id(db, edition_id)
+    if edition is None:
+        raise HTTPException(status_code=404, detail="Edition not found")
+    
+    book = get_book_by_id(db, book_id=edition.book_id)
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+    
+    return book
 

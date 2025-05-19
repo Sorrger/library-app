@@ -8,6 +8,8 @@ export default function AddEdition() {
   const [publishingHouseId, setPublishingHouseId] = useState("");
   const [books, setBooks] = useState([]);
   const [publishingHouses, setPublishingHouses] = useState([]);
+  const [newPublishingHouseName, setNewPublishingHouseName] = useState("");
+  const [newPublishingHouseHQ, setNewPublishingHouseHQ] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,22 @@ export default function AddEdition() {
     setBookId("");
     setPublishingHouseId("");
     setStatus("available");
+  };
+
+  const handleCreatePublishingHouse = async () => {
+    if (!newPublishingHouseName.trim()) return;
+
+    try {
+      const response = await api.post("/publishingHouses", {
+        name: newPublishingHouseName,
+        headquarters: newPublishingHouseHQ || null, // obsługa Optional
+      });
+      setPublishingHouses([...publishingHouses, response.data]);
+      setNewPublishingHouseName("");
+      setNewPublishingHouseHQ("");
+    } catch (error) {
+      console.error("Błąd podczas dodawania wydawnictwa:", error);
+    }
   };
 
   useEffect(() => {
@@ -41,11 +59,10 @@ export default function AddEdition() {
 
   return (
     <div className="form-container">
-      <h2>Dodaj nową edycję</h2>
+      <h2 >Dodaj nową edycję</h2>
       <form onSubmit={handleSubmit}>
         <label>Książka:</label>
         <select
-          name="books"
           value={bookId}
           required
           onChange={(e) => setBookId(e.target.value)}
@@ -60,7 +77,6 @@ export default function AddEdition() {
 
         <label>Wydawnictwo:</label>
         <select
-          name="publishingHouse"
           value={publishingHouseId}
           required
           onChange={(e) => setPublishingHouseId(e.target.value)}
@@ -75,7 +91,6 @@ export default function AddEdition() {
 
         <label>Status:</label>
         <select
-          name="status"
           value={status}
           required
           onChange={(e) => setStatus(e.target.value)}
@@ -88,14 +103,30 @@ export default function AddEdition() {
         <label>Format:</label>
         <input
           type="text"
-          name="book_format"
           value={bookFormat}
           required
           onChange={(e) => setBookFormat(e.target.value)}
         />
 
-        <button type="submit">Dodaj</button>
+        <button type="submit">Dodaj edycję</button>
       </form>
+
+      <hr />
+
+      <h3>Dodaj nowe wydawnictwo</h3>
+      <input
+        type="text"
+        placeholder="Nazwa wydawnictwa"
+        value={newPublishingHouseName}
+        onChange={(e) => setNewPublishingHouseName(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Siedziba (opcjonalnie)"
+        value={newPublishingHouseHQ}
+        onChange={(e) => setNewPublishingHouseHQ(e.target.value)}
+      />
+      <button onClick={handleCreatePublishingHouse}>➕ Dodaj wydawnictwo</button>
     </div>
   );
 }

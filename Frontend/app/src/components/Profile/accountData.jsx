@@ -6,6 +6,7 @@ const AccountData = ({ account }) => {
         <div className="profile-section">
             <h2 className="section-title">Account Details</h2>
             <p><strong>Login:</strong> {account.login}</p>
+
         </div>
     );
 };
