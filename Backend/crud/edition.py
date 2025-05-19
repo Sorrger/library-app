@@ -33,11 +33,11 @@ def get_book_by_edition_id(db: Session, edition_id: int):
         return None
     return edition.book
 
-def get_borrowed_loans_with_students(db: Session):
+def get_reservated_loans_with_students(db: Session):
     return db.query(Loan) \
              .join(Loan.edition) \
              .join(Loan.student) \
-             .filter(Edition.status == EditionStatus.BORROWED) \
+             .filter(Edition.status == EditionStatus.RESERVATION) \
              .all()
 
 def get_rented_editions(db:Session):
@@ -51,7 +51,7 @@ def update_edition_status(db: Session, edition_id: int, new_status: EditionStatu
     edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()
     if not edition:
         return None
-    edition.status = new_status
+    edition.status = EditionStatus(new_status.value)
     db.commit()
     db.refresh(edition)
     return edition

@@ -1,7 +1,7 @@
 import enum
 
 class EditionStatus(enum.Enum):
-    AVAILABLE = "available"
     RESERVATION = "reservation"
+    AVAILABLE = "available"
     BORROWED = "borrowed"
     LOST = "lost"

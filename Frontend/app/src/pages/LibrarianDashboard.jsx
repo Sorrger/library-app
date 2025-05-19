@@ -27,7 +27,7 @@ const LibrarianDashboard = () => {
 
     const fetchBorrowedLoans = async () => {
       try {
-        const res = await api.get("/loans/borrowed");
+        const res = await api.get("/loans/reservated");
         setBorrowedLoans(res.data);
       } catch (err) {
         setErrorLoans("Błąd podczas ładowania wypożyczeń");
@@ -59,11 +59,11 @@ const LibrarianDashboard = () => {
 
   const handleChangeStatusToReserved = async (editionId) => {
     try {
-      await api.patch(`/editions/${editionId}/reservation/`);
+      await api.patch(`/editions/${editionId}/borrowed/`);
       setBorrowedLoans((prev) =>
         prev.filter((loan) => loan.edition.edition_id !== editionId)
       );
-      alert("Status zmieniony na RESERVED");
+      alert("Status zmieniony na BORROWED");
     } catch (err) {
       alert("Błąd zmiany statusu: " + (err.response?.data?.detail || err.message));
     }
@@ -84,8 +84,8 @@ const LibrarianDashboard = () => {
         <button className="action-button" onClick={() => navigate("editions/add")}>
           ➕ Dodaj edycję
         </button>
-        <button className="action-button" onClick={() => navigate("rented-editions")}>
-          📄 Lista wypożyczeń
+        <button className="action-button">
+          📄 Lista wypożyczeń !!!!!!!!TO DO!!!!!!!! 
         </button>
       </section>
 
@@ -126,7 +126,7 @@ const LibrarianDashboard = () => {
                       className="action-button"
                       onClick={() => handleChangeStatusToReserved(loan.edition.edition_id)}
                     >
-                      Zmień na RESERVED
+                      Zmień na BORROWED
                     </button>
                   </td>
                 </tr>
