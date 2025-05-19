@@ -9,6 +9,9 @@ class StudentBase(BaseModel):
 class StudentCreate(StudentBase):
     pass
 
+class StudentLimitsResponse(StudentBase):
+    books_limit: int
+
 class Student(StudentBase):
     student_id: int
 

@@ -48,19 +48,19 @@ function AppWrapper() {
         />
         <Route 
           path="/librarian-dashboard"  
-          element={!isLoggedIn() || userRole !== 'UserRole.librarian'? <Navigate to="/" /> : <LibrarianDashboard/>}
+          element={!isLoggedIn() ? <Navigate to="/" /> : <LibrarianDashboard/>}
         />
         <Route 
           path="/librarian-dashboard/books/add" 
-          element={!isLoggedIn() || userRole !== 'UserRole.librarian'? <Navigate to="/" /> : <AddBook/>}
+          element={!isLoggedIn() ? <Navigate to="/" /> : <AddBook/>}
         />
         <Route 
           path="/librarian-dashboard/editions/add" 
-          element={!isLoggedIn() || userRole !== 'UserRole.librarian' ? <Navigate to="/" /> : <AddEdition/>}
+          element={!isLoggedIn() ? <Navigate to="/" /> : <AddEdition/>}
         />
         <Route 
           path="/librarian-dashboard/rented-editions" 
-          element={!isLoggedIn() || userRole !== 'UserRole.librarian' ? <Navigate to="/" /> : <RentedBooks/>}
+          element={!isLoggedIn() ? <Navigate to="/" /> : <RentedBooks/>}
         />
         <Route 
           path="/admin" 

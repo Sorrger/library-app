@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import JSONResponse
 from schemas.book import BookCreate, Book, BookResponse
 from database.database import get_db
 from typing import Optional
-from crud.book import get_all_books, create_book, get_book_by_id, get_books_filtered, delete_book
+from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count
 
 router = APIRouter(tags=['books'])
 
@@ -26,6 +27,11 @@ def filter_books_endpoint(
     books = get_books_filtered(db, title=title, author=author, genre=genre)
     print("Fetched books:", books)
     return books
+
+@router.get("/books/count")
+def count_books_endpoint(db = Depends(get_db)):
+    count = get_book_count(db)
+    return JSONResponse(content={"count": count})
 
 @router.get("/books/{book_id}", response_model=Book)
 def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
