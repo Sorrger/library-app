@@ -9,6 +9,9 @@ class LoanBase(BaseModel):
 class LoanCreate(LoanBase):
     student_id: int
     edition_id: int
+    
+class LoanCreateWithoutStudent(LoanBase):
+    edition_id: int
 
 class Loan(LoanBase):
     loan_id: int

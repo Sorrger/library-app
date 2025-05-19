@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from schemas.loan import LoanCreate, Loan
+from fastapi import APIRouter, Depends, HTTPException
+from schemas.loan import LoanCreate, Loan, LoanCreateWithoutStudent
 from database.database import get_db
 from crud.loan import get_all_loans, create_loan
 
@@ -12,3 +12,16 @@ def get_all_loans_endpoint(db = Depends(get_db)):
 @router.post("/loans", response_model=Loan)
 def create_loan_endpoint(loan: LoanCreate, db = Depends(get_db)):
     return create_loan(db, loan)
+
+@router.post("/students/{student_id}/loans", response_model=Loan)
+def create_loan_for_student(student_id: int, loan_data: LoanCreateWithoutStudent, db = Depends(get_db)):
+    loan = LoanCreate(
+        student_id=student_id,
+        edition_id=loan_data.edition_id,
+        loan_date=loan_data.loan_date
+    )
+
+    try:
+        return create_loan(db, loan)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
