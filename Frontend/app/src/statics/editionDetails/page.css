@@ -7,3 +7,19 @@
   margin-top: 2rem;
   font-size: 1.2rem;
 }
+
+.reserve-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #0052cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reserve-button:hover {
+  background-color: #003d99;
+}
+
