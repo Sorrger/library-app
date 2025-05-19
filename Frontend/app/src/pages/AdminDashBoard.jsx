@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/apiClient";
 
 const AdminDashboard = () => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showAddLibrarian, setShowAddLibrarian] = useState(false);
   const [showAddAdmin, setShowAddAdmin] = useState(false);
-
+  const navigate = useNavigate();
   return (
     <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
@@ -117,6 +118,9 @@ const AdminDashboard = () => {
             <button type="submit">Add new admin!</button>
             </form>
             )}
+            <button onClick={()=>navigate("/librarian-dashboard")}>
+              Go to Librarian Dashboard
+            </button>
         </div>
     </div>
     

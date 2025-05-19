@@ -10,7 +10,7 @@ def get_all_students_endpoint(db = Depends(get_db)):
     return get_all_students(db)
 
 
-@router.post("/students", response_model=Student)
+@router.post("/students", response_model=StudentLimitsResponse)
 def create_student_endpoint(student: StudentCreate, db = Depends(get_db)):
     return create_student(db, student)
 

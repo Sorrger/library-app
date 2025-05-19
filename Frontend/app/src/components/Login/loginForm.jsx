@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/apiClient";
-import { saveToken } from "../../utils/auth";
+import { getUserRoleFromToken, saveToken } from "../../utils/auth";
 import "../../statics/login/loginForm.css"
 
 export default function LoginForm() {
@@ -19,9 +19,16 @@ export default function LoginForm() {
           login: login,
           password: password
         });
-  
+
         saveToken(res.data.access_token);
-        navigate("/");
+        const role = getUserRoleFromToken(res.data.access_token);
+        if (role === "UserRole.librarian") {
+          navigate("/librarian-dashboard");
+        } else if (role === "UserRole.admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } catch (err) {
         if (err.response && err.response.status === 401) {
           setError("Niepoprawne dane logowania");
