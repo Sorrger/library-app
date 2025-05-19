@@ -13,7 +13,7 @@ import LibrarianDashboard from './pages/LibrarianDashboard';
 import AddBook from './pages/AddBook';
 import AddEdition from './pages/AddEdition';
 import RentedBooks from './pages/RentedBooks';
-import AdminDashboard  from './pages/AdminDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import { isLoggedIn, getUserRoleFromToken } from "./utils/auth";
 import { Fragment } from 'react';
 
