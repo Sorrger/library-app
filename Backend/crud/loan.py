@@ -30,6 +30,9 @@ def create_loan(db: Session, loan: LoanCreate):
 def get_all_loans(db: Session):
     return db.query(Loan).all()
 
+def get_active_borrowings_count(db:Session):
+    return db.query(Loan).filter(Loan.return_date == None).count()
+
 def get_all_loans_count(db: Session):
     return db.query(Loan).count()
 

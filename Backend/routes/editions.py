@@ -11,6 +11,12 @@ router = APIRouter(tags=['editions'])
 def get_all_editions_endpoint(db = Depends(get_db)):
     return get_all_editions(db)
     
+@router.get("/editions/count")
+def count_editions_endpoint(db = Depends(get_db)):
+    count = get_edition_count(db)
+    return JSONResponse(content={"count": count})
+
+
 @router.get("/editions/{edition_id}", response_model=Edition)
 def get_edition_detail_endpoint(edition_id: int, db = Depends(get_db)):
     edition = get_edition_by_id(db, edition_id)
@@ -33,11 +39,6 @@ def get_all_avaialble_editions_endpoint(db = Depends(get_db)):
 @router.get("/rented-editions", response_model=list[Edition])
 def get_rented_editions_endpoint(db = Depends(get_db)):
     return db.query(Edition).filter(Edition.status == "borrowed").all()
-
-@router.get("/editions/count")
-def count_editions_endpoint(db = Depends(get_db)):
-    count = get_edition_count(db)
-    return JSONResponse(content={"count": count})
 
 
 @router.patch("/editions/{id}/{status}/", response_model=EditionStatusUpdate)
