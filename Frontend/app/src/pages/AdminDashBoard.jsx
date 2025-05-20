@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../statics/admindashboard/adminDashboard.css'
 import api from "../api/apiClient";
 
 const AdminDashboard = () => {

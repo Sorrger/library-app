@@ -1,12 +1,13 @@
 import React from 'react';
 import '../../statics/template/NavBar.css';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
-import { isLoggedIn, removeToken } from '../../utils/auth';
+import { isLoggedIn, removeToken, getUserRoleFromToken } from '../../utils/auth';
 import accountIcon from '../../assets/icons/account.svg';
 
 const NavBar = () => {
   const navigate = useNavigate();
   const loggedIn = isLoggedIn();
+  const userRole = getUserRoleFromToken()
 
   const handleLogout = () => {
     removeToken();
@@ -34,6 +35,20 @@ const NavBar = () => {
             About
           </NavLink>
         </li>
+         {loggedIn && (userRole === 'UserRole.admin' || userRole === 'UserRole.librarian') && (
+          <li>
+            <NavLink to="/librarian-dashboard" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Librarian Dashboard
+            </NavLink>
+          </li>
+        )}
+        {loggedIn && userRole === 'UserRole.admin' && (
+          <li>
+            <NavLink to="/admin" className={({isActive}) => (isActive?'active':'')}>
+              Admin Dashboard
+            </NavLink>
+          </li>
+        )}
         {loggedIn ? (
           <>
             <li>

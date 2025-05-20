@@ -1,0 +1,101 @@
+.admin-dashboard {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-dashboard h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.section {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.section-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.section-header:hover {
+  color: #006fa3;
+}
+
+.section-header p {
+  font-size: 0.9rem;
+  color: #777;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+.section-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-content label {
+  font-weight: 500;
+  color: #333;
+}
+
+.section-content input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.section-content button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #0088cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.section-content button:hover {
+  background-color: #006fa3;
+}
+
+hr {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+button {
+  font-family: inherit;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 15px;
+  }
+
+  .section-header {
+    font-size: 1.05rem;
+  }
+
+  .section-content button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}
