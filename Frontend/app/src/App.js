@@ -14,6 +14,7 @@ import AddBook from './pages/AddBook';
 import AddEdition from './pages/AddEdition';
 import RentedBooks from './pages/RentedBooks';
 import AdminDashboard  from './pages/AdminDashboard';
+import NotFound from './pages/NotFound'
 import { isLoggedIn, getUserRoleFromToken } from "./utils/auth";
 import { Fragment } from 'react';
 
@@ -66,6 +67,8 @@ function AppWrapper() {
           path="/admin" 
           element={!isLoggedIn() || userRole !== 'UserRole.admin' ? <Navigate to="/" /> : <AdminDashboard/>}
         />
+         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </Fragment>
   );
