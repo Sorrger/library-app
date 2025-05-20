@@ -16,6 +16,8 @@ const LibrarianDashboard = () => {
 
   const [booksByEditionId, setBooksByEditionId] = useState({});
 
+  const [showLoansCount, setShowLoansCount] = useState("0");
+
   useEffect(() => {
     api.get("/books/count")
       .then((response) => setShowBooksCount(response.data.count))
@@ -24,6 +26,10 @@ const LibrarianDashboard = () => {
     api.get("/editions/count")
       .then((response) => setShowEditionsCount(response.data.count))
       .catch((error) => console.error("Error fetching editions count:", error));
+
+    api.get("/loans/count")
+      .then((response) => setShowLoansCount(response.data.count))
+      .catch((error) => console.error("Error fetching loans count:", error));
 
     const fetchBorrowedLoans = async () => {
       try {
@@ -37,6 +43,7 @@ const LibrarianDashboard = () => {
     };
     fetchBorrowedLoans();
   }, []);
+
 
   useEffect(() => {
     const fetchBookNames = async () => {
@@ -91,9 +98,9 @@ const LibrarianDashboard = () => {
 
       <section className="profile-section">
         <h2 className="section-title">Statystyki</h2>
-        <p><strong>Książek:</strong> {showBooksCount}</p>
-        <p><strong>Edycji:</strong> {showEditionsCount}</p>
-        <p><strong>Wypożyczeń:</strong> NIE PISZ TU</p>
+        <p><strong>Książek:</strong>{showBooksCount}</p>
+        <p><strong>Edycji:</strong>{showEditionsCount}</p>
+        <p><strong>Wypożyczeń:</strong>{showLoansCount}</p>
       </section>
 
       <section className="profile-section">

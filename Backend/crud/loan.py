@@ -29,5 +29,9 @@ def create_loan(db: Session, loan: LoanCreate):
 # == Read ==
 def get_all_loans(db: Session):
     return db.query(Loan).all()
+
+def get_all_loans_count(db: Session):
+    return db.query(Loan).count()
+
 # == Update ==
 # == Delete ==

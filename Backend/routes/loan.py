@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.loan import LoanCreate, Loan, LoanCreateWithoutStudent, LoanWithRelations
 from database.database import get_db
-from crud.loan import get_all_loans, create_loan
+from crud.loan import get_all_loans, create_loan, get_all_loans_count
 from crud.edition import get_reservated_loans_with_students
+from fastapi.responses import JSONResponse
 
 router = APIRouter(tags=['loans'])
 
@@ -30,3 +31,8 @@ def create_loan_for_student(student_id: int, loan_data: LoanCreateWithoutStudent
         return create_loan(db, loan)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.get("/loans/count")
+def get_loans_count_endpoint(db = Depends(get_db)):
+    count = get_all_loans_count(db)
+    return JSONResponse(content={"count": count})

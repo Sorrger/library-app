@@ -46,13 +46,10 @@ const EditionDetails = () => {
         loan_date: new Date().toISOString(),
       });
 
-      // zmiana statusu edycji
       await api.patch(`/editions/${edition.edition_id}/reserved/`);
 
-      // zmniejszenie limitu studenta
       await api.patch(`/students/${account.student_id}/limit-decrease`);
 
-      // odświeżenie stanu komponentu
       setEdition({ ...edition, status: "reserved" });
 
       alert("Reservation successful!");
@@ -67,14 +64,15 @@ const EditionDetails = () => {
   return (
     <div className="edition-details">
       <EditionInfo edition={edition} />
-
-      {edition?.status === "available" ? (
-        <button className="reserve-button" onClick={handleReservation}>
-          Reserve This Edition
-        </button>
-      ) : (
-        <p className="already-reserved">This edition is currently not available.</p>
-      )}
+      {account?.role === "student" ? (
+        edition?.status === "available" ? (
+          <button className="reserve-button" onClick={handleReservation}>
+            Reserve This Edition
+          </button>
+        ) : (
+          <p className="already-reserved">This edition is currently not available.</p>
+        )
+      ) : null}
     </div>
   );
 };
