@@ -37,11 +37,11 @@ def get_reservated_loans_with_students(db: Session):
     return db.query(Loan) \
              .join(Loan.edition) \
              .join(Loan.student) \
-             .filter(Loan.edition.has(status=EditionStatus.RESERVED.value)) \
+             .filter(Edition.status == EditionStatus.RESERVED) \
              .all()
 
 def get_rented_editions(db:Session):
-    return db.query(Edition).filter(Edition.status == EditionStatus.BORROWED).all()
+    return db.query(Edition).filter(Edition.status == "borrowed").all()
 
 def get_edition_count(db: Session):
     return db.query(Edition).count()

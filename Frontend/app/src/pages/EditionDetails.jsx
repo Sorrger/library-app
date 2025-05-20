@@ -47,13 +47,14 @@ const EditionDetails = () => {
       });
 
       // zmiana statusu edycji
-      await api.patch(`/editions/${edition.edition_id}/reservation/`);
+      await api.patch(`/editions/${edition.edition_id}/reserved/`);
 
       // zmniejszenie limitu studenta
       await api.patch(`/students/${account.student_id}/limit-decrease`);
 
       // odświeżenie stanu komponentu
-      setEdition({ ...edition, status: "reservation" });
+      setEdition({ ...edition, status: "reserved" });
+
       alert("Reservation successful!");
     } catch (err) {
       alert("Reservation failed: " + (err.response?.data?.detail || err.message));
