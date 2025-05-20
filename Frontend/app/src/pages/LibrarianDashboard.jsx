@@ -56,10 +56,12 @@ const LibrarianDashboard = () => {
       fetchBookNames();
     }
   }, [borrowedLoans]);
-
+  
   const handleChangeStatusToReserved = async (editionId) => {
     try {
-      await api.patch(`/editions/${editionId}/borrowed/`);
+      await api.patch(`/editions/${editionId}/status`, {
+        status: "borrowed"
+      });
       setBorrowedLoans((prev) =>
         prev.filter((loan) => loan.edition.edition_id !== editionId)
       );

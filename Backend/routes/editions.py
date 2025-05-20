@@ -40,14 +40,9 @@ def count_editions_endpoint(db = Depends(get_db)):
     return JSONResponse(content={"count": count})
 
 
-@router.patch("/editions/{id}/{status}/", response_model=EditionStatusUpdate)
-def edition_status_change_endpoint(id: int, status: str, db = Depends(get_db)):
-    try:
-        parsed_status = EditionStatus(status.lower())
-    except ValueError:
-        raise HTTPException(status_code=400, detail=f"Invalid status: '{status}'. Must be one of: {[s.value for s in EditionStatus]}")
-    
-    updated = update_edition_status(db, id, parsed_status)
+@router.patch("/editions/{id}/status", response_model=EditionStatusUpdate)
+def edition_status_change_endpoint(id: int, status_update: EditionStatusUpdate, db = Depends(get_db)):
+    updated = update_edition_status(db, id, status_update.status)
     if not updated:
         raise HTTPException(status_code=404, detail="Edition not found")
     return updated

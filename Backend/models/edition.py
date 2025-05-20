@@ -7,7 +7,10 @@ class Edition(Base):
     __tablename__ = "editions"
 
     edition_id = Column(Integer, primary_key=True, autoincrement=True)
-    status = Column(Enum(EditionStatus), nullable=False)
+    status = Column(
+        Enum(EditionStatus, name="editionstatus", values_callable=lambda x: [e.value for e in x]),
+        nullable=False
+    )   
     book_format = Column(String(255), nullable=False)
 
     book_id = Column(Integer, ForeignKey("books.book_id", ondelete="CASCADE"), nullable=False)
