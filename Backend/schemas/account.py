@@ -16,6 +16,10 @@ class AccountCreate(AccountBase):
     password: str
     student_id: Optional[int] = None
 
+class AccountUpdate(BaseModel):
+    password: Optional[str] = None
+    role: Optional[UserRole] = None
+
 class AccountCreateRequest(AccountBase):
     password: str
     student: Optional[StudentBase] = None

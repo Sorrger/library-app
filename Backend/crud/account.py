@@ -21,13 +21,13 @@ def create_account(db: Session, account_data: AccountCreate):
 
 
 # == Read ==
-def get_account_by_login(db: Session, login: UserRole):
+def get_account_by_login(db: Session, login: str):
     return db.query(Account).filter(Account.login == login).first()
 
 
 #wypisanie wszystkich bibliotekarzy
-def get_all_librarians(db: Session, role: str):
-    return db.query(Account).filter(Account.role == role).all()
+def get_all_librarians(db: Session, login: UserRole):
+    return db.query(Account).filter(Account.role == login).all()
 
 
 def get_student_by_data(db: Session, name: str, surname: str, phone_number: str | None):
