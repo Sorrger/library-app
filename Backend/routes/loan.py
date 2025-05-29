@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.loan import LoanCreate, Loan, LoanCreateWithoutStudent, LoanWithRelations
 from database.database import get_db
-from crud.loan import get_all_loans, create_loan, get_all_loans_count, get_active_borrowings_count
+from crud.loan import get_all_loans, create_loan, get_all_loans_count, get_active_borrowings_count, mark_loan_as_returned
 from crud.edition import get_reservated_loans_with_students, get_borrowed_loans_with_students
 from fastapi.responses import JSONResponse
 
@@ -29,9 +29,17 @@ def get_loans_count_endpoint(db = Depends(get_db)):
     return JSONResponse(content={"count": count})
 
 @router.get("/active-loans/count")
-def get_loans_count_endpoint(db = Depends(get_db)):
+def get_loans_active_count_endpoint(db = Depends(get_db)):
     count = get_active_borrowings_count(db)
     return JSONResponse(content={"count": count})
+
+@router.patch("/loans/{edition_id}/return")
+def return_loan_endpoint(edition_id: int, db = Depends(get_db)):
+    loan = mark_loan_as_returned(db, edition_id)
+    if not loan:
+        raise HTTPException(status_code=404, detail="Nie znaleziono aktywnego wypożyczenia")
+    return {"message": "Zwrócono wypożyczenie"}
+
 
 @router.post("/students/{student_id}/loans", response_model=Loan)
 def create_loan_for_student(student_id: int, loan_data: LoanCreateWithoutStudent, db = Depends(get_db)):

@@ -26,7 +26,6 @@ def get_editions_by_book_id(db: Session, book_id: int):
 def get_all_available_editions(db: Session):
     return db.query(Edition).filter(Edition.status == EditionStatus.AVAILABLE).all()
 
-#TU
 def get_book_by_edition_id(db: Session, edition_id: int):
     edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()
     if not edition:
@@ -34,18 +33,36 @@ def get_book_by_edition_id(db: Session, edition_id: int):
     return edition.book
 
 def get_reservated_loans_with_students(db: Session):
-    return db.query(Loan) \
-             .join(Loan.edition) \
-             .join(Loan.student) \
-             .filter(Edition.status == EditionStatus.RESERVED) \
-             .all()
+    loans = db.query(Loan) \
+              .join(Loan.edition) \
+              .join(Loan.student) \
+              .filter(Edition.status == EditionStatus.RESERVED) \
+              .order_by(Loan.loan_date.desc()) \
+              .all()
+    
+    unique_loans = {}
+    for loan in loans:
+        if loan.edition.edition_id not in unique_loans:
+            unique_loans[loan.edition.edition_id] = loan
+    
+    return list(unique_loans.values())
+
 
 def get_borrowed_loans_with_students(db: Session):
-    return db.query(Loan) \
-             .join(Loan.edition) \
-             .join(Loan.student) \
-             .filter(Edition.status == EditionStatus.BORROWED) \
-             .all()
+    loans = db.query(Loan) \
+              .join(Loan.edition) \
+              .join(Loan.student) \
+              .filter(Edition.status == EditionStatus.BORROWED) \
+              .order_by(Loan.loan_date.desc()) \
+              .all()
+    
+    unique_loans = {}
+    for loan in loans:
+        if loan.edition.edition_id not in unique_loans:
+            unique_loans[loan.edition.edition_id] = loan
+    
+    return list(unique_loans.values())
+
 
 def get_edition_count(db: Session):
     return db.query(Edition).count()

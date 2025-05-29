@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from models.loan import Loan
 from schemas.loan import LoanCreate
-
+from datetime import datetime
 
 # == Create ==
 
@@ -37,4 +37,16 @@ def get_all_loans_count(db: Session):
     return db.query(Loan).count()
 
 # == Update ==
+
+def mark_loan_as_returned(db: Session, edition_id: int):
+    loan = db.query(Loan).filter(
+        Loan.edition_id == edition_id,
+        Loan.return_date == None
+    ).first()
+
+    if loan:
+        loan.return_date = datetime.utcnow()
+        db.commit()
+        db.refresh(loan)
+    return loan
 # == Delete ==

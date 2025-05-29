@@ -119,12 +119,14 @@ const LibrarianDashboard = () => {
     }
   };
 
-  const handleChangeStatusToAvailable = async (editionId) => {
+  const handleChangeStatusToAvailable = async (editionId, studentId) => {
     try {
+      await api.patch(`/loans/${editionId}/return`);
       await api.patch(`/editions/${editionId}/available/`);
+      await api.patch(`/students/${studentId}/limit-increase`);
       fetchReservedLoans();
       fetchBorrowedLoans();
-      alert("Status zmieniony na AVAILABLE");
+      alert("Status zmieniony na AVAILABLE i zwiększono limit studenta");
     } catch (err) {
       alert("Błąd zmiany statusu: " + (err.response?.data?.detail || err.message));
     }
@@ -257,12 +259,14 @@ const LibrarianDashboard = () => {
                     <td>{loan.student.name}</td>
                     <td>{loan.student.surname}</td>
                     <td>
-                      <button
-                        className="action-button"
-                        onClick={() => handleChangeStatusToAvailable(loan.edition.edition_id)}
-                      >
-                        Zmień na AVAILABLE
-                      </button>
+                        <button
+                          className="action-button"
+                          onClick={() =>
+                            handleChangeStatusToAvailable(loan.edition.edition_id, loan.student.student_id)
+                          }
+                        >
+                          Zmień na AVAILABLE
+                        </button>
                     </td>
                   </tr>
                 ))}
