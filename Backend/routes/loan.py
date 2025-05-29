@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from schemas.loan import LoanCreate, Loan, LoanCreateWithoutStudent, LoanWithRelations
 from database.database import get_db
 from crud.loan import get_all_loans, create_loan, get_all_loans_count, get_active_borrowings_count, mark_loan_as_returned
-from crud.edition import get_reservated_loans_with_students, get_borrowed_loans_with_students
+from crud.edition import get_reservated_loans_with_students, get_borrowed_loans_with_students, get_borrowed_loans_with_students_by_student_id, get_reserved_loans_with_students_by_student_id
 from fastapi.responses import JSONResponse
 
 router = APIRouter(tags=['loans'])
@@ -22,6 +22,14 @@ def get_reservated_loans_with_students_endpoint(db = Depends(get_db)):
 @router.get("/loans/borrowed", response_model=list[LoanWithRelations])
 def get_borrowed_loans_with_students_endpoint(db = Depends(get_db)):
     return get_borrowed_loans_with_students(db)
+
+@router.get("/students/{student_id}/reservations", response_model=list[LoanWithRelations])
+def get_student_reserved_endpoint(student_id : int, db = Depends(get_db)):
+    return get_reserved_loans_with_students_by_student_id(db, student_id)
+
+@router.get("/students/{student_id}/borrowed", response_model=list[LoanWithRelations])
+def get_student_borrowed_endpoint(student_id : int, db = Depends(get_db)):
+    return get_borrowed_loans_with_students_by_student_id(db, student_id)
 
 @router.get("/loans/count")
 def get_loans_count_endpoint(db = Depends(get_db)):

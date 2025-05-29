@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from models.student import Student
 from models.edition import Edition
 from models.enums import EditionStatus
 from models.loan import Loan
@@ -47,6 +48,21 @@ def get_reservated_loans_with_students(db: Session):
     
     return list(unique_loans.values())
 
+def get_reserved_loans_with_students_by_student_id(db: Session, student_id: int):
+    loans = db.query(Loan) \
+              .join(Loan.edition) \
+              .join(Loan.student) \
+              .filter(Student.student_id == student_id) \
+              .filter(Edition.status == EditionStatus.RESERVED) \
+              .order_by(Loan.loan_date.desc()) \
+              .all()
+    
+    unique_loans = {}
+    for loan in loans:
+        if loan.edition.edition_id not in unique_loans:
+            unique_loans[loan.edition.edition_id] = loan
+    
+    return list(unique_loans.values())
 
 def get_borrowed_loans_with_students(db: Session):
     loans = db.query(Loan) \
@@ -63,6 +79,21 @@ def get_borrowed_loans_with_students(db: Session):
     
     return list(unique_loans.values())
 
+def get_borrowed_loans_with_students_by_student_id(db: Session, student_id: int):
+    loans = db.query(Loan) \
+              .join(Loan.edition) \
+              .join(Loan.student) \
+              .filter(Student.student_id == student_id) \
+              .filter(Edition.status == EditionStatus.BORROWED) \
+              .order_by(Loan.loan_date.desc()) \
+              .all()
+    
+    unique_loans = {}
+    for loan in loans:
+        if loan.edition.edition_id not in unique_loans:
+            unique_loans[loan.edition.edition_id] = loan
+    
+    return list(unique_loans.values())
 
 def get_edition_count(db: Session):
     return db.query(Edition).count()

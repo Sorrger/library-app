@@ -163,9 +163,6 @@ const LibrarianDashboard = () => {
         <button className="action-button" onClick={() => navigate("editions/add")}>
           ➕ Dodaj edycję
         </button>
-        <button className="action-button">
-          📄 Lista wypożyczeń !!!!!!!!TO DO!!!!!!!!
-        </button>
       </section>
 
       <section className="profile-section">
