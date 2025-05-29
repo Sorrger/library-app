@@ -1,7 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from models.loan import Loan
-from models.edition import EditionStatus
 from schemas.loan import LoanCreate
 from datetime import datetime
 
@@ -52,20 +51,11 @@ def mark_loan_as_returned(db: Session, edition_id: int):
     return loan
 
 # == Delete ==
-def delete_reservation(db: Session, loan_id: int):
-    loan = (
-        db.query(Loan)
-          .options(joinedload(Loan.edition))
-          .filter(
-              Loan.id == loan_id,
-              Loan.return_date.is_(None)
-          )
-          .first()
-    )
-    if not loan:
+def delete_reservation(db:Session, loan_id: int):
+    loan = db.query(Loan).filter(Loan.id == loan_id,
+                                    Loan.return_date.is_(None)).first
+    if not loan: 
         return False
-    loan.edition.status = EditionStatus.AVAILABLE
-
     db.delete(loan)
-    db.commit()
-    return True
+    db.commit
+    

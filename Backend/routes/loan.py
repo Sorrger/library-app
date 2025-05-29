@@ -61,4 +61,3 @@ def create_loan_for_student(student_id: int, loan_data: LoanCreateWithoutStudent
         return create_loan(db, loan)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
