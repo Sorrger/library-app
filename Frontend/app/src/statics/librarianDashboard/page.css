@@ -58,6 +58,11 @@ strong {
     font-size: 1.1rem;
     font-weight: bold;
 }
+.scrollable-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 
 
 @media (max-width: 768px) {
