@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from schemas.edition import Edition, EditionCreate, EditionStatusUpdate, EditionUpdate
 from database.database import get_db
 from models.enums import EditionStatus
-from crud.edition import get_all_editions, update_edition, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id, get_edition_count
+from crud.edition import get_all_editions, update_edition, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id, get_edition_count, get_publisher_by_edition_id
 
 router = APIRouter(tags=['editions'])
 
@@ -22,6 +22,14 @@ def get_edition_detail_endpoint(edition_id: int, db = Depends(get_db)):
     if edition is None:
         raise HTTPException(status_code=404, detail="Edition not found")
     return edition
+
+@router.get("/editions/{edition_id}/publisher")
+def get_publisher_by_edition_id_endpoint(edition_id: int, db = Depends(get_db)):
+    publisher = get_publisher_by_edition_id(db, edition_id)
+    if not publisher:
+        raise HTTPException(status_code=404, detail="Publisher not found or Edition does not exist")
+    return publisher
+
 
 @router.patch("/editions/{edition_id}", response_model=Edition)
 def update_edition_endpoint(edition_id: int, edition_update: EditionUpdate, db = Depends(get_db)):

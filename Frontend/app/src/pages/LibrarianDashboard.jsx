@@ -13,6 +13,8 @@ const LibrarianDashboard = () => {
   const [reservedLoans, setReservedLoans] = useState([]);
   const [loadingLoans, setLoadingLoans] = useState(true);
   const [errorLoans, setErrorLoans] = useState(null);
+  const [books, setBooks] = useState([]);
+  const [editions, setEditions] = useState([]);
 
   const [borrowedLoans, setBorrowedLoans] = useState([]);
   const [loadingBorrowed, setLoadingBorrowed] = useState(true);
@@ -24,8 +26,14 @@ const LibrarianDashboard = () => {
   const [activeLoans, setActiveLoansCount] = useState("0");
   const [showLoansCount, setShowLoansCount] = useState("0");
 
+  const [editionBooks, setEditionBooks] = useState({});
+  const [editionPublishers, setEditionPublishers] = useState({});
+
   const [searchReserved, setSearchReserved] = useState("");
   const [searchBorrowed, setSearchBorrowed] = useState("");
+  const [searchBooks, setSearchBooks] = useState("");
+  const [searchEditions, setSearchEditions] = useState("");
+
 
   const fetchReservedLoans = async () => {
     try {
@@ -108,6 +116,16 @@ const LibrarianDashboard = () => {
     }
   }, [borrowedLoans]);
 
+  useEffect(() => {
+    api.get("/books")
+      .then((response) => setBooks(response.data))
+      .catch((error) => console.error("Error fetching books:", error));
+
+    api.get("/editions")
+      .then((response) => setEditions(response.data))
+      .catch((error) => console.error("Error fetching editions:", error));
+  }, []);
+
   const handleChangeStatusToBorrowed = async (editionId) => {
     try {
       await api.patch(`/editions/${editionId}/borrowed/`);
@@ -118,6 +136,33 @@ const LibrarianDashboard = () => {
       alert("Błąd zmiany statusu: " + (err.response?.data?.detail || err.message));
     }
   };
+  useEffect(() => {
+  const fetchEditionBooksAndPublishers = async () => {
+      const booksMap = {};
+      const publishersMap = {};
+      for (const edition of editions) {
+        try {
+          const resBook = await api.get(`/editions/${edition.edition_id}/book`);
+          booksMap[edition.edition_id] = resBook.data.title;
+        } catch {
+          booksMap[edition.edition_id] = "Błąd pobrania tytułu";
+        }
+        try {
+          const resPublisher = await api.get(`/editions/${edition.edition_id}/publisher`);
+          publishersMap[edition.edition_id] = resPublisher.data.name;
+        } catch {
+          publishersMap[edition.edition_id] = "Błąd pobrania wydawnictwa";
+        }
+      }
+      setEditionBooks(booksMap);
+      setEditionPublishers(publishersMap);
+    };
+
+    if (editions.length > 0) {
+      fetchEditionBooksAndPublishers();
+    }
+  }, [editions]);
+
 
   const handleChangeStatusToAvailable = async (editionId, studentId) => {
     try {
@@ -144,8 +189,18 @@ const LibrarianDashboard = () => {
     (borrowedBooksByEditionId[loan.edition.edition_id] || "")
       .toLowerCase()
       .includes(searchBorrowed.toLowerCase()) ||
-    loan.student.name.toLowerCase().includes(searchBorrowed.toLowerCase()) ||
-    loan.student.surname.toLowerCase().includes(searchBorrowed.toLowerCase())
+      loan.student.name.toLowerCase().includes(searchBorrowed.toLowerCase()) ||
+      loan.student.surname.toLowerCase().includes(searchBorrowed.toLowerCase())
+    );
+
+  const filteredBooks = books.filter((book) =>
+    (book.title || "").toLowerCase().includes(searchBooks.toLowerCase()) ||
+    (book.author || "").toLowerCase().includes(searchBooks.toLowerCase())
+  );
+
+  const filteredEditions = editions.filter((edition) =>
+    (edition.status?.toLowerCase().includes(searchEditions.toLowerCase())) ||
+    (edition.publication_year?.toString().includes(searchEditions))
   );
 
   return (
@@ -271,6 +326,70 @@ const LibrarianDashboard = () => {
             </table>
           </div>
         )}
+      </section>
+      <section className="profile-section">
+        <h2 className="section-title">Lista książek</h2>
+        <input
+          type="text"
+          placeholder="Szukaj po tytule..."
+          className="search-input"
+          value={searchBooks}
+          onChange={(e) => setSearchBooks(e.target.value)}
+        />
+        <div className="scrollable-table-container">
+          <table className="borrowed-loans-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tytuł książki</th>
+                <th>Data publikacji</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredBooks.map((book) => (
+                <tr key={book.book_id} style={{ cursor: "default" }}>
+                  <td>{book.book_id}</td>
+                  <td>{book.title}</td>
+                  <td>{book.release_date || "-"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section className="profile-section">
+        <h2 className="section-title">Lista edycji</h2>
+        <input
+          type="text"
+          placeholder="Szukaj po tytule, wydawnictwie lub statusie..."
+          className="search-input"
+          value={searchEditions}
+          onChange={(e) => setSearchEditions(e.target.value)}
+        />
+        <div className="scrollable-table-container">
+          <table className="borrowed-loans-table">
+            <thead>
+              <tr>
+                <th>Tytuł książki</th>
+                <th>Wydawnictwo</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEditions.map((edition) => (
+                <tr
+                  key={edition.edition_id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}
+                >
+                  <td>{editionBooks[edition.edition_id] || "Ładowanie..."}</td>
+                  <td>{editionPublishers[edition.edition_id] || "Ładowanie..."}</td>
+                  <td>{edition.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   );
