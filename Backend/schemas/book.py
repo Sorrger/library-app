@@ -7,11 +7,16 @@ from datetime import date
 class BookBase(BaseModel):
     title: str
     release_date: date
-    
 
 class BookCreate(BookBase):
     author_ids: List[int] = []
     genre_ids: List[int] = []
+
+class BookUpdate(BaseModel):
+    title: Optional[str] = None
+    release_date: Optional[date] = None
+    author_ids: Optional[List[int]] = None
+    genre_ids: Optional[List[int]] = None
 
 class BookResponse(BaseModel):
     book_id: int

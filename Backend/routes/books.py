@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from schemas.book import BookCreate, Book, BookResponse
+from schemas.book import BookCreate, Book, BookResponse, BookUpdate
 from database.database import get_db
 from typing import Optional
-from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count
+from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count, update_book
 from crud.edition import get_edition_by_id
 
 router = APIRouter(tags=['books'])
@@ -41,7 +41,6 @@ def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Book not found")
     return db_book
 
-
 @router.post("/books", response_model=BookResponse)
 def create_book_endpoint(book: BookCreate, db = Depends(get_db)):
     return create_book(db, book)
@@ -53,6 +52,12 @@ def delete_book_endpoint(book_id: int, db = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Book not found")
     return book
 
+@router.patch("/books/{book_id}", response_model=Book)
+def update_book_endpoint(book_id: int, book_update: BookUpdate, db = Depends(get_db)):
+    updated_book = update_book(db, book_id, book_update)
+    if updated_book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return updated_book
 
 @router.get("/editions/{edition_id}/book", response_model=Book)
 def get_book_by_edition_id(edition_id: int, db = Depends(get_db)):

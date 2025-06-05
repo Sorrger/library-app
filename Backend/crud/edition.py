@@ -3,8 +3,7 @@ from models.student import Student
 from models.edition import Edition
 from models.enums import EditionStatus
 from models.loan import Loan
-
-from schemas.edition import EditionCreate
+from schemas.edition import EditionCreate, EditionUpdate
 
 # == Create ==
 def create_edition(db: Session, edition: EditionCreate):
@@ -104,6 +103,21 @@ def update_edition_status(db: Session, edition_id: int, new_status: EditionStatu
     if not edition:
         return None
     edition.status = EditionStatus(new_status.value)
+    db.commit()
+    db.refresh(edition)
+    return edition
+
+
+def update_edition(db: Session, edition_id: int, edition_update: EditionUpdate):
+    edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()
+    if not edition:
+        return None
+
+    update_data = edition_update.dict(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(edition, key, value)
+
     db.commit()
     db.refresh(edition)
     return edition
