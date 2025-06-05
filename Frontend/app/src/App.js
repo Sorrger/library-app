@@ -13,6 +13,8 @@ import LibrarianDashboard from './pages/LibrarianDashboard';
 import AddBook from './pages/AddBook';
 import AddEdition from './pages/AddEdition';
 import RentedBooks from './pages/RentedBooks';
+import EditBook from './pages/EditBook';
+import EditEdition from './pages/EditEdition';
 import AdminDashboard  from './pages/AdminDashboard';
 import NotFound from './pages/NotFound'
 import { isLoggedIn, getUserRoleFromToken } from "./utils/auth";
@@ -34,6 +36,15 @@ function AppWrapper() {
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
         <Route path="/editions/:id" element={<EditionDetails />} />
+        <Route 
+                path="/books/edit/:id" 
+                element={!isLoggedIn() || (userRole !== 'UserRole.librarian' && userRole !== 'UserRole.admin') ? <Navigate to="/" /> : <EditBook />} 
+                />
+                <Route 
+                path="/editions/edit/:id" 
+                element={!isLoggedIn() || (userRole !== 'UserRole.librarian' && userRole !== 'UserRole.admin') ? <Navigate to="/" /> : <EditEdition />} 
+                />
+
         <Route path="/about" element={<About />} />
         <Route 
           path="/register" 

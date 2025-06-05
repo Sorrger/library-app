@@ -195,7 +195,7 @@ const LibrarianDashboard = () => {
 
   const filteredBooks = books.filter((book) =>
     (book.title || "").toLowerCase().includes(searchBooks.toLowerCase()) ||
-    (book.author || "").toLowerCase().includes(searchBooks.toLowerCase())
+    (book.authors || "").toLowerCase().includes(searchBooks.toLowerCase())
   );
 
   const filteredEditions = editions.filter((edition) =>
@@ -347,7 +347,11 @@ const LibrarianDashboard = () => {
             </thead>
             <tbody>
               {filteredBooks.map((book) => (
-                <tr key={book.book_id} style={{ cursor: "default" }}>
+                <tr
+                  key={book.book_id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/books/edit/${book.book_id}`)}
+                >
                   <td>{book.book_id}</td>
                   <td>{book.title}</td>
                   <td>{book.release_date || "-"}</td>
@@ -373,6 +377,7 @@ const LibrarianDashboard = () => {
                 <th>Tytuł książki</th>
                 <th>Wydawnictwo</th>
                 <th>Status</th>
+                <th>Format</th>
               </tr>
             </thead>
             <tbody>
@@ -385,6 +390,7 @@ const LibrarianDashboard = () => {
                   <td>{editionBooks[edition.edition_id] || "Ładowanie..."}</td>
                   <td>{editionPublishers[edition.edition_id] || "Ładowanie..."}</td>
                   <td>{edition.status}</td>
+                  <td>{edition.book_format}</td>
                 </tr>
               ))}
             </tbody>
