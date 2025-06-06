@@ -56,7 +56,7 @@ function AppWrapper() {
         />
         <Route 
           path="/profile" 
-          element={!isLoggedIn() ? <Navigate to="/" /> : <Profile />} 
+          element={!isLoggedIn() || (userRole === 'UserRole.librarian' && userRole === 'UserRole.admin') ? <Navigate to="/" /> : <Profile />} 
         />
         <Route 
           path="/librarian-dashboard"  

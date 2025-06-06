@@ -1,7 +1,7 @@
 import React from "react";
 import "../../statics/profile/studentData.css";
 
-const StudentData = ({ student, reservations, borrowed, onCancelReservation, onReturnBorrowed }) => {
+const StudentData = ({ student, reservations, borrowed, onCancelReservation}) => {
   return (
     <div className="profile-section">
       <h2 className="section-title">Student Data</h2>
@@ -17,7 +17,15 @@ const StudentData = ({ student, reservations, borrowed, onCancelReservation, onR
             {reservations.map(res => (
               <li key={res.id}>
                 {res.edition?.book?.title ?? `Edycja #${res.edition?.edition_id}`}
-                <button onClick={() => onCancelReservation(res.id)}>Cancel</button>
+                {onCancelReservation && (
+                  <button
+                    className="cancel-button"
+                    onClick={() => onCancelReservation(res.id)}
+                    aria-label={`Cancel reservation for ${res.edition?.book?.title}`}
+                  >
+                    Cancel
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -33,7 +41,6 @@ const StudentData = ({ student, reservations, borrowed, onCancelReservation, onR
             {borrowed.map(b => (
               <li key={b.id}>
                 {b.edition?.book?.title ?? `Edycja #${b.edition?.edition_id}`}
-                <button onClick={() => onReturnBorrowed(b.id)}>Return</button>
               </li>
             ))}
           </ul>

@@ -7,40 +7,46 @@ import "../statics/editionDetails/page.css";
 const EditionDetails = () => {
   const { id } = useParams();
   const [edition, setEdition] = useState(null);
+  const [student, setStudent] = useState(null);
+  const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [account, setAccount] = useState(null);
 
   useEffect(() => {
-    const fetchEditionDetails = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/editions/${id}`);
-        setEdition(response.data);
+        const editionRes = await api.get(`/editions/${id}`);
+        setEdition(editionRes.data);
+
+        const accountRes = await api.get("/me");
+        setAccount(accountRes.data);
+
+        if (accountRes.data.student_id) {
+          const studentRes = await api.get(`/students/${accountRes.data.student_id}`);
+          setStudent(studentRes.data);
+        }
       } catch (err) {
-        setError("Failed to load edition details.");
+        setError("Failed to load data.");
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchAccount = async () => {
-      try {
-        const res = await api.get("/me");
-        setAccount(res.data);
-      } catch (e) {
-        console.error("Failed to fetch account data.");
-      }
-    };
-
-    fetchEditionDetails();
-    fetchAccount();
+    fetchData();
   }, [id]);
 
   const handleReservation = async () => {
     if (!edition?.edition_id) return;
+    if (!student) {
+      alert("Student data is missing.");
+      return;
+    }
+    if (student.books_limit <= 0) {
+      alert("You have reached your book limit. Please return some books before reserving.");
+      return;
+    }
 
     try {
-      // utworzenie loanu
       await api.post(`/students/${account.student_id}/loans`, {
         edition_id: edition.edition_id,
         loan_date: new Date().toISOString(),
