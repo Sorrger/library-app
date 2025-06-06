@@ -59,7 +59,7 @@ strong {
     font-weight: bold;
 }
 .scrollable-table-container {
-  max-height: 400px;
+  max-height: 100px;
   overflow-y: auto;
 }
 

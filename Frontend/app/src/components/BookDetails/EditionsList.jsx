@@ -1,22 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../statics/bookDetails/editionList.css";
 
 const EditionsList = ({ editions }) => {
   const navigate = useNavigate();
 
+  // Stany filtrów
+  const [formatFilter, setFormatFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [publishingHouseFilter, setPublishingHouseFilter] = useState("");
+
   const handleViewDetails = (editionId) => {
     navigate(`/editions/${editionId}`);
   };
 
+  // Filtrujemy edycje według wpisanych filtrów (case insensitive)
+  const filteredEditions = editions.filter((edition) => {
+    const formatMatch = edition.book_format.toLowerCase().includes(formatFilter.toLowerCase());
+    const statusMatch = edition.status.toLowerCase().includes(statusFilter.toLowerCase());
+    const publishingHouseName = edition.publishing_house ? edition.publishing_house.name : "";
+    const publishingHouseMatch = publishingHouseName.toLowerCase().includes(publishingHouseFilter.toLowerCase());
+
+    return formatMatch && statusMatch && publishingHouseMatch;
+  });
+
   return (
     <div className="editions-list">
       <h2 className="editions-title">Editions</h2>
-      {editions.length === 0 ? (
-        <p className="no-editions">No editions available for this book.</p>
+
+      {/* Filtry */}
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Search by format"
+          value={formatFilter}
+          onChange={(e) => setFormatFilter(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Search by status"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Search by publishing house"
+          value={publishingHouseFilter}
+          onChange={(e) => setPublishingHouseFilter(e.target.value)}
+        />
+      </div>
+
+      {filteredEditions.length === 0 ? (
+        <p className="no-editions">No editions match your search criteria.</p>
       ) : (
         <ul className="editions-items">
-          {editions.map((edition) => (
+          {filteredEditions.map((edition) => (
             <li key={edition.edition_id} className="edition-item">
               <p>
                 <strong>Format:</strong> {edition.book_format},{" "}
