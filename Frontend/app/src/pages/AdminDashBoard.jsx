@@ -1,207 +1,241 @@
 import React, { useState, useEffect } from "react";
-import '../statics/admindashboard/adminDashboard.css';
+import "../statics/admindashboard/adminDashboard.css";
 import api from "../api/apiClient";
 
 const AdminDashboard = () => {
+  const [allAccounts, setAllAccounts] = useState([]);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [account, setAccount] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
+
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showAddLibrarian, setShowAddLibrarian] = useState(false);
   const [showAddAdmin, setShowAddAdmin] = useState(false);
+  const [showManageAccounts, setShowManageAccounts] = useState(false);
 
-  // ---- Search by login ----
-  const [loginSearch, setLoginSearch] = useState("");
-  const [account, setAccount] = useState(null);
-  const [newPassword, setNewPassword] = useState("");
-  
+  const fetchAccounts = () => {
+    api.get("/accounts")
+      .then(res => {
+        setAllAccounts(res.data);
+        setFilteredAccounts(res.data);
+      })
+      .catch(err => console.error("Error fetching accounts:", err));
+  };
+
   useEffect(() => {
-    const login = loginSearch.trim();
-    if (!login) {
-      setAccount(null);
-      return;
-    }
+    fetchAccounts();
+  }, []);
 
-    api.get("/account", { params: { login } })
-      .then(res => setAccount(res.data))
-      .catch(err => {
-        if (err.response?.status === 404) {
-          setAccount(null);
-        } else {
-          console.error("Error fetching account:", err);
-        }
-      });
-  }, [loginSearch]);
+  useEffect(() => {
+    const query = searchQuery.toLowerCase();
+    setFilteredAccounts(
+      allAccounts.filter(acc => acc.login.toLowerCase().includes(query))
+    );
+  }, [searchQuery, allAccounts]);
+
+  const handleSelectAccount = (acc) => {
+    setAccount(acc);
+    setNewPassword("");
+  };
+
   const handleUpdate = (e) => {
     e.preventDefault();
     api.patch(`/account/${account.account_id}`, {
-      password: newPassword || undefined
+      password: newPassword || undefined,
+      role: account.role
     })
       .then(res => {
         alert("Zaktualizowano konto!");
         setAccount(res.data);
         setNewPassword("");
+        setAllAccounts(prev =>
+          prev.map(a => (a.account_id === res.data.account_id ? res.data : a))
+        );
       })
       .catch(err => alert("Błąd aktualizacji: " + err));
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this account?")) {
+      api.delete(`/account/${account.account_id}`)
+        .then(() => {
+          alert("Account deleted");
+          setAllAccounts(prev =>
+            prev.filter(a => a.account_id !== account.account_id)
+          );
+          setAccount(null);
+        })
+        .catch(err => alert("Error deleting account: " + err));
+    }
   };
 
   return (
     <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
 
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search account by login…"
-          value={loginSearch}
-          onChange={e => setLoginSearch(e.target.value)}
-          className="search-input"
-        />
-      </div>
-
-      {/* Result & Update */}
-      <div className="accounts-list">
-        <h2>Account Details</h2>
-        {account ? (
-          <>
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th><th>Login</th><th>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{account.account_id}</td>
-                  <td>{account.login}</td>
-                  <td>{account.role}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <form className="section-content" onSubmit={handleUpdate}>
-              <h3>Update Account</h3>
-              <label>
-                New Password:
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
-                  placeholder="Leave blank to keep current"
-                />
-              </label>
-              <br />
-            
-              <button type="submit">Update Account</button>
-            </form>
-          </>
-        ) : (
-          <p>No account found.</p>
-        )}
-      </div>
-
-
       <div className="section">
-        <h3
-          onClick={() => setShowAddStudent(!showAddStudent)}
-          className="section-header"
-        >
+        <h2>Add Users</h2>
+
+        <h3 onClick={() => setShowAddStudent(!showAddStudent)} className="section-header">
           {showAddStudent ? "▼" : "▶"} Add Student
-          <p>Click to show options to add new student!</p>
         </h3>
         {showAddStudent && (
-          <form
-            className="section-content"
-            onSubmit={e => {
-              e.preventDefault();
-              const form = e.target;
-              const name = form.name.value;
-              const surname = form.surname.value;
-              const phone_number = form.phone_number.value;
-              api.post("/add_student", { name, surname, phone_number })
-                 .then(() => alert("Student added successfully!"))
-                 .catch(err => alert("Error adding student: " + err));
-            }}
-          >
-            <label>
-              Name:
-              <input type="text" name="name" />
-            </label><br/>
-            <label>
-              Surname:
-              <input type="text" name="surname" />
-            </label><br/>
-            <label>
-              Phone Number:
-              <input type="text" name="phone_number" />
-            </label><br/>
+          <form className="section-content" onSubmit={e => {
+            e.preventDefault();
+            const { name, surname, phone_number } = e.target;
+            api.post("/add_student", {
+              name: name.value,
+              surname: surname.value,
+              phone_number: phone_number.value
+            }).then(() => {
+              alert("Student added!");
+              fetchAccounts();
+              e.target.reset();
+            }).catch(err => alert("Error: " + err));
+          }}>
+            <label>Name: <input name="name" required /></label><br />
+            <label>Surname: <input name="surname" required /></label><br />
+            <label>Phone Number: <input name="phone_number" required /></label><br />
             <button type="submit">Add Student</button>
           </form>
         )}
 
-        <hr/>
+        <hr />
 
-        <h3
-          onClick={() => setShowAddLibrarian(!showAddLibrarian)}
-          className="section-header"
-        >
+        <h3 onClick={() => setShowAddLibrarian(!showAddLibrarian)} className="section-header">
           {showAddLibrarian ? "▼" : "▶"} Add Librarian
-          <p>Click to show options to add new librarian!</p>
         </h3>
         {showAddLibrarian && (
-          <form
-            className="section-content"
-            onSubmit={e => {
-              e.preventDefault();
-              const form = e.target;
-              const login = form.login.value;
-              const password = form.password.value;
-              api.post("/add_librarian", { login, password })
-                 .then(() => alert("Librarian added successfully!"))
-                 .catch(err => alert("Error adding librarian: " + err));
-            }}
-          >
-            <label>
-              Login:
-              <input type="text" name="login" />
-            </label><br/>
-            <label>
-              Password:
-              <input type="password" name="password" />
-            </label><br/>
+          <form className="section-content" onSubmit={e => {
+            e.preventDefault();
+            const { login, password } = e.target;
+            api.post("/add_librarian", {
+              login: login.value,
+              password: password.value
+            }).then(() => {
+              alert("Librarian added!");
+              fetchAccounts();
+              e.target.reset();
+            }).catch(err => alert("Error: " + err));
+          }}>
+            <label>Login: <input name="login" required /></label><br />
+            <label>Password: <input type="password" name="password" required /></label><br />
             <button type="submit">Add Librarian</button>
           </form>
         )}
 
-        <hr/>
+        <hr />
 
-        <h3
-          onClick={() => setShowAddAdmin(!showAddAdmin)}
-          className="section-header"
-        >
+        <h3 onClick={() => setShowAddAdmin(!showAddAdmin)} className="section-header">
           {showAddAdmin ? "▼" : "▶"} Add Admin
-          <p>Click to show options to add new admin!</p>
         </h3>
         {showAddAdmin && (
-          <form
-            className="section-content"
-            onSubmit={e => {
-              e.preventDefault();
-              const form = e.target;
-              const login = form.login.value;
-              const password = form.password.value;
-              api.post("/add_admin", { login, password })
-                 .then(() => alert("Admin added successfully!"))
-                 .catch(err => alert("Error adding admin: " + err));
-            }}
-          >
-            <label>
-              Login:
-              <input type="text" name="login" />
-            </label><br/>
-            <label>
-              Password:
-              <input type="password" name="password" />
-            </label><br/>
+          <form className="section-content" onSubmit={e => {
+            e.preventDefault();
+            const { login, password } = e.target;
+            api.post("/add_admin", {
+              login: login.value,
+              password: password.value
+            }).then(() => {
+              alert("Admin added!");
+              fetchAccounts();
+              e.target.reset();
+            }).catch(err => alert("Error: " + err));
+          }}>
+            <label>Login: <input name="login" required /></label><br />
+            <label>Password: <input type="password" name="password" required /></label><br />
             <button type="submit">Add Admin</button>
           </form>
+        )}
+      </div>
+
+      <div className="section">
+        <h3
+          onClick={() => setShowManageAccounts(!showManageAccounts)}
+          className="section-header"
+        >
+          {showManageAccounts ? "▼" : "▶"} Search & Manage Accounts
+        </h3>
+
+        {showManageAccounts && (
+          <>
+            <div className="section-content">
+              <input
+                type="text"
+                placeholder="Search users by login…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+
+              <div className="search-results-scroll">
+                {filteredAccounts.map(acc => (
+                  <div
+                    key={acc.account_id}
+                    className="search-result-item"
+                    onClick={() => handleSelectAccount(acc)}
+                  >
+                    {acc.login} ({acc.role})
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {account && (
+              <div className="section-content">
+                <h2>Account Details</h2>
+                <table>
+                  <thead>
+                    <tr><th>ID</th><th>Login</th><th>Role</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{account.account_id}</td>
+                      <td>{account.login}</td>
+                      <td>{account.role}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <form onSubmit={handleUpdate}>
+                  <h3>Update Account</h3>
+
+                  <label>
+                    New Password:
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                      placeholder="Leave blank to keep current"
+                    />
+                  </label><br />
+
+                  <label>
+                    Change Role:
+                    <select
+                      value={account.role}
+                      onChange={e => setAccount({ ...account, role: e.target.value })}
+                    >
+                      <option value="student">Student</option>
+                      <option value="librarian">Librarian</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </label><br />
+
+                  <button type="submit">Update Account</button>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    style={{ marginLeft: "10px", color: "red" }}
+                  >
+                    Delete Account
+                  </button>
+                </form>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

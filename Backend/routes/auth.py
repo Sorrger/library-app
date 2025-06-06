@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database.database import get_db
-from crud.account import create_account, get_account_by_login, get_student_by_data
-from schemas.account import AccountCreate, Account, AccountCreateRequest, AccountLoginRequest
+from crud.account import create_account, get_account_by_login, get_student_by_data, delete_account, update_account, search_accounts_by_login
+from schemas.account import AccountCreate, Account, AccountCreateRequest, AccountLoginRequest, AccountUpdate
 from utils.security import verify_password
 from utils.jwt import create_access_token, verify_token
 
@@ -76,3 +76,27 @@ def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     
 
     return account
+
+@router.get("/accounts", response_model=list[Account])
+def search_accounts(login: str = "", db: Session = Depends(get_db)):
+    return search_accounts_by_login(db, login)
+
+
+@router.patch("/account/{account_id}", response_model=Account)
+def update_account_endpoint(
+    account_id: int,
+    update_data: AccountUpdate,
+    db: Session = Depends(get_db)
+):
+    account = update_account(db, account_id, update_data)
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
+
+
+@router.delete("/account/{account_id}", status_code=204)
+def delete_account_endpoint(account_id: int, db: Session = Depends(get_db)):
+    account = delete_account(db, account_id)
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return
