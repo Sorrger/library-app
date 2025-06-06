@@ -16,13 +16,14 @@ const StudentData = ({
       <p><strong>Phone number:</strong> {student.phone_number ?? "Brak numeru"}</p>
       <p><strong>Rented Books:</strong> {student.books_limit ?? "Brak"}/5</p>
 
+      {/* Rezerwacje */}
       <div className="profile-subsection">
         <h3>Reservations</h3>
         {reservations.length > 0 ? (
           <ul>
             {reservations.map(res => (
               <li key={res.loan_id}>
-                {res.edition?.book?.title ?? `Edycja #${res.edition?.edition_id}`}
+                {`${res.edition?.book?.title ?? "Brak tytułu"} (Edycja #${res.edition?.edition_id ?? "?"})`}
                 {onCancelReservation && (
                   <button
                     className="cancel-button"
@@ -47,7 +48,7 @@ const StudentData = ({
           <ul>
             {borrowed.map(b => (
               <li key={b.loan_id}>
-                {b.edition?.book?.title ?? `Edycja #${b.edition?.edition_id}`}
+                {`${b.edition?.book?.title ?? "Brak tytułu"} (Edycja #${b.edition?.edition_id ?? "?"})`}
               </li>
             ))}
           </ul>
@@ -63,7 +64,7 @@ const StudentData = ({
           <ul>
             {allLoans.map(loan => (
               <li key={loan.loan_id}>
-                {loan.edition?.book?.title ?? `Edycja #${loan.edition?.edition_id}`} – 
+                {`${loan.edition?.book?.title ?? "Brak tytułu"} (Edycja #${loan.edition?.edition_id ?? "?"})`} – 
                 wypożyczono: {new Date(loan.loan_date).toLocaleDateString()}
                 {loan.return_date && ` – zwrócono: ${new Date(loan.return_date).toLocaleDateString()}`}
               </li>

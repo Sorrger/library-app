@@ -23,6 +23,7 @@ class EditionStatusUpdate(BaseModel):
 
 class Edition(EditionBase):
     edition_id:  int
+    book: Book
     publishing_house: Optional[PublishingHouse] = None 
 
     class Config:
