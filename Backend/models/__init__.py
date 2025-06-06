@@ -6,3 +6,4 @@ from .account import Account
 from .student import Student
 from .loan import Loan
 from .edition import Edition
+from .fine import Fine

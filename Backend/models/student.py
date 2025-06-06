@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from database.database import Base
+from .association_tables import fine_student
 
 class Student(Base):
     __tablename__ = "students"
@@ -11,5 +12,18 @@ class Student(Base):
     phone_number = Column(String, nullable=True)
     books_limit = Column(Integer, default=5)
 
-    account = relationship("Account", back_populates="student", uselist=False) 
-    loans = relationship("Loan", back_populates="student") 
+    account = relationship(
+    "Account",
+    back_populates="student", 
+    uselist=False) 
+
+    loans = relationship(
+    "Loan",
+    back_populates="student") 
+
+    fines = relationship(
+    "Fine",
+    secondary=fine_student,
+    back_populates="students"
+)
+

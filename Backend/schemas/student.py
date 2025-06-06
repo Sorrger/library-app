@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from .fine import Fine
 
 class StudentBase(BaseModel):
     name: str
@@ -11,6 +12,9 @@ class StudentCreate(StudentBase):
 
 class StudentLimitsResponse(StudentBase):
     books_limit: int
+
+class StudentFines(StudentBase):
+    students: List[Fine]
 
 class Student(StudentBase):
     student_id: int
