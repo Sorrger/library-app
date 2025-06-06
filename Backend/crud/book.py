@@ -8,7 +8,7 @@ from schemas.book import BookCreate, BookUpdate
 def create_book(db: Session, book: BookCreate):
     db_book = Book(
         title=book.title,
-        release_date=book.release_dates
+        release_date=book.release_date
     )
 
     if book.author_ids:

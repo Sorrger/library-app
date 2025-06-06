@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import '../statics/admindashboard/adminDashboard.css';
 import api from "../api/apiClient";
 
@@ -12,10 +11,7 @@ const AdminDashboard = () => {
   const [loginSearch, setLoginSearch] = useState("");
   const [account, setAccount] = useState(null);
   const [newPassword, setNewPassword] = useState("");
-  const [newRole, setNewRole] = useState("");
-
-  const navigate = useNavigate();
-
+  
   useEffect(() => {
     const login = loginSearch.trim();
     if (!login) {
@@ -36,8 +32,7 @@ const AdminDashboard = () => {
   const handleUpdate = (e) => {
     e.preventDefault();
     api.patch(`/account/${account.account_id}`, {
-      password: newPassword || undefined,
-      role: newRole
+      password: newPassword || undefined
     })
       .then(res => {
         alert("Zaktualizowano konto!");
@@ -93,18 +88,7 @@ const AdminDashboard = () => {
                 />
               </label>
               <br />
-              <label>
-                Role:
-                <select
-                  value={newRole}
-                  onChange={e => setNewRole(e.target.value)}
-                >
-                  <option value="student">student</option>
-                  <option value="librarian">librarian</option>
-                  <option value="admin">admin</option>
-                </select>
-              </label>
-              <br />
+            
               <button type="submit">Update Account</button>
             </form>
           </>
@@ -219,10 +203,6 @@ const AdminDashboard = () => {
             <button type="submit">Add Admin</button>
           </form>
         )}
-
-        <button onClick={() => navigate("/librarian-dashboard")}>
-          Go to Librarian Dashboard
-        </button>
       </div>
     </div>
   );

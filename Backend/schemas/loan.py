@@ -17,6 +17,8 @@ class LoanCreateWithoutStudent(LoanBase):
 
 class LoanWithRelations(BaseModel):
     loan_id: int
+    loan_date: datetime
+    return_date: Optional[datetime]
     edition: Edition
     student: Student
 

@@ -8,8 +8,8 @@ const LibrarianDashboard = () => {
   const name = getUserNameFromToken();
   const navigate = useNavigate();
 
-  const [showBooksCount, setShowBooksCount] = useState("0");
-  const [showEditionsCount, setShowEditionsCount] = useState("0");
+  const [booksCount, setBooksCount] = useState("0");
+  const [editionsCount, setEditionsCount] = useState("0");
   const [reservedLoans, setReservedLoans] = useState([]);
   const [loadingLoans, setLoadingLoans] = useState(true);
   const [errorLoans, setErrorLoans] = useState(null);
@@ -23,8 +23,8 @@ const LibrarianDashboard = () => {
   const [booksByEditionId, setBooksByEditionId] = useState({});
   const [borrowedBooksByEditionId, setBorrowedBooksByEditionId] = useState({});
 
-  const [activeLoans, setActiveLoansCount] = useState("0");
-  const [showLoansCount, setShowLoansCount] = useState("0");
+  const [activeLoans, setActiveLoans] = useState("0");
+  const [loansCount, setLoansCount] = useState("0");
 
   const [editionBooks, setEditionBooks] = useState({});
   const [editionPublishers, setEditionPublishers] = useState({});
@@ -34,13 +34,12 @@ const LibrarianDashboard = () => {
   const [searchBooks, setSearchBooks] = useState("");
   const [searchEditions, setSearchEditions] = useState("");
 
-
   const fetchReservedLoans = async () => {
     try {
       const res = await api.get("/loans/reservated");
       setReservedLoans(res.data);
-    } catch (err) {
-      setErrorLoans("Błąd podczas ładowania rezerwacji");
+    } catch {
+      setErrorLoans("Error while loading reservations");
     } finally {
       setLoadingLoans(false);
     }
@@ -50,80 +49,58 @@ const LibrarianDashboard = () => {
     try {
       const res = await api.get("/loans/borrowed");
       setBorrowedLoans(res.data);
-    } catch (err) {
-      setErrorBorrowed("Błąd podczas ładowania wypożyczeń");
+    } catch {
+      setErrorBorrowed("Error while loading borrowings");
     } finally {
       setLoadingBorrowed(false);
     }
   };
 
   useEffect(() => {
-    api.get("/books/count")
-      .then((response) => setShowBooksCount(response.data.count))
-      .catch((error) => console.error("Error fetching books count:", error));
+    api.get("/books/count").then((res) => setBooksCount(res.data.count));
+    api.get("/editions/count").then((res) => setEditionsCount(res.data.count));
+    api.get("/active-loans/count").then((res) => setActiveLoans(res.data.count));
+    api.get("/loans/count").then((res) => setLoansCount(res.data.count));
 
-    api.get("/editions/count")
-      .then((response) => setShowEditionsCount(response.data.count))
-      .catch((error) => console.error("Error fetching editions count:", error));
-
-    api.get("/active-loans/count")
-      .then((response) => setActiveLoansCount(response.data.count))
-      .catch((error) => console.error("Error fetching activeLoans count:", error));
-
-    api.get("/loans/count")
-      .then((response) => setShowLoansCount(response.data.count))
-      .catch((error) => console.error("Error fetching loans count:", error));
-
-    fetchBorrowedLoans();
     fetchReservedLoans();
+    fetchBorrowedLoans();
   }, []);
 
   useEffect(() => {
     const fetchBookNames = async () => {
-      const newBooks = {};
+      const map = {};
       for (const loan of reservedLoans) {
         try {
           const res = await api.get(`/editions/${loan.edition.edition_id}/book`);
-          newBooks[loan.edition.edition_id] = res.data.title;
-        } catch (err) {
-          newBooks[loan.edition.edition_id] = "Błąd pobrania tytułu";
+          map[loan.edition.edition_id] = res.data.title;
+        } catch {
+          map[loan.edition.edition_id] = "Error fetching title";
         }
       }
-      setBooksByEditionId(newBooks);
+      setBooksByEditionId(map);
     };
-
-    if (reservedLoans.length > 0) {
-      fetchBookNames();
-    }
+    if (reservedLoans.length > 0) fetchBookNames();
   }, [reservedLoans]);
 
   useEffect(() => {
     const fetchBorrowedBookNames = async () => {
-      const newBooks = {};
+      const map = {};
       for (const loan of borrowedLoans) {
         try {
           const res = await api.get(`/editions/${loan.edition.edition_id}/book`);
-          newBooks[loan.edition.edition_id] = res.data.title;
-        } catch (err) {
-          newBooks[loan.edition.edition_id] = "Błąd pobrania tytułu";
+          map[loan.edition.edition_id] = res.data.title;
+        } catch {
+          map[loan.edition.edition_id] = "Error fetching title";
         }
       }
-      setBorrowedBooksByEditionId(newBooks);
+      setBorrowedBooksByEditionId(map);
     };
-
-    if (borrowedLoans.length > 0) {
-      fetchBorrowedBookNames();
-    }
+    if (borrowedLoans.length > 0) fetchBorrowedBookNames();
   }, [borrowedLoans]);
 
   useEffect(() => {
-    api.get("/books")
-      .then((response) => setBooks(response.data))
-      .catch((error) => console.error("Error fetching books:", error));
-
-    api.get("/editions")
-      .then((response) => setEditions(response.data))
-      .catch((error) => console.error("Error fetching editions:", error));
+    api.get("/books").then((res) => setBooks(res.data));
+    api.get("/editions").then((res) => setEditions(res.data));
   }, []);
 
   const handleChangeStatusToBorrowed = async (editionId) => {
@@ -131,13 +108,52 @@ const LibrarianDashboard = () => {
       await api.patch(`/editions/${editionId}/borrowed/`);
       fetchReservedLoans();
       fetchBorrowedLoans();
-      alert("Status zmieniony na BORROWED");
+      alert("Status changed to BORROWED");
     } catch (err) {
-      alert("Błąd zmiany statusu: " + (err.response?.data?.detail || err.message));
+      alert("Error changing status: " + (err.response?.data?.detail || err.message));
     }
   };
+
+  const handleChangeStatusToAvailable = async (editionId, studentId) => {
+    try {
+      await api.patch(`/loans/${editionId}/return`);
+      await api.patch(`/editions/${editionId}/available/`);
+      await api.patch(`/students/${studentId}/limit-increase`);
+      fetchReservedLoans();
+      fetchBorrowedLoans();
+      alert("Status changed to AVAILABLE and student's limit increased");
+    } catch (err) {
+      alert("Error changing status: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  const handleDeleteBook = async (bookId) => {
+    const confirm = window.confirm("Are you sure you want to delete this book?");
+    if (!confirm) return;
+    try {
+      await api.delete(`/books/${bookId}`);
+      setBooks((prev) => prev.filter((b) => b.book_id !== bookId));
+      alert("Book deleted successfully.");
+      window.location.reload();
+    } catch (err) {
+      alert("Error deleting book: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  const handleDeleteEdition = async (editionId) => {
+    const confirm = window.confirm("Are you sure you want to delete this edition?");
+    if (!confirm) return;
+    try {
+      await api.delete(`/editions/${editionId}`);
+      setEditions((prev) => prev.filter((e) => e.edition_id !== editionId));
+      alert("Edition deleted successfully.");
+    } catch (err) {
+      alert("Error deleting edition: " + (err.response?.data?.detail || err.message));
+    }
+  };
+
   useEffect(() => {
-  const fetchEditionBooksAndPublishers = async () => {
+    const fetchEditionBooksAndPublishers = async () => {
       const booksMap = {};
       const publishersMap = {};
       for (const edition of editions) {
@@ -145,13 +161,13 @@ const LibrarianDashboard = () => {
           const resBook = await api.get(`/editions/${edition.edition_id}/book`);
           booksMap[edition.edition_id] = resBook.data.title;
         } catch {
-          booksMap[edition.edition_id] = "Błąd pobrania tytułu";
+          booksMap[edition.edition_id] = "Error fetching title";
         }
         try {
           const resPublisher = await api.get(`/editions/${edition.edition_id}/publisher`);
           publishersMap[edition.edition_id] = resPublisher.data.name;
         } catch {
-          publishersMap[edition.edition_id] = "Błąd pobrania wydawnictwa";
+          publishersMap[edition.edition_id] = "Error fetching publisher";
         }
       }
       setEditionBooks(booksMap);
@@ -162,20 +178,6 @@ const LibrarianDashboard = () => {
       fetchEditionBooksAndPublishers();
     }
   }, [editions]);
-
-
-  const handleChangeStatusToAvailable = async (editionId, studentId) => {
-    try {
-      await api.patch(`/loans/${editionId}/return`);
-      await api.patch(`/editions/${editionId}/available/`);
-      await api.patch(`/students/${studentId}/limit-increase`);
-      fetchReservedLoans();
-      fetchBorrowedLoans();
-      alert("Status zmieniony na AVAILABLE i zwiększono limit studenta");
-    } catch (err) {
-      alert("Błąd zmiany statusu: " + (err.response?.data?.detail || err.message));
-    }
-  };
 
   const filteredReservedLoans = reservedLoans.filter((loan) =>
     (booksByEditionId[loan.edition.edition_id] || "")
@@ -189,13 +191,12 @@ const LibrarianDashboard = () => {
     (borrowedBooksByEditionId[loan.edition.edition_id] || "")
       .toLowerCase()
       .includes(searchBorrowed.toLowerCase()) ||
-      loan.student.name.toLowerCase().includes(searchBorrowed.toLowerCase()) ||
-      loan.student.surname.toLowerCase().includes(searchBorrowed.toLowerCase())
-    );
+    loan.student.name.toLowerCase().includes(searchBorrowed.toLowerCase()) ||
+    loan.student.surname.toLowerCase().includes(searchBorrowed.toLowerCase())
+  );
 
   const filteredBooks = books.filter((book) =>
-    (book.title || "").toLowerCase().includes(searchBooks.toLowerCase()) ||
-    (book.authors || "").toLowerCase().includes(searchBooks.toLowerCase())
+    (book.title || "").toLowerCase().includes(searchBooks.toLowerCase())
   );
 
   const filteredEditions = editions.filter((edition) =>
@@ -206,59 +207,52 @@ const LibrarianDashboard = () => {
   return (
     <div className="librarian-dashboard">
       <section className="profile-section">
-        <h2 className="section-title">Witaj, Bibliotekarzu!</h2>
-        <p><strong>Imię:</strong> {name}</p>
+        <h2 className="section-title">Hi, Librarian!</h2>
+        <p><strong>Name:</strong> {name}</p>
       </section>
 
       <section className="profile-section">
-        <h2 className="section-title">Szybkie akcje</h2>
+        <h2 className="section-title">Quick Actions</h2>
         <button className="action-button" onClick={() => navigate("books/add")}>
-          ➕ Dodaj książkę
+          ➕ Add Book
         </button>
         <button className="action-button" onClick={() => navigate("editions/add")}>
-          ➕ Dodaj edycję
+          ➕ Add Edition
         </button>
       </section>
 
       <section className="profile-section">
-        <h2 className="section-title">Statystyki</h2>
-        <p><strong>Książek:</strong> {showBooksCount}</p>
-        <p><strong>Edycji:</strong> {showEditionsCount}</p>
-        <p><strong>Liczba aktualnych wypożyczeń:</strong> {activeLoans}</p>
-        <p><strong>Liczba łącznie wypożyczeń:</strong> {showLoansCount}</p>
+        <h2 className="section-title">Statistics</h2>
+        <p><strong>Books:</strong> {booksCount}</p>
+        <p><strong>Editions:</strong> {editionsCount}</p>
+        <p><strong>Active Reservations:</strong> {activeLoans}</p>
+        <p><strong>Total Loans:</strong> {loansCount}</p>
       </section>
 
       <section className="profile-section">
-        <h2 className="section-title">Aktualnie zarezerwowane książki</h2>
+        <h2 className="section-title">Currently Reserved Books</h2>
         <input
           type="text"
-          placeholder="Szukaj książki lub studenta..."
           className="search-input"
+          placeholder="Search by book or student..."
           value={searchReserved}
           onChange={(e) => setSearchReserved(e.target.value)}
         />
-
-        {loadingLoans && <p>Ładowanie zarezerwowanych...</p>}
-        {errorLoans && <p className="error">{errorLoans}</p>}
-        {!loadingLoans && !errorLoans && filteredReservedLoans.length === 0 && (
-          <p>Brak wyników.</p>
-        )}
-
-        {!loadingLoans && !errorLoans && filteredReservedLoans.length > 0 && (
+        {filteredReservedLoans.length > 0 && (
           <div className="scrollable-table-container">
             <table className="borrowed-loans-table">
               <thead>
                 <tr>
-                  <th>Tytuł książki</th>
-                  <th>Imię studenta</th>
-                  <th>Nazwisko studenta</th>
-                  <th>Akcja</th>
+                  <th>Book Title</th>
+                  <th>Student First Name</th>
+                  <th>Student Last Name</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredReservedLoans.map((loan) => (
                   <tr key={loan.loan_id}>
-                    <td>{booksByEditionId[loan.edition.edition_id] || "Ładowanie..."}</td>
+                    <td>{booksByEditionId[loan.edition.edition_id] || "..."}</td>
                     <td>{loan.student.name}</td>
                     <td>{loan.student.surname}</td>
                     <td>
@@ -266,7 +260,7 @@ const LibrarianDashboard = () => {
                         className="action-button"
                         onClick={() => handleChangeStatusToBorrowed(loan.edition.edition_id)}
                       >
-                        Zmień na BORROWED
+                        Change to BORROWED
                       </button>
                     </td>
                   </tr>
@@ -278,47 +272,38 @@ const LibrarianDashboard = () => {
       </section>
 
       <section className="profile-section">
-        <h2 className="section-title">Aktualnie wypożyczone książki</h2>
+        <h2 className="section-title">Currently Borrowed Books</h2>
         <input
           type="text"
-          placeholder="Szukaj książki lub studenta..."
           className="search-input"
+          placeholder="Search by book or student..."
           value={searchBorrowed}
           onChange={(e) => setSearchBorrowed(e.target.value)}
         />
-
-        {loadingBorrowed && <p>Ładowanie wypożyczeń...</p>}
-        {errorBorrowed && <p className="error">{errorBorrowed}</p>}
-        {!loadingBorrowed && !errorBorrowed && filteredBorrowedLoans.length === 0 && (
-          <p>Brak wyników.</p>
-        )}
-
-        {!loadingBorrowed && !errorBorrowed && filteredBorrowedLoans.length > 0 && (
+        {filteredBorrowedLoans.length > 0 && (
           <div className="scrollable-table-container">
             <table className="borrowed-loans-table">
               <thead>
                 <tr>
-                  <th>Tytuł książki</th>
-                  <th>Imię studenta</th>
-                  <th>Nazwisko studenta</th>
-                  <th>Akcja</th>
+                  <th>Book Title</th>
+                  <th>Student First Name</th>
+                  <th>Student Last Name</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredBorrowedLoans.map((loan) => (
                   <tr key={loan.loan_id}>
-                    <td>{borrowedBooksByEditionId[loan.edition.edition_id] || "Ładowanie..."}</td>
+                    <td>{borrowedBooksByEditionId[loan.edition.edition_id] || "..."}</td>
                     <td>{loan.student.name}</td>
                     <td>{loan.student.surname}</td>
                     <td>
-                        <button
-                          className="action-button"
-                          onClick={() =>
-                            handleChangeStatusToAvailable(loan.edition.edition_id, loan.student.student_id)
-                          }
-                        >
-                          Zmień na AVAILABLE
-                        </button>
+                      <button
+                        className="action-button"
+                        onClick={() => handleChangeStatusToAvailable(loan.edition.edition_id, loan.student.student_id)}
+                      >
+                        AVAILABLE
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -327,12 +312,13 @@ const LibrarianDashboard = () => {
           </div>
         )}
       </section>
+
       <section className="profile-section">
-        <h2 className="section-title">Lista książek</h2>
+        <h2 className="section-title">Choose a Book to Edit</h2>
         <input
           type="text"
-          placeholder="Szukaj po tytule..."
           className="search-input"
+          placeholder="Search by title..."
           value={searchBooks}
           onChange={(e) => setSearchBooks(e.target.value)}
         />
@@ -341,32 +327,38 @@ const LibrarianDashboard = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Tytuł książki</th>
-                <th>Data publikacji</th>
+                <th>Book Title</th>
+                <th>Publication Date</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
               {filteredBooks.map((book) => (
-                <tr
-                  key={book.book_id}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/books/edit/${book.book_id}`)}
-                >
-                  <td>{book.book_id}</td>
-                  <td>{book.title}</td>
-                  <td>{book.release_date || "-"}</td>
+                <tr key={book.book_id}>
+                  <td onClick={() => navigate(`/books/edit/${book.book_id}`)}>{book.book_id}</td>
+                  <td onClick={() => navigate(`/books/edit/${book.book_id}`)}>{book.title}</td>
+                  <td onClick={() => navigate(`/books/edit/${book.book_id}`)}>{book.release_date}</td>
+                  <td>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteBook(book.book_id)}
+                    >
+                      🗑 Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </section>
+
       <section className="profile-section">
-        <h2 className="section-title">Lista edycji</h2>
+        <h2 className="section-title">Choose an Edition to Edit</h2>
         <input
           type="text"
-          placeholder="Szukaj po tytule, wydawnictwie lub statusie..."
           className="search-input"
+          placeholder="Search by status, title or publisher..."
           value={searchEditions}
           onChange={(e) => setSearchEditions(e.target.value)}
         />
@@ -374,23 +366,28 @@ const LibrarianDashboard = () => {
           <table className="borrowed-loans-table">
             <thead>
               <tr>
-                <th>Tytuł książki</th>
-                <th>Wydawnictwo</th>
+                <th>Book Title</th>
+                <th>Publisher</th>
                 <th>Status</th>
                 <th>Format</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
               {filteredEditions.map((edition) => (
-                <tr
-                  key={edition.edition_id}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}
-                >
-                  <td>{editionBooks[edition.edition_id] || "Ładowanie..."}</td>
-                  <td>{editionPublishers[edition.edition_id] || "Ładowanie..."}</td>
-                  <td>{edition.status}</td>
-                  <td>{edition.book_format}</td>
+                <tr key={edition.edition_id}>
+                  <td onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}>{editionBooks[edition.edition_id]}</td>
+                  <td onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}>{editionPublishers[edition.edition_id]}</td>
+                  <td onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}>{edition.status}</td>
+                  <td onClick={() => navigate(`/editions/edit/${edition.edition_id}`)}>{edition.book_format}</td>
+                  <td>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteEdition(edition.edition_id)}
+                    >
+                      🗑 Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

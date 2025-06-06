@@ -30,9 +30,9 @@ const EditEdition = () => {
         setPublishingHouses(housesRes.data);
         setEdition({
           book_format: editionRes.data.book_format || "",
-          book_id: editionRes.data.book_id ? String(editionRes.data.book_id) : "",
-          publishing_house_id: editionRes.data.publishing_house_id
-            ? String(editionRes.data.publishing_house_id)
+          book_id: editionRes.data.book?.book_id?String(editionRes.data.book.book_id):"",
+          publishing_house_id: editionRes.data.publishing_house?.publishing_house_id
+            ? String(editionRes.data.publishing_house.publishing_house_id)
             : "",
         });
       } catch (err) {

@@ -36,8 +36,10 @@ def get_active_borrowings_count(db:Session):
 def get_all_loans_count(db: Session):
     return db.query(Loan).count()
 
-# == Update ==
+def get_all_loans_by_student_id(db: Session, student_id: int):
+    return db.query(Loan).filter(Loan.student_id == student_id).all()
 
+# == Update ==
 def mark_loan_as_returned(db: Session, edition_id: int):
     loan = db.query(Loan).filter(
         Loan.edition_id == edition_id,

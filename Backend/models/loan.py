@@ -10,7 +10,7 @@ class Loan(Base):
     return_date = Column(DateTime, nullable=True)
 
     student_id = Column(Integer, ForeignKey("students.student_id"), nullable=False)
-    edition_id = Column(Integer, ForeignKey("editions.edition_id"), nullable=False)
+    edition_id = Column(Integer, ForeignKey("editions.edition_id", ondelete="CASCADE"), nullable=False)
 
     student = relationship("Student", back_populates="loans")
-    edition = relationship("Edition", back_populates="loans")
+    edition = relationship("Edition", back_populates="loans") 

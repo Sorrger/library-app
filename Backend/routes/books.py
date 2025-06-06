@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from schemas.book import BookCreate, Book, BookResponse, BookUpdate
 from database.database import get_db
 from typing import Optional
-from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count, update_book
+from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count, update_book, delete_book
 from crud.edition import get_edition_by_id
 
 router = APIRouter(tags=['books'])
@@ -71,3 +71,8 @@ def get_book_by_edition_id(edition_id: int, db = Depends(get_db)):
     
     return book
 
+@router.delete("/books/{book_id}")
+def delete_book_by_id_endpoint(book_id: int, db = Depends(get_db)):
+    if delete_book(db,book_id) is None:
+        raise HTTPException(status_code=404, detail ="Book not found")
+    return {"detail": f"Book with ID {book_id} deleted successfully"}

@@ -25,6 +25,20 @@ p {
   margin: 6px 0;
 }
 
+.delete-button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-button:hover {
+  background-color: #d9363e;
+}
+
+
 strong {
   color: #333;
 }

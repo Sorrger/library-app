@@ -20,4 +20,4 @@ class Book(Base):
         secondary=book_genre,
         back_populates="books"
     )
-    editions = relationship("Edition", back_populates="book")
+    editions = relationship("Edition", back_populates="book", cascade="all, delete-orphan")

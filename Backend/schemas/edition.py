@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from .publishing_house import PublishingHouse
+from .book import Book
 from models.enums import EditionStatus
 
 class EditionBase(BaseModel):

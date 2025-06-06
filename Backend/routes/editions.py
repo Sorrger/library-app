@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from schemas.edition import Edition, EditionCreate, EditionStatusUpdate, EditionUpdate
 from database.database import get_db
 from models.enums import EditionStatus
-from crud.edition import get_all_editions, update_edition, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id, get_edition_count, get_publisher_by_edition_id
+from crud.edition import get_all_editions, update_edition, create_edition, get_editions_by_book_id, get_all_available_editions, update_edition_status, get_edition_by_id, get_edition_count, get_publisher_by_edition_id, delete_edition
 
 router = APIRouter(tags=['editions'])
 
@@ -65,3 +65,9 @@ def edition_status_change_endpoint(id: int, status: str, db = Depends(get_db)):
     if not updated:
         raise HTTPException(status_code=404, detail="Edition not found")    
     return updated
+
+@router.delete("/editions/{edition_id}")
+def delete_edition_endpoint(edition_id: int, db = Depends(get_db)):
+    if delete_edition(db,edition_id) is None:
+        raise HTTPException(status_code=404, detail="Edition not found")
+    return {"detail": f"Edition with ID {edition_id} deleted successfully"}

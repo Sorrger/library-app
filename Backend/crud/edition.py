@@ -128,3 +128,10 @@ def update_edition(db: Session, edition_id: int, edition_update: EditionUpdate):
     db.refresh(edition)
     return edition
 # == Delete ==
+def delete_edition(db: Session, edition_id: int):
+    edition = db.query(Edition).filter(Edition.edition_id == edition_id).first()
+    if edition is None:
+        return None
+    db.delete(edition)
+    db.commit()
+    return edition

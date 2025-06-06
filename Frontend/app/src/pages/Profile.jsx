@@ -9,6 +9,7 @@ export default function Profile() {
   const [student, setStudent] = useState(null);
   const [reservations, setReservations] = useState([]);
   const [borrowed, setBorrowed] = useState([]);
+  const [allLoans, setAllLoans] = useState([]); // 🔹 Dodany stan
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,15 +20,17 @@ export default function Profile() {
         setAccount(acct);
 
         if (acct.student_id) {
-          const [studentRes, resRes, borRes] = await Promise.all([
+          const [studentRes, resRes, borRes, allLoansRes] = await Promise.all([
             api.get(`/students/${acct.student_id}`),
             api.get(`/students/${acct.student_id}/reservations`),
-            api.get(`/students/${acct.student_id}/borrowed`)
+            api.get(`/students/${acct.student_id}/borrowed`),
+            api.get(`/students/${acct.student_id}/loans/all`) // 🔹 Pobieramy historię wypożyczeń
           ]);
 
           setStudent(studentRes.data);
           setReservations(resRes.data);
           setBorrowed(borRes.data);
+          setAllLoans(allLoansRes.data); // 🔹 Zapisujemy historię wypożyczeń
         }
       } catch (err) {
         console.error(err);
@@ -57,19 +60,16 @@ export default function Profile() {
       await api.patch(`/editions/${editionId}/available/`);
       await api.patch(`/students/${account.student_id}/limit-increase`);
 
-
       setReservations(prev => prev.filter(r => r.id !== reservationId));
 
       const { data: updatedStudent } = await api.get(`/students/${account.student_id}`);
       setStudent(updatedStudent);
-
 
     } catch (err) {
       console.error("Nie udało się anulować rezerwacji:", err);
       alert("Wystąpił błąd podczas anulowania rezerwacji.");
     }
   };
-
 
   if (loading) return <div className="profile-loading">Loading...</div>;
   if (error) return <div className="profile-error">{error}</div>;
@@ -88,6 +88,7 @@ export default function Profile() {
               student={student}
               reservations={reservations}
               borrowed={borrowed}
+              allLoans={allLoans} // 🔹 Przekazujemy do StudentData
               onCancelReservation={handleCancelReservation}
               onReturnBorrowed={(id) => setBorrowed(bs => bs.filter(b => b.id !== id))}
             />
