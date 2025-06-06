@@ -24,7 +24,7 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       setNewAuthorName("");
       setNewAuthorSurname("");
     } catch (err) {
-      console.error("Błąd przy dodawaniu autora", err);
+      console.error("Error adding author", err);
     }
   };
 
@@ -36,7 +36,7 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       setSelectedGenres((prev) => [...prev, res.data.genre_id]);
       setNewGenre("");
     } catch (err) {
-      console.error("Błąd przy dodawaniu gatunku", err);
+      console.error("Error adding genre", err);
     }
   };
 
@@ -57,12 +57,12 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
     setError("");
 
     if (selectedAuthors.length === 0) {
-      setError("Proszę wybrać co najmniej jednego autora.");
+      setError("Please select at least one author.");
       return;
     }
 
     if (selectedGenres.length === 0) {
-      setError("Proszę wybrać co najmniej jeden gatunek.");
+      setError("Please select at least one genre.");
       return;
     }
 
@@ -79,20 +79,20 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
       setSelectedGenres([]);
     } catch (err) {
       console.error(err);
-      setError("Błąd podczas dodawania książki.");
+      setError("Error while adding book.");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>Tytuł:</label>
+      <label>Title:</label>
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
 
-      <label>Data wydania:</label>
+      <label>Release Date:</label>
       <input
         type="date"
         value={releaseDate}
@@ -100,14 +100,14 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
         required
       />
 
-      <label>Autorzy:</label>
+      <label>Authors:</label>
       <div
         className={`checkbox-list ${
-          selectedAuthors.length === 0 && error.includes("autora")
+          selectedAuthors.length === 0 && error.includes("author")
             ? "error-border"
             : ""
         }`}
-        aria-invalid={selectedAuthors.length === 0 && error.includes("autora")}
+        aria-invalid={selectedAuthors.length === 0 && error.includes("author")}
       >
         {authors.map((a) => (
           <label key={a.author_id}>
@@ -120,34 +120,34 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
           </label>
         ))}
       </div>
-      {selectedAuthors.length === 0 && error.includes("autora") && (
+      {selectedAuthors.length === 0 && error.includes("author") && (
         <p className="error">{error}</p>
       )}
 
       <div className="inline-inputs">
         <input
-          placeholder="Imię"
+          placeholder="First name"
           value={newAuthorName}
           onChange={(e) => setNewAuthorName(e.target.value)}
         />
         <input
-          placeholder="Nazwisko"
+          placeholder="Last name"
           value={newAuthorSurname}
           onChange={(e) => setNewAuthorSurname(e.target.value)}
         />
         <button type="button" onClick={handleAddAuthor}>
-          ➕ Dodaj autora
+          ➕ Add Author
         </button>
       </div>
 
-      <label>Gatunki:</label>
+      <label>Genres:</label>
       <div
         className={`checkbox-list ${
-          selectedGenres.length === 0 && error.includes("gatunek")
+          selectedGenres.length === 0 && error.includes("genre")
             ? "error-border"
             : ""
         }`}
-        aria-invalid={selectedGenres.length === 0 && error.includes("gatunek")}
+        aria-invalid={selectedGenres.length === 0 && error.includes("genre")}
       >
         {genres.map((g) => (
           <label key={g.genre_id}>
@@ -160,25 +160,25 @@ export default function AddBookForm({ authors, genres, setAuthors, setGenres }) 
           </label>
         ))}
       </div>
-      {selectedGenres.length === 0 && error.includes("gatunek") && (
+      {selectedGenres.length === 0 && error.includes("genre") && (
         <p className="error">{error}</p>
       )}
 
       <div className="inline-inputs">
         <input
-          placeholder="Nowy gatunek"
+          placeholder="New genre"
           value={newGenre}
           onChange={(e) => setNewGenre(e.target.value)}
         />
         <button type="button" onClick={handleAddGenre}>
-          ➕ Dodaj gatunek
+          ➕ Add Genre
         </button>
       </div>
 
-      <button type="submit">Dodaj książkę</button>
+      <button type="submit">Add Book</button>
 
-      {!error.includes("autora") &&
-        !error.includes("gatunek") &&
+      {!error.includes("author") &&
+        !error.includes("genre") &&
         error && <p className="error">{error}</p>}
     </form>
   );

@@ -30,13 +30,15 @@ const EditEdition = () => {
         setPublishingHouses(housesRes.data);
         setEdition({
           book_format: editionRes.data.book_format || "",
-          book_id: editionRes.data.book?.book_id?String(editionRes.data.book.book_id):"",
+          book_id: editionRes.data.book?.book_id
+            ? String(editionRes.data.book.book_id)
+            : "",
           publishing_house_id: editionRes.data.publishing_house?.publishing_house_id
             ? String(editionRes.data.publishing_house.publishing_house_id)
             : "",
         });
       } catch (err) {
-        setError("Błąd ładowania danych");
+        setError("Error loading data");
       } finally {
         setLoading(false);
       }
@@ -61,21 +63,21 @@ const EditEdition = () => {
         book_id: Number(edition.book_id),
         publishing_house_id: Number(edition.publishing_house_id),
       });
-      alert("Zaktualizowano edycję!");
+      alert("Edition updated!");
       navigate("/librarian-dashboard");
     } catch (err) {
-      alert("Błąd aktualizacji: " + (err.response?.data?.detail || err.message));
+      alert("Update error: " + (err.response?.data?.detail || err.message));
     }
   };
 
-  if (loading) return <p>Ładowanie...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="form-container">
-      <h2>Edytuj edycję</h2>
+      <h2>Edit Edition</h2>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="book_id">Książka:</label>
+        <label htmlFor="book_id">Book:</label>
         <select
           id="book_id"
           name="book_id"
@@ -83,7 +85,7 @@ const EditEdition = () => {
           onChange={handleChange}
           required
         >
-          <option value="">-- Wybierz książkę --</option>
+          <option value="">-- Select a book --</option>
           {books.map((book) => (
             <option key={book.book_id} value={String(book.book_id)}>
               {book.title}
@@ -91,7 +93,7 @@ const EditEdition = () => {
           ))}
         </select>
 
-        <label htmlFor="publishing_house_id">Wydawnictwo:</label>
+        <label htmlFor="publishing_house_id">Publisher:</label>
         <select
           id="publishing_house_id"
           name="publishing_house_id"
@@ -99,7 +101,7 @@ const EditEdition = () => {
           onChange={handleChange}
           required
         >
-          <option value="">-- Wybierz wydawnictwo --</option>
+          <option value="">-- Select a publisher --</option>
           {publishingHouses.map((house) => (
             <option key={house.publishing_house_id} value={String(house.publishing_house_id)}>
               {house.name}
@@ -118,7 +120,7 @@ const EditEdition = () => {
           required
         />
 
-        <button type="submit">Zapisz zmiany</button>
+        <button type="submit">Save Changes</button>
       </form>
     </div>
   );

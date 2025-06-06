@@ -32,16 +32,16 @@ const EditBook = () => {
           release_date: data.release_date,
         });
       })
-      .catch(() => setError("Błąd ładowania książki"))
+      .catch(() => setError("Error loading book"))
       .finally(() => setLoading(false));
 
     api.get("/authors")
       .then((res) => setAuthors(res.data))
-      .catch(() => setError("Błąd ładowania autorów"));
+      .catch(() => setError("Error loading authors"));
 
     api.get("/genres")
       .then((res) => setGenres(res.data))
-      .catch(() => setError("Błąd ładowania gatunków"));
+      .catch(() => setError("Error loading genres"));
   }, [id]);
 
   const handleChange = (e) => {
@@ -75,26 +75,25 @@ const EditBook = () => {
         author_ids: book.author_ids,
         genre_ids: book.genre_ids,
       });
-      alert("Zaktualizowano książkę!");
+      alert("Book updated!");
       navigate("/librarian-dashboard");
     } catch (err) {
-      alert("Błąd aktualizacji: " + (err.response?.data?.detail || err.message));
+      alert("Update error: " + (err.response?.data?.detail || err.message));
     }
   };
 
-  if (loading) return <p>Ładowanie...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
 
-
-return (
+  return (
     <div className="form-container">
-      <h2>Edytuj książkę</h2>
+      <h2>Edit Book</h2>
       <form onSubmit={handleSubmit}>
         <input
           name="title"
           value={book.title}
           onChange={handleChange}
-          placeholder="Tytuł"
+          placeholder="Title"
           required
         />
         <input
@@ -105,10 +104,10 @@ return (
         />
 
         <div>
-          <label>Autorzy:</label>
+          <label>Authors:</label>
           <input
             type="text"
-            placeholder="Szukaj autora..."
+            placeholder="Search authors..."
             value={authorSearch}
             onChange={(e) => setAuthorSearch(e.target.value)}
           />
@@ -142,10 +141,10 @@ return (
         </div>
 
         <div style={{ marginTop: "1rem" }}>
-          <label>Gatunki:</label>
+          <label>Genres:</label>
           <input
             type="text"
-            placeholder="Szukaj gatunku..."
+            placeholder="Search genres..."
             value={genreSearch}
             onChange={(e) => setGenreSearch(e.target.value)}
           />
@@ -176,7 +175,9 @@ return (
           </div>
         </div>
 
-        <button type="submit" style={{ marginTop: "1rem" }}>Zapisz zmiany</button>
+        <button type="submit" style={{ marginTop: "1rem" }}>
+          Save Changes
+        </button>
       </form>
     </div>
   );

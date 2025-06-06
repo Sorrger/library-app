@@ -5,7 +5,6 @@ import "../../statics/bookDetails/editionList.css";
 const EditionsList = ({ editions }) => {
   const navigate = useNavigate();
 
-  // Stany filtrów
   const [formatFilter, setFormatFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [publishingHouseFilter, setPublishingHouseFilter] = useState("");
@@ -14,7 +13,6 @@ const EditionsList = ({ editions }) => {
     navigate(`/editions/${editionId}`);
   };
 
-  // Filtrujemy edycje według wpisanych filtrów (case insensitive)
   const filteredEditions = editions.filter((edition) => {
     const formatMatch = edition.book_format.toLowerCase().includes(formatFilter.toLowerCase());
     const statusMatch = edition.status.toLowerCase().includes(statusFilter.toLowerCase());
@@ -28,7 +26,6 @@ const EditionsList = ({ editions }) => {
     <div className="editions-list">
       <h2 className="editions-title">Editions</h2>
 
-      {/* Filtry */}
       <div className="filters">
         <input
           type="text"

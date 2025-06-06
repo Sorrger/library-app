@@ -32,13 +32,13 @@ export default function AddEdition() {
     try {
       const response = await api.post("/publishingHouses", {
         name: newPublishingHouseName,
-        headquarters: newPublishingHouseHQ || null, // obsługa Optional
+        headquarters: newPublishingHouseHQ || null,
       });
       setPublishingHouses([...publishingHouses, response.data]);
       setNewPublishingHouseName("");
       setNewPublishingHouseHQ("");
     } catch (error) {
-      console.error("Błąd podczas dodawania wydawnictwa:", error);
+      console.error("Error while adding publishing house:", error);
     }
   };
 
@@ -59,15 +59,15 @@ export default function AddEdition() {
 
   return (
     <div className="form-container">
-      <h2 >Dodaj nową edycję</h2>
+      <h2>Add a New Edition</h2>
       <form onSubmit={handleSubmit}>
-        <label>Książka:</label>
+        <label>Book:</label>
         <select
           value={bookId}
           required
           onChange={(e) => setBookId(e.target.value)}
         >
-          <option value="">-- Wybierz książkę --</option>
+          <option value="">-- Select a book --</option>
           {books.map((book) => (
             <option key={book.book_id} value={book.book_id}>
               {book.title}
@@ -75,13 +75,13 @@ export default function AddEdition() {
           ))}
         </select>
 
-        <label>Wydawnictwo:</label>
+        <label>Publishing House:</label>
         <select
           value={publishingHouseId}
           required
           onChange={(e) => setPublishingHouseId(e.target.value)}
         >
-          <option value="">-- Wybierz wydawnictwo --</option>
+          <option value="">-- Select a publisher --</option>
           {publishingHouses.map((house) => (
             <option key={house.publishing_house_id} value={house.publishing_house_id}>
               {house.name}
@@ -95,9 +95,9 @@ export default function AddEdition() {
           required
           onChange={(e) => setStatus(e.target.value)}
         >
-          <option value="available">Dostępna</option>
-          <option value="borrowed">Niedostępna</option>
-          <option value="lost">Stracona</option>
+          <option value="available">Available</option>
+          <option value="borrowed">Borrowed</option>
+          <option value="lost">Lost</option>
         </select>
 
         <label>Format:</label>
@@ -108,25 +108,25 @@ export default function AddEdition() {
           onChange={(e) => setBookFormat(e.target.value)}
         />
 
-        <button type="submit">Dodaj edycję</button>
+        <button type="submit">Add Edition</button>
       </form>
 
       <hr />
 
-      <h3>Dodaj nowe wydawnictwo</h3>
+      <h3>Add a New Publishing House</h3>
       <input
         type="text"
-        placeholder="Nazwa wydawnictwa"
+        placeholder="Publishing house name"
         value={newPublishingHouseName}
         onChange={(e) => setNewPublishingHouseName(e.target.value)}
       />
       <input
         type="text"
-        placeholder="Siedziba (opcjonalnie)"
+        placeholder="Headquarters (optional)"
         value={newPublishingHouseHQ}
         onChange={(e) => setNewPublishingHouseHQ(e.target.value)}
       />
-      <button onClick={handleCreatePublishingHouse}>➕ Dodaj wydawnictwo</button>
+      <button onClick={handleCreatePublishingHouse}>➕ Add Publisher</button>
     </div>
   );
 }

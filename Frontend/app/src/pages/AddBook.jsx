@@ -17,7 +17,7 @@ export default function AddBook() {
         setAuthors(authorsRes.data);
         setGenres(genresRes.data);
       } catch (err) {
-        console.error("Błąd podczas pobierania autorów/gatunków", err);
+        console.error("Error fetching authors/genres", err);
       }
     };
     fetchData();
@@ -25,7 +25,7 @@ export default function AddBook() {
 
   return (
     <div className="form-container">
-      <h2>Dodaj nową książkę</h2>
+      <h2>Add a New Book</h2>
       <AddBookForm
         authors={authors}
         genres={genres}

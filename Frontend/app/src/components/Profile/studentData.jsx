@@ -11,23 +11,22 @@ const StudentData = ({
   return (
     <div className="profile-section">
       <h2 className="section-title">Student Data</h2>
-      <p><strong>Name:</strong> {student.name ?? "Brak imienia"}</p>
-      <p><strong>Surname:</strong> {student.surname ?? "Brak nazwiska"}</p>
-      <p><strong>Phone number:</strong> {student.phone_number ?? "Brak numeru"}</p>
-      <p><strong>Rented Books:</strong> {student.books_limit ?? "Brak"}/5</p>
+      <p><strong>Name:</strong> {student.name ?? "No name"}</p>
+      <p><strong>Surname:</strong> {student.surname ?? "No surname"}</p>
+      <p><strong>Phone number:</strong> {student.phone_number ?? "No number"}</p>
+      <p><strong>Rented Books:</strong> {student.books_limit ?? "None"}/5</p>
 
-      {/* Rezerwacje */}
       <div className="profile-subsection">
         <h3>Reservations</h3>
         {reservations.length > 0 ? (
           <ul>
             {reservations.map(res => (
               <li key={res.loan_id}>
-                {`${res.edition?.book?.title ?? "Brak tytułu"} (Edycja #${res.edition?.edition_id ?? "?"})`}
+                {`${res.edition?.book?.title ?? "No title"} (Edition #${res.edition?.edition_id ?? "?"})`}
                 {onCancelReservation && (
                   <button
                     className="cancel-button"
-                    onClick={() => onCancelReservation(res.loan_id)}
+                    onClick={() => onCancelReservation(res.is)}
                     aria-label={`Cancel reservation for ${res.edition?.book?.title}`}
                   >
                     Cancel
@@ -41,14 +40,13 @@ const StudentData = ({
         )}
       </div>
 
-      {/* Aktualne wypożyczenia */}
       <div className="profile-subsection">
         <h3>Borrowed Books</h3>
         {borrowed.length > 0 ? (
           <ul>
             {borrowed.map(b => (
               <li key={b.loan_id}>
-                {`${b.edition?.book?.title ?? "Brak tytułu"} (Edycja #${b.edition?.edition_id ?? "?"})`}
+                {`${b.edition?.book?.title ?? "No title"} (Edition #${b.edition?.edition_id ?? "?"})`}
               </li>
             ))}
           </ul>
@@ -57,16 +55,15 @@ const StudentData = ({
         )}
       </div>
 
-      {/* Historia wypożyczeń */}
       <div className="profile-subsection">
         <h3>All Loans</h3>
         {allLoans.length > 0 ? (
           <ul>
             {allLoans.map(loan => (
               <li key={loan.loan_id}>
-                {`${loan.edition?.book?.title ?? "Brak tytułu"} (Edycja #${loan.edition?.edition_id ?? "?"})`} – 
-                wypożyczono: {new Date(loan.loan_date).toLocaleDateString()}
-                {loan.return_date && ` – zwrócono: ${new Date(loan.return_date).toLocaleDateString()}`}
+                {`${loan.edition?.book?.title ?? "No title"} (Edition #${loan.edition?.edition_id ?? "?"})`} – 
+                borrowed: {new Date(loan.loan_date).toLocaleDateString()}
+                {loan.return_date && ` – returned: ${new Date(loan.return_date).toLocaleDateString()}`}
               </li>
             ))}
           </ul>
