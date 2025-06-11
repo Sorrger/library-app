@@ -199,10 +199,12 @@ const LibrarianDashboard = () => {
     (book.title || "").toLowerCase().includes(searchBooks.toLowerCase())
   );
 
-  const filteredEditions = editions.filter((edition) =>
-    (edition.status?.toLowerCase().includes(searchEditions.toLowerCase())) ||
-    (edition.publication_year?.toString().includes(searchEditions))
-  );
+  const filteredEditions = editions.filter((edition) => {
+    const title = (editionBooks[edition.edition_id] || "").toLowerCase();
+    const query = searchEditions.toLowerCase();
+    return title.includes(query);
+  });
+
 
   return (
     <div className="librarian-dashboard">
