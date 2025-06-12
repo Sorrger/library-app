@@ -15,7 +15,8 @@ class FineStudentResponse(BaseModel):
     fine_id: int
     student_id: int
     is_paid: bool
-
+    fine_type: FineTypeEnum
+    value: int
     class Config:
         orm_mode = True
 

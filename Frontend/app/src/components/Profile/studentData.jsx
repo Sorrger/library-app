@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../statics/profile/studentData.css";
+import api from "../../api/apiClient";
 
 const StudentData = ({
   student = {},
@@ -9,6 +10,21 @@ const StudentData = ({
   onCancelReservation
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [fines, setFines] = useState([]);
+
+useEffect(() => {
+  const fetchFines = async () => {
+    if (!student?.student_id) return;
+    try {
+      const res = await api.get(`/students/${student.student_id}/fines`);
+      setFines(res.data);
+    } catch (err) {
+      console.error("Error fetching student fines", err);
+    }
+  };
+
+  fetchFines();
+}, [student?.student_id]);
 
   const filteredLoans = allLoans.filter(loan =>
     loan.edition?.book?.title?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -24,7 +40,7 @@ const StudentData = ({
 
       <div className="profile-subsection">
         <h3>Reservations</h3>
-        {reservations.length > 0 ? (  
+        {reservations.length > 0 ? (
           <ul>
             {reservations.map(res => (
               <li key={res.loan_id}>
@@ -84,6 +100,22 @@ const StudentData = ({
           </div>
         ) : (
           <p>No loan history</p>
+        )}
+      </div>
+
+      <div className="profile-subsection">
+        <h3>Fines</h3>
+        {fines.length > 0 ? (
+          <ul>
+            {fines.map((fine) => (
+              <li key={fine.fine_id}>
+                <strong>#{fine.fine_id}</strong> – {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – 
+                {fine.is_paid ? " Paid ✅" : " Unpaid ❌"}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No fines</p>
         )}
       </div>
     </div>
