@@ -14,27 +14,31 @@ const Books = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const params = {};
-    if (query.trim()) params.title = query.trim();
-    if (filters.author.length > 0) params.author = filters.author.join(",");
-    if (filters.genre.length > 0) params.genre = filters.genre.join(",");
-
-    const fetchBooks = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("/books/filter", { params });
-        setBooks(response.data);
-        setError(null);
-      } catch (err) {
-        setError("Error while loading books.");
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      // 1) budujemy URLSearchParams, który stworzy ?author=A&author=B
+      const params = new URLSearchParams();
+      if (query.trim()) {
+        params.append("title", query.trim());
       }
-    };
+      filters.author.forEach((a) => params.append("author", a));
+      filters.genre.forEach((g) => params.append("genre", g));
 
-    fetchBooks();
-  }, [query, filters]);
+      // 2) doklejamy stringa do endpointu
+      const response = await api.get(`/books/filter?${params.toString()}`);
+      setBooks(response.data);
+      setError(null);
+    } catch (err) {
+      setError("Error while loading books.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchBooks();
+}, [query, filters]);
 
   useEffect(() => {
     const fetchFilters = async () => {

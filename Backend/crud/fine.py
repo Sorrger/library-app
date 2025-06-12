@@ -1,47 +1,57 @@
 from sqlalchemy.orm import Session
-from models.fine import Fine
-from schemas.fine import FineCreate, FineUpdate
+from models.fine import Fine, FineTypeEnum
+from models.student import Student
+from models.fine_students import FineStudent
+from schemas.fine import FineBase
+from crud.student import get_student_by_id
 
-# Create
-def create_fine(db: Session, fine_data: FineCreate) -> Fine:
-    fine = Fine(**fine_data.dict())
+
+# == Tworzenie nowej kary ==
+def create_fine(db: Session, fine_data: FineBase) -> Fine:
+    fine = Fine(
+        value=fine_data.value,
+        fine_type=FineTypeEnum(fine_data.fine_type)
+    )
     db.add(fine)
     db.commit()
     db.refresh(fine)
     return fine
 
-# Read
+
+# == Przypisanie studenta do kary ==
+def add_student_to_fine(db: Session, fine_id: int, student_id: int) -> FineStudent:
+    fine = db.query(Fine).filter(Fine.fine_id == fine_id).first()
+    student = get_student_by_id(db, student_id)
+    if not fine or not student:
+        raise ValueError("Fine or Student not found")
+    
+    # sprawdzenie, czy już istnieje przypisanie
+    existing = db.query(FineStudent).filter_by(fine_id=fine_id, student_id=student_id).first()
+    if existing:
+        return existing  # już przypisany
+
+    association = FineStudent(
+        fine_id=fine_id,
+        student_id=student_id,
+        is_paid=False
+    )
+    db.add(association)
+    db.commit()
+    db.refresh(association)
+    return association
+
+
+# == Zwrócenie wszystkich kar ==
 def get_all_fines(db: Session, skip: int = 0, limit: int = 100) -> list[Fine]:
     return db.query(Fine).offset(skip).limit(limit).all()
 
-def get_fine(db: Session, fine_id: int) -> Fine | None:
-    return db.query(Fine).filter(Fine.fine_id == fine_id).first()
 
-# Update
-def update_fine(db: Session, fine_id: int, fine_data: FineUpdate) -> Fine | None:
-    fine = db.query(Fine).filter(Fine.fine_id == fine_id).first()
-    if not fine:
+# == Oznaczenie kary jako opłaconej dla danego studenta ==
+def mark_fine_as_paid(db: Session, fine_id: int, student_id: int) -> FineStudent | None:
+    assoc = db.query(FineStudent).filter_by(fine_id=fine_id, student_id=student_id).first()
+    if not assoc:
         return None
-    for field, value in fine_data.dict(exclude_unset=True).items():
-        setattr(fine, field, value)
+    assoc.is_paid = True
     db.commit()
-    db.refresh(fine)
-    return fine
-
-def mark_fine_as_paid(db: Session, fine_id: int) -> Fine | None:
-    fine = db.query(Fine).filter(Fine.fine_id == fine_id).first()
-    if not fine:
-        return None
-    fine.is_paid = True
-    db.commit()
-    db.refresh(fine)
-    return fine
-
-# Delete
-def delete_fine(db: Session, fine_id: int) -> bool:
-    fine = db.query(Fine).filter(Fine.fine_id == fine_id).first()
-    if not fine:
-        return False
-    db.delete(fine)
-    db.commit()
-    return True
+    db.refresh(assoc)
+    return assoc

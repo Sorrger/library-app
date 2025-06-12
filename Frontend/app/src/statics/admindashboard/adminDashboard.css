@@ -7,7 +7,8 @@
 .admin-dashboard h1 {
   font-size: 2rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .section {
@@ -15,7 +16,11 @@
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  margin-bottom: 40px; /* zwiększony odstęp między sekcjami */
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-header {
@@ -50,39 +55,103 @@
 .section-content label {
   font-weight: 500;
   color: #333;
+  display: block;
+  margin: 10px 0 5px;
 }
 
-.section-content input {
-  padding: 8px 10px;
+.section-content input,
+.section-content select {
+  padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
 }
 
 .section-content button {
   margin-top: 10px;
-  padding: 10px 15px;
+  padding: 10px 16px;
   background-color: #0088cc;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: background-color 0.3s ease;
+  font-family: inherit;
 }
 
 .section-content button:hover {
   background-color: #006fa3;
 }
 
+.section-content .delete-button {
+  background-color: #ff4d4f;
+  margin-left: 10px;
+}
+
+.section-content .delete-button:hover {
+  background-color: #d9363e;
+}
+
+.search-results-scroll {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.search-result-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result-item:hover {
+  background-color: #f0f0f0;
+}
+
+.section-content table {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+  border-collapse: collapse;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.section-content th,
+.section-content td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.section-content th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Pogrubiony wiersz z kontem */
+.account-row {
+  font-weight: bold;
+  background-color: #fdfdfd;
+}
+
 hr {
   margin: 20px 0;
   border: none;
   border-top: 1px solid #eee;
-}
-
-button {
-  font-family: inherit;
 }
 
 @media (max-width: 768px) {
@@ -98,22 +167,9 @@ button {
     font-size: 0.9rem;
     padding: 8px 12px;
   }
-}
-.search-results-scroll {
-  height: 100px;              
-  overflow-y: auto;           
-  border: 1px solid #ccc;
-  margin-top: 10px;
-  background-color: white;
-  padding: 5px;
-}
 
-.search-result-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-}
-
-.search-result-item:hover {
-  background-color: #f0f0f0;
+  .section-content input,
+  .section-content select {
+    font-size: 0.9rem;
+  }
 }

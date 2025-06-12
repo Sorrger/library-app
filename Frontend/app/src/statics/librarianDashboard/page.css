@@ -25,20 +25,6 @@ p {
   margin: 6px 0;
 }
 
-.delete-button {
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.delete-button:hover {
-  background-color: #d9363e;
-}
-
-
 strong {
   color: #333;
 }
@@ -60,24 +46,46 @@ strong {
   background-color: #006fa3;
 }
 
-.publishing-house-form {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+.delete-button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.section-subtitle {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-    font-weight: bold;
+.delete-button:hover {
+  background-color: #d9363e;
 }
+
 .scrollable-table-container {
-  max-height: 100px;
+  max-height: 200px;
   overflow-y: auto;
 }
 
+.borrowed-loans-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.borrowed-loans-table th,
+.borrowed-loans-table td {
+  text-align: center;
+}
 
+.borrowed-loans-table th,
+.borrowed-loans-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Center student first and last name columns */
+.borrowed-loans-table th:nth-child(2),
+.borrowed-loans-table th:nth-child(3),
+.borrowed-loans-table td:nth-child(2),
+.borrowed-loans-table td:nth-child(3) {
+  text-align: center;
+}
 
 @media (max-width: 768px) {
   .profile-section {
@@ -94,3 +102,7 @@ strong {
   }
 }
 
+.borrowed-loans-table tbody tr:hover {
+  background-color: #f0f8ff; 
+  cursor: pointer;
+}

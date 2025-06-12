@@ -1,18 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, Enum
 from sqlalchemy.orm import relationship
 from database.database import Base
-from .association_tables import fine_student
+from .enums import FineTypeEnum
+
 
 class Fine(Base):
     __tablename__ = "fines"
-
     fine_id = Column(Integer, primary_key=True, autoincrement=True)
-    description = Column(String(255), nullable=False)
+    fine_type = Column(Enum(FineTypeEnum), nullable=False)
     value = Column(Integer, nullable=False)
-    is_paid = Column(Boolean, default=False)
 
-    students = relationship(
-        "Student",
-        secondary=fine_student,
-        back_populates="fines"
-    )
+    fine_associations = relationship("FineStudent", back_populates="fine", cascade="all, delete-orphan")

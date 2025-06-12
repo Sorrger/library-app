@@ -14,11 +14,3 @@ book_genre = Table(
     Column("book_id", Integer, ForeignKey("books.book_id"), primary_key=True),
     Column("genre_id", Integer, ForeignKey("genres.genre_id"), primary_key=True)
 )
-
-fine_student = Table(
-    "fine_student",
-    Base.metadata,
-    Column("fine_id", Integer, ForeignKey("fines.fine_id"), primary_key=True),
-    Column("student_id", Integer, ForeignKey("students.student_id"), primary_key=True)
-
-)

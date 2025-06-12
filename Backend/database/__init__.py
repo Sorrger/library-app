@@ -1,4 +1,4 @@
-from .database import engine, Base, session_local
+from .database import engine, Base
 
 def create_tables():
     try:

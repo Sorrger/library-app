@@ -1,78 +1,88 @@
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+
 from schemas.book import BookCreate, Book, BookResponse, BookUpdate
 from database.database import get_db
-from typing import Optional
-from crud.book import get_all_books, create_book ,get_book_by_id, get_books_filtered, delete_book, get_book_count, update_book, delete_book
+from crud.book import (
+    get_all_books,
+    create_book,
+    get_book_by_id,
+    get_books_filtered,
+    get_book_count,
+    update_book,
+    delete_book,
+)
 from crud.edition import get_edition_by_id
 
 router = APIRouter(tags=['books'])
 
-@router.get("/books", response_model=list[Book])
-def get_all_books_endpoint(db = Depends(get_db)):
+
+@router.get("/books", response_model=List[Book])
+def get_all_books_endpoint(db: Session = Depends(get_db)):
     return get_all_books(db)
 
 
-@router.get("/books/filter", response_model=list[Book])
+@router.get("/books/filter", response_model=List[Book])
 def filter_books_endpoint(
-    title: Optional[str] = Query(default=None),
-    author: Optional[str] = Query(default=None),
-    genre: Optional[str] = Query(default=None),
-    db = Depends(get_db)
+    title: Optional[str]    = Query(default=None, description="Search in title"),
+    author: List[str]       = Query(default=[], description="Filter by author", alias="author"),
+    genre: List[str]        = Query(default=[], description="Filter by genre", alias="genre"),
+    db: Session             = Depends(get_db),
 ):
-    print(f"Received query params: title={title}, author={author}, genre={genre}")
-    title = title or ""
-    author = author or ""
-    genre = genre or ""
-
-    books = get_books_filtered(db, title=title, author=author, genre=genre)
-    print("Fetched books:", books)
+    books = get_books_filtered(
+        db,
+        title   = title or "",
+        authors = author,
+        genres  = genre,
+    )
+    if not books:
+        return JSONResponse(status_code=200, content=[])
     return books
 
+
 @router.get("/books/count")
-def count_books_endpoint(db = Depends(get_db)):
+def count_books_endpoint(db: Session = Depends(get_db)):
     count = get_book_count(db)
     return JSONResponse(content={"count": count})
 
+
 @router.get("/books/{book_id}", response_model=Book)
-def get_book_details_endpoint(book_id: int, db = Depends(get_db)):
-    db_book = get_book_by_id(db=db, book_id=book_id)
-    if db_book is None:
+def get_book_details_endpoint(book_id: int, db: Session = Depends(get_db)):
+    db_book = get_book_by_id(db, book_id)
+    if not db_book:
         raise HTTPException(status_code=404, detail="Book not found")
     return db_book
 
+
 @router.post("/books", response_model=BookResponse)
-def create_book_endpoint(book: BookCreate, db = Depends(get_db)):
+def create_book_endpoint(book: BookCreate, db: Session = Depends(get_db)):
     return create_book(db, book)
 
-@router.delete("/books/{book_id}", response_model=Book)
-def delete_book_endpoint(book_id: int, db = Depends(get_db)):
-    book = delete_book(db, book_id)
-    if book is None:
-        raise HTTPException(status_code=404, detail="Book not found")
-    return book
 
 @router.patch("/books/{book_id}", response_model=Book)
-def update_book_endpoint(book_id: int, book_update: BookUpdate, db = Depends(get_db)):
-    updated_book = update_book(db, book_id, book_update)
-    if updated_book is None:
+def update_book_endpoint(book_id: int, book_update: BookUpdate, db: Session = Depends(get_db)):
+    updated = update_book(db, book_id, book_update)
+    if not updated:
         raise HTTPException(status_code=404, detail="Book not found")
-    return updated_book
+    return updated
+
+
+@router.delete("/books/{book_id}", response_model=Book)
+def delete_book_endpoint(book_id: int, db: Session = Depends(get_db)):
+    deleted = delete_book(db, book_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return deleted
+
 
 @router.get("/editions/{edition_id}/book", response_model=Book)
-def get_book_by_edition_id(edition_id: int, db = Depends(get_db)):
+def get_book_by_edition_id(edition_id: int, db: Session = Depends(get_db)):
     edition = get_edition_by_id(db, edition_id)
-    if edition is None:
+    if not edition:
         raise HTTPException(status_code=404, detail="Edition not found")
-    
-    book = get_book_by_id(db, book_id=edition.book_id)
-    if book is None:
+    book = get_book_by_id(db, edition.book_id)
+    if not book:
         raise HTTPException(status_code=404, detail="Book not found")
-    
     return book
-
-@router.delete("/books/{book_id}")
-def delete_book_by_id_endpoint(book_id: int, db = Depends(get_db)):
-    if delete_book(db,book_id) is None:
-        raise HTTPException(status_code=404, detail ="Book not found")
-    return {"detail": f"Book with ID {book_id} deleted successfully"}

@@ -97,7 +97,7 @@ const AdminDashboard = () => {
           }}>
             <label>Name: <input name="name" required /></label><br />
             <label>Surname: <input name="surname" required /></label><br />
-            <label>Phone Number: <input name="phone_number" required /></label><br />
+            <label>Phone Number: <input name="phone_number" /></label><br />
             <button type="submit">Add Student</button>
           </form>
         )}
@@ -184,21 +184,19 @@ const AdminDashboard = () => {
             </div>
 
             {account && (
-              <div className="section-content">
-                <h2>Account Details</h2>
-                <table>
+              <div className="account-table-container">
+                <table className="account-table">
                   <thead>
                     <tr><th>ID</th><th>Login</th><th>Role</th></tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr  className="account-row">
                       <td>{account.account_id}</td>
                       <td>{account.login}</td>
                       <td>{account.role}</td>
                     </tr>
                   </tbody>
                 </table>
-
                 <form onSubmit={handleUpdate}>
                   <h3>Update Account</h3>
 
@@ -220,7 +218,6 @@ const AdminDashboard = () => {
                     >
                       <option value="student">Student</option>
                       <option value="librarian">Librarian</option>
-                      <option value="admin">Admin</option>
                     </select>
                   </label><br />
 

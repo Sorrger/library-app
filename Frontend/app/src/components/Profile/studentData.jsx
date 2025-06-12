@@ -28,7 +28,7 @@ const StudentData = ({
           <ul>
             {reservations.map(res => (
               <li key={res.loan_id}>
-                {`${res.edition?.book?.title ?? "No title"} (Edition #${res.edition?.edition_id ?? "?"})`}
+                {`${res.edition?.book?.title ?? "No title"} - Format: ${res.edition?.book_format ?? "?"}`}
                 {onCancelReservation && (
                   <button
                     className="cancel-button"
@@ -52,7 +52,7 @@ const StudentData = ({
           <ul>
             {borrowed.map(b => (
               <li key={b.loan_id}>
-                {`${b.edition?.book?.title ?? "No title"} (Edition #${b.edition?.edition_id ?? "?"})`}
+                {`${b.edition?.book?.title ?? "No title"} - Format: ${b.edition?.book_format ?? "?"}`}
               </li>
             ))}
           </ul>
@@ -75,7 +75,7 @@ const StudentData = ({
             <ul>
               {filteredLoans.map(loan => (
                 <li key={loan.loan_id}>
-                  {`${loan.edition?.book?.title ?? "No title"} (Edition #${loan.edition?.edition_id ?? "?"})`} – 
+                  {`${loan.edition?.book?.title ?? "No title"} - Format: ${loan.edition?.book_format ?? "?"}`} – 
                   borrowed: {new Date(loan.loan_date).toLocaleDateString()}
                   {loan.return_date && ` – returned: ${new Date(loan.return_date).toLocaleDateString()}`}
                 </li>

@@ -20,6 +20,8 @@ const LibrarianDashboard = () => {
   const [loadingBorrowed, setLoadingBorrowed] = useState(true);
   const [errorBorrowed, setErrorBorrowed] = useState(null);
 
+  const [fines, setFines] = useState([]);
+
   const [booksByEditionId, setBooksByEditionId] = useState({});
   const [borrowedBooksByEditionId, setBorrowedBooksByEditionId] = useState({});
 
@@ -33,6 +35,53 @@ const LibrarianDashboard = () => {
   const [searchBorrowed, setSearchBorrowed] = useState("");
   const [searchBooks, setSearchBooks] = useState("");
   const [searchEditions, setSearchEditions] = useState("");
+
+  const [students, setStudents] = useState([]);
+
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [selectedFineId, setSelectedFineId] = useState("");
+
+  const [allfines, setAllFines] = useState([]);
+
+
+  const [fineAssignments, setFineAssignments] = useState([]);
+
+useEffect(() => {
+  const fetchFineAssignments = async () => {
+    try {
+      const res = await api.get("/fines/students");
+      setFineAssignments(res.data);
+    } catch (err) {
+      console.error("Error fetching fine assignments:", err);
+    }
+  };
+
+  fetchFineAssignments();
+}, []);
+useEffect(() => {
+  const fetchAllFines = async () => {
+    try {
+      const res = await api.get("/fines");
+      setAllFines(res.data);
+    } catch (err) {
+      console.error("Error fetching all fines:", err);
+    }
+  };
+  fetchAllFines();
+}, []);
+  
+useEffect(() => {
+  api.get("/students").then((res) => setStudents(res.data));
+}, []);
+
+const handleAssignFine = async () => {
+  try {
+    await api.post(`/fines/${selectedFineId}/students/${selectedStudentId}`);
+    alert("Student assigned to fine.");
+  } catch (err) {
+    alert("Error assigning fine: " + (err.response?.data?.detail || err.message));
+  }
+};
 
   const fetchReservedLoans = async () => {
     try {
@@ -65,6 +114,19 @@ const LibrarianDashboard = () => {
     fetchReservedLoans();
     fetchBorrowedLoans();
   }, []);
+
+  useEffect(() => {
+  const fetchFines = async () => {
+    try {
+      const res = await api.get("/fines");
+      const unpaid = res.data.filter((fine) => !fine.is_paid);
+      setFines(unpaid);
+    } catch (err) {
+      console.error("Error fetching fines:", err);
+    }
+  };
+  fetchFines();
+}, []);
 
   useEffect(() => {
     const fetchBookNames = async () => {
@@ -102,6 +164,19 @@ const LibrarianDashboard = () => {
     api.get("/books").then((res) => setBooks(res.data));
     api.get("/editions").then((res) => setEditions(res.data));
   }, []);
+
+const handlePayFine = async (fineId, studentId) => {
+  try {
+    await api.patch(`/fines/${fineId}/pay`, {
+      student_id: studentId, 
+    });
+    alert("Fine marked as paid.");
+  } catch (err) {
+    alert("Error paying fine: " + (err.response?.data?.detail || err.message));
+  }
+};
+
+
 
   const handleChangeStatusToBorrowed = async (editionId) => {
     try {
@@ -246,8 +321,8 @@ const LibrarianDashboard = () => {
               <thead>
                 <tr>
                   <th>Book Title</th>
-                  <th>Student First Name</th>
-                  <th>Student Last Name</th>
+                  <th className="center">Student First Name</th>
+                  <th className="center">Student Last Name</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -360,7 +435,7 @@ const LibrarianDashboard = () => {
         <input
           type="text"
           className="search-input"
-          placeholder="Search by status, title or publisher..."
+          placeholder="Search by title..."
           value={searchEditions}
           onChange={(e) => setSearchEditions(e.target.value)}
         />
@@ -396,6 +471,99 @@ const LibrarianDashboard = () => {
           </table>
         </div>
       </section>
+
+
+      <section className="profile-section">
+  <h2 className="section-title">Assign Fine to Student</h2>
+
+  <div className="form-group">
+    <label>Select Fine:</label>
+    <select
+      value={selectedFineId}
+      onChange={(e) => setSelectedFineId(e.target.value)}
+    >
+      <option value="">-- Choose fine --</option>
+      {allfines.map((fine) => (
+        <option key={fine.fine_id} value={fine.fine_id}>
+          #{fine.fine_id} | {fine.fine_type.toUpperCase()} | {fine.value} zł
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div className="form-group">
+    <label>Select Student:</label>
+    <select
+      value={selectedStudentId}
+      onChange={(e) => setSelectedStudentId(e.target.value)}
+    >
+      <option value="">-- Choose student --</option>
+      {students.map((s) => (
+        <option key={s.student_id} value={s.student_id}>
+          {s.name} {s.surname}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <button
+    className="action-button"
+    onClick={handleAssignFine}
+    disabled={!selectedFineId || !selectedStudentId}
+  >
+    Assign Fine
+  </button>
+</section>
+
+<section className="profile-section">
+  <h2 className="section-title">Student Fines</h2>
+  <div className="scrollable-table-container">
+    <table className="borrowed-loans-table">
+      <thead>
+        <tr>
+          <th>Fine ID</th>
+          <th>Student</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Paid</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {fineAssignments.length > 0 ? (
+          fineAssignments.map((fa) => (
+            <tr key={`${fa.fine_id}-${fa.student_id}`}>
+              <td>{fa.fine_id}</td>
+              <td>{fa.student_name} {fa.student_surname}</td>
+              <td>{fa.fine_type}</td>
+              <td>{fa.value} zł</td>
+              <td>{fa.is_paid ? "Yes" : "No"}</td>
+              <td>
+                {!fa.is_paid && (
+                  <button
+                    className="action-button"
+                    onClick={() => handlePayFine(fa.fine_id, fa.student_id)}
+                  >
+                    Pay
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="6" style={{ textAlign: "center" }}>
+              No fines assigned yet.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+
     </div>
   );
 };

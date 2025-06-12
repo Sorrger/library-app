@@ -1,61 +1,125 @@
 .profile-section {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .section-title {
-    font-size: 1.3rem;
-    color: #333;
-    font-weight: bold;
-    margin-bottom: 12px;
-  }
-  
-  p {
-    font-size: 1rem;
-    color: #666;
-    margin: 6px 0;
-  }
-  
-  strong {
-    color: #333;
-  }
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  .loan-search {
+.section-title {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+p {
+  font-size: 1rem;
+  color: #444;
+  margin: 6px 0;
+}
+
+strong {
+  color: #222;
+}
+
+.profile-subsection {
+  margin-top: 20px;
+}
+
+.profile-subsection h3 {
+  font-size: 1.2rem;
   margin-bottom: 10px;
-  padding: 6px;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+.profile-subsection ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.profile-subsection li {
+  background-color: #f8f8f8;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cancel-button {
+  background-color: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.cancel-button:hover {
+  background-color: #d9363e;
+}
+
+.loan-search {
+  margin-bottom: 10px;
+  padding: 8px;
   width: 100%;
-  max-width: 300px;
+  max-width: 100%;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 0.95rem;
 }
 
 .loan-list-scroll {
   max-height: 200px;
   overflow-y: auto;
   padding-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
 }
 
 .loan-list-scroll ul {
-  list-style-type: disc;
-  padding-left: 20px;
+  list-style-type: none;
+  padding-left: 0;
   margin: 0;
 }
 
 .loan-list-scroll li {
-  margin-bottom: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #333;
 }
 
-  
-  @media (max-width: 768px) {
-    .profile-section {
-      padding: 15px;
-    }
-  
-    .section-title {
-      font-size: 1.1rem;
-    }
+.loan-list-scroll li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .profile-section {
+    padding: 15px;
   }
-  
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .profile-subsection h3 {
+    font-size: 1.05rem;
+  }
+
+  .cancel-button {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+  }
+}

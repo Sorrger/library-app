@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/apiClient';
+import "../statics/addEdition/addEdition.css"
 
 export default function AddEdition() {
   const [status, setStatus] = useState("available");
@@ -113,6 +114,7 @@ export default function AddEdition() {
 
       <hr />
 
+      <div className="publisher-section">
       <h3>Add a New Publishing House</h3>
       <input
         type="text"
@@ -127,6 +129,7 @@ export default function AddEdition() {
         onChange={(e) => setNewPublishingHouseHQ(e.target.value)}
       />
       <button onClick={handleCreatePublishingHouse}>➕ Add Publisher</button>
+      </div>
     </div>
-  );
+      );
 }

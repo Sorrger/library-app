@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from database.database import Base
-from .association_tables import fine_student
+from .fine_students import FineStudent
 
 class Student(Base):
     __tablename__ = "students"
@@ -21,9 +21,5 @@ class Student(Base):
     "Loan",
     back_populates="student") 
 
-    fines = relationship(
-    "Fine",
-    secondary=fine_student,
-    back_populates="students"
-)
+    fine_associations = relationship("FineStudent", back_populates="student", cascade="all, delete-orphan")
 
