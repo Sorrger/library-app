@@ -25,11 +25,6 @@ def add_student_to_fine(db: Session, fine_id: int, student_id: int) -> FineStude
     if not fine or not student:
         raise ValueError("Fine or Student not found")
     
-    # sprawdzenie, czy już istnieje przypisanie
-    existing = db.query(FineStudent).filter_by(fine_id=fine_id, student_id=student_id).first()
-    if existing:
-        return existing  # już przypisany
-
     association = FineStudent(
         fine_id=fine_id,
         student_id=student_id,

@@ -5,8 +5,9 @@ from database.database import Base
 class FineStudent(Base):
     __tablename__ = "fine_student"
 
-    fine_id = Column(Integer, ForeignKey("fines.fine_id"), primary_key=True)
-    student_id = Column(Integer, ForeignKey("students.student_id"), primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    fine_id = Column(Integer, ForeignKey("fines.fine_id"), nullable=False)
+    student_id = Column(Integer, ForeignKey("students.student_id"), nullable=False)
     is_paid = Column(Boolean, default=False)
 
     fine = relationship("Fine", back_populates="fine_associations")
