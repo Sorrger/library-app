@@ -11,24 +11,28 @@ const StudentData = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [fines, setFines] = useState([]);
+  const [hidePaid, setHidePaid] = useState(false); // NEW
 
-useEffect(() => {
-  const fetchFines = async () => {
-    if (!student?.student_id) return;
-    try {
-      const res = await api.get(`/students/${student.student_id}/fines`);
-      setFines(res.data);
-    } catch (err) {
-      console.error("Error fetching student fines", err);
-    }
-  };
+  useEffect(() => {
+    const fetchFines = async () => {
+      if (!student?.student_id) return;
+      try {
+        const res = await api.get(`/students/${student.student_id}/fines`);
+        setFines(res.data);
+      } catch (err) {
+        console.error("Error fetching student fines", err);
+      }
+    };
 
-  fetchFines();
-}, [student?.student_id]);
+    fetchFines();
+  }, [student?.student_id]);
 
   const filteredLoans = allLoans.filter(loan =>
     loan.edition?.book?.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const unpaidFines = fines.filter(f => !f.is_paid);
+  const paidFines = fines.filter(f => f.is_paid);
 
   return (
     <div className="profile-section">
@@ -105,18 +109,32 @@ useEffect(() => {
 
       <div className="profile-subsection">
         <h3>Fines</h3>
-        {fines.length > 0 ? (
+        <label style={{ display: "block", marginBottom: "10px" }}>
+          <input
+            type="checkbox"
+            checked={hidePaid}
+            onChange={() => setHidePaid(!hidePaid)}
+            style={{ marginRight: "8px" }}
+          />
+          Hide Paid Fines
+        </label>
+
+        <div className="fines-list-scroll">
           <ul>
-            {fines.map((fine) => (
-              <li key={fine.fine_id}>
-                <strong>#{fine.fine_id}</strong> – {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – 
-                {fine.is_paid ? " Paid ✅" : " Unpaid ❌"}
+            {unpaidFines.map(fine => (
+              <li className="fine-unpaid" key={`unpaid-${fine.fine_id}`}>
+                <strong>#{fine.fine_id}</strong> - {fine.title} -  {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – Unpaid ❌
               </li>
             ))}
+
+            {!hidePaid &&
+              paidFines.map(fine => (
+                <li className="fine-paid" key={`paid-${fine.fine_id}`}>
+                  <strong>#{fine.fine_id}</strong> {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – Paid ✅
+                </li>
+              ))}
           </ul>
-        ) : (
-          <p>No fines</p>
-        )}
+        </div>
       </div>
     </div>
   );

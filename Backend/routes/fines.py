@@ -5,6 +5,7 @@ from typing import List
 from crud.fine import create_fine, get_all_fines, mark_fine_as_paid, add_student_to_fine
 from database.database import get_db
 from models.fine_students import FineStudent
+from models.edition import Edition
 
 router = APIRouter(tags=["fines"])
 
@@ -17,7 +18,8 @@ def get_fines_for_student(student_id: int, db: Session = Depends(get_db)):
     fines = (
         db.query(FineStudent)
         .filter(FineStudent.student_id == student_id)
-        .options(joinedload(FineStudent.fine))
+        .options(joinedload(FineStudent.fine),
+                 joinedload(FineStudent.edition).joinedload(Edition.book))
         .all()
     )
 
@@ -27,6 +29,7 @@ def get_fines_for_student(student_id: int, db: Session = Depends(get_db)):
     return [
         FineStudentResponse(
             fine_id=fs.fine_id,
+            title=fs.edition.book.title if fs.edition and fs.edition.book else None,
             student_id=fs.student_id,
             is_paid=fs.is_paid,
             fine_type=fs.fine.fine_type,
@@ -35,12 +38,13 @@ def get_fines_for_student(student_id: int, db: Session = Depends(get_db)):
         for fs in fines
     ]
 
-@router.post("/fines/{fine_id}/students/{student_id}", response_model=FineStudentResponse)
-def assign_fine_to_student(fine_id: int, student_id: int, db: Session = Depends(get_db)):
-    try:
-        fs = add_student_to_fine(db, fine_id, student_id)
-        fine = fs.fine  # zakładamy, że relacja jest dostępna
+from schemas.fine import FineAssignRequest
 
+@router.post("/fines/{fine_id}/students", response_model=FineStudentResponse)
+def assign_fine_to_student_with_edition(fine_id: int, payload: FineAssignRequest, db: Session = Depends(get_db)):
+    try:
+        fs = add_student_to_fine(db, fine_id, payload.student_id, payload.edition_id)
+        fine = fs.fine
         return FineStudentResponse(
             fine_id=fs.fine_id,
             student_id=fs.student_id,
@@ -50,6 +54,30 @@ def assign_fine_to_student(fine_id: int, student_id: int, db: Session = Depends(
         )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/fines/{fine_id}/students/{student_id}", response_model=FineStudentResponse)
+def assign_fine_to_student(
+    fine_id: int,
+    student_id: int,
+    body: FineAssignRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        fs = add_student_to_fine(db, fine_id, student_id, body.edition_id)
+        fine = fs.fine
+        return FineStudentResponse(
+            fine_id=fs.fine_id,
+            student_id=fs.student_id,
+            edition_id=fs.edition_id,
+            is_paid=fs.is_paid,
+            fine_type=fine.fine_type,
+            value=fine.value,
+            title=fs.edition.book.title if fs.edition and fs.edition.book else None
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 
 
 @router.post("/fines", response_model=Fine)

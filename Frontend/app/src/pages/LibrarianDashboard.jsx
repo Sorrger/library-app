@@ -46,16 +46,33 @@ const LibrarianDashboard = () => {
 
   const [fineAssignments, setFineAssignments] = useState([]);
 
+  const [studentBorrowedEditions, setStudentBorrowedEditions] = useState([]);
+  const [selectedEditionId, setSelectedEditionId] = useState("");
 useEffect(() => {
-  const fetchFineAssignments = async () => {
+  if (!selectedStudentId) return;
+
+  const fetchBorrowed = async () => {
     try {
-      const res = await api.get("/fines/students");
-      setFineAssignments(res.data);
+      const res = await api.get(`/students/${selectedStudentId}/borrowed`);
+      setStudentBorrowedEditions(res.data);
     } catch (err) {
-      console.error("Error fetching fine assignments:", err);
+      console.error("Error fetching borrowed editions:", err);
     }
   };
 
+  fetchBorrowed();
+}, [selectedStudentId]);
+
+const fetchFineAssignments = async () => {
+  try {
+    const res = await api.get("/fines/students");
+    setFineAssignments(res.data);
+  } catch (err) {
+    console.error("Error fetching fine assignments:", err);
+  }
+};
+
+useEffect(() => {
   fetchFineAssignments();
 }, []);
 useEffect(() => {
@@ -76,12 +93,16 @@ useEffect(() => {
 
 const handleAssignFine = async () => {
   try {
-    await api.post(`/fines/${selectedFineId}/students/${selectedStudentId}`);
+    await api.post(`/fines/${selectedFineId}/students/${selectedStudentId}`, {
+      edition_id: selectedEditionId,
+    });
     alert("Student assigned to fine.");
+    fetchFineAssignments();
   } catch (err) {
     alert("Error assigning fine: " + (err.response?.data?.detail || err.message));
   }
 };
+
 
   const fetchReservedLoans = async () => {
     try {
@@ -201,19 +222,21 @@ const handlePayFine = async (fineId, studentId) => {
       alert("Error changing status: " + (err.response?.data?.detail || err.message));
     }
   };
-
-  const handleDeleteBook = async (bookId) => {
-    const confirm = window.confirm("Are you sure you want to delete this book?");
-    if (!confirm) return;
-    try {
-      await api.delete(`/books/${bookId}`);
-      setBooks((prev) => prev.filter((b) => b.book_id !== bookId));
-      alert("Book deleted successfully.");
-      window.location.reload();
-    } catch (err) {
-      alert("Error deleting book: " + (err.response?.data?.detail || err.message));
-    }
-  };
+const handleDeleteBook = async (bookId) => {
+  const confirm = window.confirm("Are you sure you want to delete this book?");
+  if (!confirm) return;
+  try {
+    await api.delete(`/books/${bookId}`);
+    setBooks((prev) => prev.filter((b) => b.book_id !== bookId));
+    alert("Book deleted successfully.");
+    
+    // Pobierz ponownie edycje
+    const res = await api.get("/editions");
+    setEditions(res.data);
+  } catch (err) {
+    alert("Error deleting book: " + (err.response?.data?.detail || err.message));
+  }
+};
 
   const handleDeleteEdition = async (editionId) => {
     const confirm = window.confirm("Are you sure you want to delete this edition?");
@@ -284,17 +307,17 @@ const handlePayFine = async (fineId, studentId) => {
   return (
     <div className="librarian-dashboard">
       <section className="profile-section">
-        <h2 className="section-title">Hi, Librarian!</h2>
+        <h2 className="section-title">Librarian Dashboard</h2>
         <p><strong>Name:</strong> {name}</p>
       </section>
 
       <section className="profile-section">
         <h2 className="section-title">Quick Actions</h2>
         <button className="action-button" onClick={() => navigate("books/add")}>
-          ➕ Add Book
+          ➕ ADD BOOK
         </button>
         <button className="action-button" onClick={() => navigate("editions/add")}>
-          ➕ Add Edition
+          ➕ ADD EDITION
         </button>
       </section>
 
@@ -337,7 +360,7 @@ const handlePayFine = async (fineId, studentId) => {
                         className="action-button"
                         onClick={() => handleChangeStatusToBorrowed(loan.edition.edition_id)}
                       >
-                        Change to BORROWED
+                        BORROWED
                       </button>
                     </td>
                   </tr>
@@ -420,7 +443,7 @@ const handlePayFine = async (fineId, studentId) => {
                       className="delete-button"
                       onClick={() => handleDeleteBook(book.book_id)}
                     >
-                      🗑 Delete
+                      🗑 DELETE
                     </button>
                   </td>
                 </tr>
@@ -462,7 +485,7 @@ const handlePayFine = async (fineId, studentId) => {
                       className="delete-button"
                       onClick={() => handleDeleteEdition(edition.edition_id)}
                     >
-                      🗑 Delete
+                      🗑 DELETE
                     </button>
                   </td>
                 </tr>
@@ -506,13 +529,30 @@ const handlePayFine = async (fineId, studentId) => {
     </select>
   </div>
 
-  <button
-    className="action-button"
-    onClick={handleAssignFine}
-    disabled={!selectedFineId || !selectedStudentId}
+      <div className="form-group">
+  <label>Select Borrowed Edition:</label>
+  <select
+    value={selectedEditionId}
+    onChange={(e) => setSelectedEditionId(e.target.value)}
+    disabled={!selectedStudentId}
   >
-    Assign Fine
-  </button>
+    <option value="">-- Choose edition --</option>
+    {studentBorrowedEditions.map((loan) => (
+      <option key={loan.edition.edition_id} value={loan.edition.edition_id}>
+        {loan.edition.book.title} ({loan.edition.book_format}) – status: {loan.edition.status}
+      </option>
+    ))}
+  </select>
+</div>
+
+
+<button
+  className="action-button"
+  onClick={handleAssignFine}
+  disabled={!selectedFineId || !selectedStudentId || !selectedEditionId}
+>
+  ASSIGN FINE
+</button>
 </section>
 
 <section className="profile-section">
@@ -530,8 +570,10 @@ const handlePayFine = async (fineId, studentId) => {
         </tr>
       </thead>
       <tbody>
-        {fineAssignments.length > 0 ? (
-          fineAssignments.map((fa) => (
+            {fineAssignments.filter(fa => !fa.is_paid).length > 0 ? (
+        fineAssignments
+          .filter(fa => !fa.is_paid)
+          .map((fa) => (
             <tr key={`${fa.fine_id}-${fa.student_id}`}>
               <td>{fa.fine_id}</td>
               <td>{fa.student_name} {fa.student_surname}</td>
@@ -544,7 +586,7 @@ const handlePayFine = async (fineId, studentId) => {
                     className="action-button"
                     onClick={() => handlePayFine(fa.fine_id, fa.student_id)}
                   >
-                    Pay
+                    PAY
                   </button>
                 )}
               </td>

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from models.enums import FineTypeEnum
 
 class FineStudentAssociation(BaseModel):
@@ -13,6 +13,7 @@ class FineStudentAssociation(BaseModel):
 
 class FineStudentResponse(BaseModel):
     fine_id: int
+    title: Optional[str] = None
     student_id: int
     is_paid: bool
     fine_type: FineTypeEnum
@@ -20,6 +21,8 @@ class FineStudentResponse(BaseModel):
     class Config:
         orm_mode = True
 
+class FineAssignRequest(BaseModel):
+    edition_id: int
         
 class FinePayRequest(BaseModel):
     student_id: int
