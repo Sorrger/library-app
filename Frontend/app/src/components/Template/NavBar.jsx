@@ -26,6 +26,11 @@ const NavBar = () => {
           </NavLink>
         </li>
         <li>
+    <NavLink to="/instructions" className={({ isActive }) => (isActive ? 'active' : '')}>
+      Instructions
+    </NavLink>
+  </li>
+        <li>
           <NavLink to="/books" className={({ isActive }) => (isActive ? 'active' : '')}>
             Books
           </NavLink>
@@ -66,8 +71,10 @@ const NavBar = () => {
               Login
             </NavLink>
           </li>
+          
         )}
       </ul>
+      
     </nav>
   );
 };
