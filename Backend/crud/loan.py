@@ -1,6 +1,8 @@
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from models.loan import Loan
+from models.edition import Edition
+from models.student import Student
 from schemas.loan import LoanCreate
 from datetime import datetime
 
@@ -38,6 +40,23 @@ def get_all_loans_count(db: Session):
 
 def get_all_loans_by_student_id(db: Session, student_id: int):
     return db.query(Loan).filter(Loan.student_id == student_id).all()
+
+#Dawid tutaj prosze sprawdz czy wszystko okej {CR PLS}
+def get_loans_filtered_by_date(db: Session, start_date: datetime, end_date: datetime):
+    return db.query(Loan).filter(
+        Loan.loan_date >= start_date,
+        Loan.loan_date <= end_date
+    ).options(
+        joinedload(Loan.student),
+        joinedload(Loan.edition).joinedload(Edition.book)
+    ).all()
+
+def get_returns_filtered_by_date(db: Session, start_date: datetime, end_date: datetime):
+    return db.query(Loan).filter(
+        Loan.return_date != None,
+        Loan.return_date >= start_date,
+        Loan.return_date <= end_date
+    ).all()
 
 # == Update ==
 def mark_loan_as_returned(db: Session, edition_id: int):

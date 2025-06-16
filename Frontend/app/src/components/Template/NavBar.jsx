@@ -7,7 +7,7 @@ import accountIcon from '../../assets/icons/account.svg';
 const NavBar = () => {
   const navigate = useNavigate();
   const loggedIn = isLoggedIn();
-  const userRole = getUserRoleFromToken()
+  const userRole = getUserRoleFromToken();
 
   const handleLogout = () => {
     removeToken();
@@ -25,11 +25,13 @@ const NavBar = () => {
             Home
           </NavLink>
         </li>
-        <li>
-    <NavLink to="/instructions" className={({ isActive }) => (isActive ? 'active' : '')}>
-      Instructions
-    </NavLink>
-  </li>
+        {loggedIn && (
+          <li>
+            <NavLink to="/instructions" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Instructions
+            </NavLink>
+          </li>
+        )}
         <li>
           <NavLink to="/books" className={({ isActive }) => (isActive ? 'active' : '')}>
             Books
@@ -40,7 +42,8 @@ const NavBar = () => {
             About
           </NavLink>
         </li>
-         {loggedIn && (userRole === 'UserRole.admin' || userRole === 'UserRole.librarian') && (
+
+        {loggedIn && (userRole === 'UserRole.admin' || userRole === 'UserRole.librarian') && (
           <li>
             <NavLink to="/librarian-dashboard" className={({ isActive }) => (isActive ? 'active' : '')}>
               Librarian Dashboard
@@ -49,7 +52,7 @@ const NavBar = () => {
         )}
         {loggedIn && userRole === 'UserRole.admin' && (
           <li>
-            <NavLink to="/admin" className={({isActive}) => (isActive?'active':'')}>
+            <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>
               Admin Dashboard
             </NavLink>
           </li>
@@ -71,10 +74,8 @@ const NavBar = () => {
               Login
             </NavLink>
           </li>
-          
         )}
       </ul>
-      
     </nav>
   );
 };

@@ -48,6 +48,11 @@ const LibrarianDashboard = () => {
 
   const [studentBorrowedEditions, setStudentBorrowedEditions] = useState([]);
   const [selectedEditionId, setSelectedEditionId] = useState("");
+
+  const [reportStart, setReportStart] = useState("");
+  const [reportEnd, setReportEnd] = useState("");
+  const [reportLoans, setReportLoans] = useState([]);
+
 useEffect(() => {
   if (!selectedStudentId) return;
 
@@ -197,6 +202,25 @@ const handlePayFine = async (fineId, studentId) => {
   }
 };
 
+const handleGenerateReport = async () => {
+  if (!reportStart) {
+    alert("Please select a start date.");
+    return;
+  }
+
+  try {
+    let url = `/loans/date-filtered?start=${reportStart}`;
+    if (reportEnd) {
+      url += `&end=${reportEnd}`;
+    }
+
+    const res = await api.get(url);
+    setReportLoans(res.data);
+    alert(`Report generated with ${res.data.length} loans.`);
+  } catch (err) {
+    alert("Error generating reports: " + (err.response?.data?.detail || err.message));
+  }
+};
 
 
   const handleChangeStatusToBorrowed = async (editionId) => {
@@ -328,6 +352,54 @@ const handleDeleteBook = async (bookId) => {
         <p><strong>Active Reservations:</strong> {activeLoans}</p>
         <p><strong>Total Loans:</strong> {loansCount}</p>
       </section>
+
+
+      <section className="profile-section">
+  <h2 className="section-title">Generate Report</h2>
+  <div className="form-group">
+    <label>Start Date:</label>
+    <input type="date" value={reportStart} onChange={(e) => setReportStart(e.target.value)} />
+  </div>
+  <div className="form-group">
+    <label>End Date:</label>
+    <input type="date" value={reportEnd} onChange={(e) => setReportEnd(e.target.value)} />
+    <small>(Leave empty to use today as the end date)</small>
+  </div>
+  <button className="action-button" onClick={handleGenerateReport}>
+    GENERATE REPORT
+  </button>
+  {reportLoans.length > 0 && (
+  <section className="profile-section">
+    <h2 className="section-title">Report: Loans Between {reportStart} and {reportEnd}</h2>
+    <p><strong>Total:</strong> {reportLoans.length} loans</p>
+    <div className="scrollable-table-container">
+      <table className="borrowed-loans-table">
+        <thead>
+          <tr>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+            <th>Student</th>
+            <th>Book</th>
+            <th>Edition Id</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reportLoans.map((loan) => (
+            <tr key={loan.loan_id}>
+              <td>{new Date(loan.loan_date).toLocaleDateString()}</td>
+              <td>{loan.return_date ? new Date(loan.return_date).toLocaleDateString() : "Not Returned"}</td>
+              <td>{loan.student?.name} {loan.student?.surname}</td>
+              <td>{loan.edition?.book?.title || "N/A"}</td>
+              <td>{loan.edition?.edition_id}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+</section>
 
       <section className="profile-section">
         <h2 className="section-title">Currently Reserved Books</h2>

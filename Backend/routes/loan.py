@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from schemas.loan import LoanCreate, Loan, LoanCreateWithoutStudent, LoanWithRelations
 from database.database import get_db
-from crud.loan import get_all_loans, create_loan, get_all_loans_count, get_active_borrowings_count, mark_loan_as_returned, get_all_loans_by_student_id
+from crud.loan import get_all_loans, create_loan, get_all_loans_count, get_active_borrowings_count, mark_loan_as_returned, get_loans_filtered_by_date,get_all_loans_by_student_id
 from crud.edition import get_reservated_loans_with_students, get_borrowed_loans_with_students, get_borrowed_loans_with_students_by_student_id, get_reserved_loans_with_students_by_student_id
 from fastapi.responses import JSONResponse
+from datetime import datetime
+from typing import Optional
 
 router = APIRouter(tags=['loans'])
 
@@ -34,6 +36,13 @@ def get_student_reserved_endpoint(student_id : int, db = Depends(get_db)):
 @router.get("/students/{student_id}/borrowed", response_model=list[LoanWithRelations])
 def get_student_borrowed_endpoint(student_id : int, db = Depends(get_db)):
     return get_borrowed_loans_with_students_by_student_id(db, student_id)
+
+@router.get("/loans/date-filtered", response_model=list[LoanWithRelations])
+def get_loans_by_date_range(start: datetime, end: Optional[datetime] = None, db = Depends(get_db)):
+    if end is None:
+        end = datetime.now()
+    print(f"Fetching loans between {start} and {end}")
+    return get_loans_filtered_by_date(db, start, end)
 
 @router.get("/loans/count")
 def get_loans_count_endpoint(db = Depends(get_db)):
