@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
-from schemas.fine import FineBase, Fine, FineStudentResponse,FineStudentWithDetails, FinePayRequest,FineAssignRequest
+from schemas.fine import FineBase, Fine, FineStudentResponse,FineStudentWithDetails, FinePayRequest,FineAssignRequest, FineStudentWithRelations
 from typing import List
-from crud.fine import create_fine, get_all_fines, mark_fine_as_paid, add_student_to_fine, get_all_fines
+from crud.fine import create_fine, get_all_fines, mark_fine_as_paid, add_student_to_fine, get_all_fines, get_fines_filtered_by_date
 from database.database import get_db
 from models.fine_students import FineStudent
 from models.edition import Edition
+from datetime import datetime
+from typing import Optional
 
 router = APIRouter(tags=["fines"])
 
@@ -37,6 +39,31 @@ def get_fines_for_student(student_id: int, db: Session = Depends(get_db)):
             assigned_at=fs.assigned_at,
             paid_at=fs.paid_at 
 
+        )
+        for fs in fines
+    ]
+@router.get("/fines/date-filtered", response_model=List[FineStudentWithRelations])
+def get_fines_by_date_range(
+    start: datetime = Query(..., description="Start date"),
+    end: Optional[datetime] = Query(None, description="End date"),
+    db: Session = Depends(get_db)
+):
+    if end is None:
+        end = datetime.utcnow()
+    fines = get_fines_filtered_by_date(db, start, end)
+
+    return [
+        FineStudentWithRelations(
+            fine_id=fs.fine_id,
+            student_id=fs.student_id,
+            is_paid=fs.is_paid,
+            fine_type=fs.fine.fine_type,
+            value=fs.fine.value,
+            assigned_at=fs.assigned_at,
+            paid_at=fs.paid_at,
+            title=fs.edition.book.title if fs.edition and fs.edition.book else None,
+            student_name=fs.student.name,
+            student_surname=fs.student.surname,
         )
         for fs in fines
     ]

@@ -15,7 +15,7 @@ const LibrarianDashboard = () => {
   const [errorLoans, setErrorLoans] = useState(null);
   const [books, setBooks] = useState([]);
   const [editions, setEditions] = useState([]);
-
+  const [reportFines, setReportFines] = useState([]);
   const [borrowedLoans, setBorrowedLoans] = useState([]);
   const [loadingBorrowed, setLoadingBorrowed] = useState(true);
   const [errorBorrowed, setErrorBorrowed] = useState(null);
@@ -209,18 +209,28 @@ const handleGenerateReport = async () => {
   }
 
   try {
-    let url = `/loans/date-filtered?start=${reportStart}`;
+    let fineUrl = `/fines/date-filtered?start=${reportStart}`;
+    let loanUrl = `/loans/date-filtered?start=${reportStart}`;
+
     if (reportEnd) {
-      url += `&end=${reportEnd}`;
+      fineUrl += `&end=${reportEnd}`;
+      loanUrl += `&end=${reportEnd}`;
     }
 
-    const res = await api.get(url);
-    setReportLoans(res.data);
-    alert(`Report generated with ${res.data.length} loans.`);
+    const [fineRes, loanRes] = await Promise.all([
+      api.get(fineUrl),
+      api.get(loanUrl),
+    ]);
+
+    setReportFines(fineRes.data);
+    setReportLoans(loanRes.data);
+
+    alert(`Report generated: ${fineRes.data.length} fines, ${loanRes.data.length} loans.`);
   } catch (err) {
     alert("Error generating reports: " + (err.response?.data?.detail || err.message));
   }
 };
+
 
 
   const handleChangeStatusToBorrowed = async (editionId) => {
@@ -368,36 +378,76 @@ const handleDeleteBook = async (bookId) => {
   <button className="action-button" onClick={handleGenerateReport}>
     GENERATE REPORT
   </button>
-  {reportLoans.length > 0 && (
-  <section className="profile-section">
-    <h2 className="section-title">Report: Loans Between {reportStart} and {reportEnd}</h2>
-    <p><strong>Total:</strong> {reportLoans.length} loans</p>
-    <div className="scrollable-table-container">
-      <table className="borrowed-loans-table">
-        <thead>
-          <tr>
-            <th>Loan Date</th>
-            <th>Return Date</th>
-            <th>Student</th>
-            <th>Book</th>
-            <th>Edition Id</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reportLoans.map((loan) => (
-            <tr key={loan.loan_id}>
-              <td>{new Date(loan.loan_date).toLocaleDateString()}</td>
-              <td>{loan.return_date ? new Date(loan.return_date).toLocaleDateString() : "Not Returned"}</td>
-              <td>{loan.student?.name} {loan.student?.surname}</td>
-              <td>{loan.edition?.book?.title || "N/A"}</td>
-              <td>{loan.edition?.edition_id}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+{(reportLoans.length > 0 || reportFines.length > 0) && (
+  <>
+    {reportLoans.length > 0 && (
+      <section className="profile-section">
+        <h2 className="section-title">Report: Loans Between {reportStart} and {reportEnd || "now"}</h2>
+        <p><strong>Total:</strong> {reportLoans.length} loans</p>
+        <div className="scrollable-table-container">
+          <table className="borrowed-loans-table">
+            <thead>
+              <tr>
+                <th>Loan Date</th>
+                <th>Return Date</th>
+                <th>Student</th>
+                <th>Book</th>
+                <th>Edition Id</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportLoans.map((loan) => (
+                <tr key={loan.loan_id}>
+                  <td>{new Date(loan.loan_date).toLocaleDateString()}</td>
+                  <td>{loan.return_date ? new Date(loan.return_date).toLocaleDateString() : "Not Returned"}</td>
+                  <td>{loan.student?.name} {loan.student?.surname}</td>
+                  <td>{loan.edition?.book?.title || "N/A"}</td>
+                  <td>{loan.edition?.edition_id}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+
+    {reportFines.length > 0 && (
+      <section className="profile-section">
+        <h2 className="section-title">Report: Fines Between {reportStart} and {reportEnd || "now"}</h2>
+        <p><strong>Total:</strong> {reportFines.length} fines</p>
+        <div className="scrollable-table-container">
+          <table className="borrowed-loans-table">
+            <thead>
+              <tr>
+                <th>Fine ID</th>
+                <th>Student</th>
+                <th>Book Title</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Assigned At</th>
+                <th>Paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportFines.map((fine) => (
+                <tr key={`${fine.fine_id}-${fine.student_id}`}>
+                  <td>{fine.fine_id}</td>
+                  <td>{fine.student_name} {fine.student_surname}</td>
+                  <td>{fine.title || "N/A"}</td>
+                  <td>{fine.fine_type}</td>
+                  <td>{fine.value} zł</td>
+                  <td>{new Date(fine.assigned_at).toLocaleDateString()}</td>
+                  <td>{fine.is_paid ? "Yes" : "No"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+  </>
 )}
+
 
 </section>
 

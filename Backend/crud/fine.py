@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from datetime import datetime
 from models.fine import Fine, FineTypeEnum
+from models.edition import Edition
 from models.student import Student
 from models.fine_students import FineStudent
 from schemas.fine import FineBase
@@ -43,6 +44,15 @@ def get_all_fines(db: Session, skip: int = 0, limit: int = 100) -> list[Fine]:
     return db.query(Fine).offset(skip).limit(limit).all()
 
 
+def get_fines_filtered_by_date(db: Session, start_date: datetime, end_date: datetime):
+    return db.query(FineStudent).filter(
+        FineStudent.assigned_at >= start_date,
+        FineStudent.assigned_at <= end_date
+    ).options(
+        joinedload(FineStudent.fine),
+        joinedload(FineStudent.student),
+        joinedload(FineStudent.edition).joinedload(Edition.book)
+    ).all()
 # == Oznaczenie kary jako opłaconej dla danego studenta ==
 def mark_fine_as_paid(db: Session, fine_id: int, student_id: int) -> FineStudent | None:
     assoc = db.query(FineStudent).filter_by(fine_id=fine_id, student_id=student_id).first()

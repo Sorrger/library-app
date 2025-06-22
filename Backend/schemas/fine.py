@@ -19,8 +19,6 @@ class FineStudentResponse(BaseModel):
     is_paid: bool
     fine_type: FineTypeEnum
     value: int
-    assigned_at: Optional[datetime] = None 
-    paid_at: Optional[datetime] = None  
     class Config:
         orm_mode = True
 
@@ -30,6 +28,21 @@ class FineAssignRequest(BaseModel):
 class FinePayRequest(BaseModel):
     student_id: int
 
+class FineStudentWithRelations(BaseModel):
+    fine_id: int
+    student_id: int
+    is_paid: bool
+    fine_type: FineTypeEnum
+    value: int
+    assigned_at: datetime
+    paid_at: Optional[datetime]
+    title: Optional[str]
+    student_name: str
+    student_surname: str
+
+    class Config:
+        orm_mode = True
+
 class FineStudentWithDetails(BaseModel):
     fine_id: int
     student_id: int
@@ -38,8 +51,6 @@ class FineStudentWithDetails(BaseModel):
     value: int
     student_name: str
     student_surname: str
-    assigned_at: Optional[datetime] = None 
-    paid_at: Optional[datetime] = None 
 
     class Config:
         orm_mode = True
