@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from schemas.fine import FineBase, Fine, FineStudentResponse,FineStudentWithDetails, FinePayRequest
+from schemas.fine import FineBase, Fine, FineStudentResponse,FineStudentWithDetails, FinePayRequest,FineAssignRequest
 from typing import List
-from crud.fine import create_fine, get_all_fines, mark_fine_as_paid, add_student_to_fine
+from crud.fine import create_fine, get_all_fines, mark_fine_as_paid, add_student_to_fine, get_all_fines
 from database.database import get_db
 from models.fine_students import FineStudent
 from models.edition import Edition
@@ -33,12 +33,14 @@ def get_fines_for_student(student_id: int, db: Session = Depends(get_db)):
             student_id=fs.student_id,
             is_paid=fs.is_paid,
             fine_type=fs.fine.fine_type,
-            value=fs.fine.value
+            value=fs.fine.value,
+            assigned_at=fs.assigned_at,
+            paid_at=fs.paid_at 
+
         )
         for fs in fines
     ]
 
-from schemas.fine import FineAssignRequest
 
 @router.post("/fines/{fine_id}/students", response_model=FineStudentResponse)
 def assign_fine_to_student_with_edition(fine_id: int, payload: FineAssignRequest, db: Session = Depends(get_db)):
@@ -50,11 +52,12 @@ def assign_fine_to_student_with_edition(fine_id: int, payload: FineAssignRequest
             student_id=fs.student_id,
             is_paid=fs.is_paid,
             fine_type=fine.fine_type,
-            value=fine.value
+            value=fine.value,
+            assigned_at=fs.assigned_at,
+            paid_at=fs.paid_at 
         )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
-
 
 @router.post("/fines/{fine_id}/students/{student_id}", response_model=FineStudentResponse)
 def assign_fine_to_student(
@@ -73,6 +76,8 @@ def assign_fine_to_student(
             is_paid=fs.is_paid,
             fine_type=fine.fine_type,
             value=fine.value,
+            assigned_at=fs.assigned_at,
+            paid_at=fs.paid_at,
             title=fs.edition.book.title if fs.edition and fs.edition.book else None
         )
     except ValueError as e:
@@ -98,7 +103,9 @@ def pay_fine_endpoint(fine_id: int, body: FinePayRequest, db: Session = Depends(
         student_id=fine_student.student_id,
         is_paid=fine_student.is_paid,
         fine_type=fine.fine_type,
-        value=fine.value
+        value=fine.value,
+        assigned_at=fine_student.assigned_at,
+        paid_at=fine_student.paid_at
     )
 
 @router.post("/fines/{fine_id}/students/{student_id}", response_model=FineStudentResponse)
@@ -125,7 +132,9 @@ def get_all_fine_assignments(db: Session = Depends(get_db)):
             fine_type=fs.fine.fine_type,
             value=fs.fine.value,
             student_name=fs.student.name,
-            student_surname=fs.student.surname
+            student_surname=fs.student.surname,
+            assigned_at=fs.assigned_at,
+            paid_at=fs.paid_at
         ))
 
     return result

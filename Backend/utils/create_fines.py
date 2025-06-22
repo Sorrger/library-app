@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from database.database import SessionLocal
+from database.database import get_db
 from models.loan import Loan
 from models.fine import Fine
 
 def create_fines_for_overdue_loans():
-    db: Session = SessionLocal()
+    db: Session = get_db()
     try:
         overdue_date = datetime.utcnow() - timedelta(days=20)
         overdue_loans = db.query(Loan).filter(

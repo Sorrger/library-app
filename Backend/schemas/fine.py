@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from models.enums import FineTypeEnum
+from datetime import datetime
 
 class FineStudentAssociation(BaseModel):
     student_id: int
@@ -18,6 +19,8 @@ class FineStudentResponse(BaseModel):
     is_paid: bool
     fine_type: FineTypeEnum
     value: int
+    assigned_at: Optional[datetime] = None 
+    paid_at: Optional[datetime] = None  
     class Config:
         orm_mode = True
 
@@ -35,6 +38,8 @@ class FineStudentWithDetails(BaseModel):
     value: int
     student_name: str
     student_surname: str
+    assigned_at: Optional[datetime] = None 
+    paid_at: Optional[datetime] = None 
 
     class Config:
         orm_mode = True

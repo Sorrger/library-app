@@ -122,16 +122,18 @@ const StudentData = ({
         <div className="fines-list-scroll">
           <ul>
             {unpaidFines.map(fine => (
-              <li className="fine-unpaid" key={`unpaid-${fine.fine_id}`}>
-                <strong>#{fine.fine_id}</strong> - {fine.title} -  {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – Unpaid ❌
-              </li>
+            <li className="fine-unpaid" key={`unpaid-${fine.fine_id}`}>
+              <strong>#{fine.fine_id}</strong> - {fine.title} - {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł –
+              Unpaid ❌ – Assigned: {new Date(fine.assigned_at).toLocaleDateString()}
+            </li>
             ))}
 
             {!hidePaid &&
               paidFines.map(fine => (
-                <li className="fine-paid" key={`paid-${fine.fine_id}`}>
-                  <strong>#{fine.fine_id}</strong> {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – Paid ✅
-                </li>
+            <li className="fine-paid" key={`paid-${fine.fine_id}`}>
+              <strong>#{fine.fine_id}</strong> {fine.fine_type.replaceAll("_", " ")} – {fine.value} zł – 
+              Paid ✅ – Paid on: {new Date(fine.paid_at).toLocaleDateString()}
+            </li>
               ))}
           </ul>
         </div>

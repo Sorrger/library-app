@@ -637,6 +637,7 @@ const handleDeleteBook = async (bookId) => {
           <th>Student</th>
           <th>Type</th>
           <th>Amount</th>
+          <th>Fine Imposition Date</th>
           <th>Paid</th>
           <th>Action</th>
         </tr>
@@ -651,6 +652,7 @@ const handleDeleteBook = async (bookId) => {
               <td>{fa.student_name} {fa.student_surname}</td>
               <td>{fa.fine_type}</td>
               <td>{fa.value} zł</td>
+              <td>{new Date(fa.assigned_at).toLocaleDateString("en-US")}</td>
               <td>{fa.is_paid ? "Yes" : "No"}</td>
               <td>
                 {!fa.is_paid && (

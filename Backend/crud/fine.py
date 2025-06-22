@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from datetime import datetime
 from models.fine import Fine, FineTypeEnum
 from models.student import Student
 from models.fine_students import FineStudent
@@ -24,12 +25,13 @@ def add_student_to_fine(db: Session, fine_id: int, student_id: int, edition_id: 
     student = get_student_by_id(db, student_id)
     if not fine or not student:
         raise ValueError("Fine or Student not found")
-    
+    now = datetime.utcnow()
     association = FineStudent(
         fine_id=fine_id,
         student_id=student_id,
         edition_id=edition_id,
-        is_paid=False
+        is_paid=False,
+        assigned_at=now
     )
     db.add(association)
     db.commit()
@@ -46,6 +48,7 @@ def mark_fine_as_paid(db: Session, fine_id: int, student_id: int) -> FineStudent
     assoc = db.query(FineStudent).filter_by(fine_id=fine_id, student_id=student_id).first()
     if not assoc:
         return None
+    assoc.paid_at = datetime.utcnow()
     assoc.is_paid = True
     db.commit()
     db.refresh(assoc)
